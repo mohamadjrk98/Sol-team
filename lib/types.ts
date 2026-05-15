@@ -1,0 +1,20 @@
+export type Volunteer = {
+  id?: string;
+  slug: string;
+  full_name: string;
+  role: string | null;
+  specialization: string | null;
+  joined_year: number | null;
+  location: string | null;
+  age: number | null;
+  avatar_url: string | null;
+  bio: string | null;
+  motivation: string | null;
+  skills: string[];
+  achievements: string[];
+  works: string[];
+  certificates: string[];
+  social_links?: Record<string, string> | null;
+  is_featured?: boolean;
+  created_at?: string;
+};

@@ -1,0 +1,50 @@
+import { notFound } from 'next/navigation';
+import Avatar from '@/components/Avatar';
+import { getVolunteerBySlug, getVolunteers } from '@/lib/supabase';
+import { CalendarDays, GraduationCap, MapPin, UserRound } from 'lucide-react';
+
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const volunteers = await getVolunteers();
+  return volunteers.map((v) => ({ slug: v.slug }));
+}
+
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const volunteer = await getVolunteerBySlug(params.slug);
+  return { title: volunteer ? `${volunteer.full_name} - أبناء لأرض` : 'متطوع - أبناء لأرض' };
+}
+
+function ListBlock({ title, items }: { title: string; items: string[] }) {
+  return <section className="card"><h3>{title}</h3>{items.length ? <ul className="list">{items.map((item, i) => <li key={i}>{item}</li>)}</ul> : <p className="muted">لا توجد بيانات بعد.</p>}</section>;
+}
+
+export default async function VolunteerProfilePage({ params }: { params: { slug: string } }) {
+  const v = await getVolunteerBySlug(params.slug);
+  if (!v) notFound();
+  return (
+    <main className="section">
+      <div className="container profile">
+        <aside className="card profile-side" style={{ textAlign: 'center' }}>
+          <Avatar src={v.avatar_url} name={v.full_name} size={140} />
+          <h2 style={{ marginTop: 16 }}>{v.full_name}</h2>
+          <p className="muted">{v.role}</p>
+          <div className="list" style={{ textAlign: 'right', marginTop: 18 }}>
+            {v.specialization && <li><GraduationCap size={16}/> التخصص: {v.specialization}</li>}
+            {v.joined_year && <li><CalendarDays size={16}/> عضو منذ: {v.joined_year}</li>}
+            {v.location && <li><MapPin size={16}/> الموقع: {v.location}</li>}
+            {v.age && <li><UserRound size={16}/> العمر: {v.age}</li>}
+          </div>
+        </aside>
+        <div className="tabs">
+          <section className="card"><h3>نبذة شخصية</h3><p className="muted">{v.bio}</p></section>
+          <section className="card"><h3>لماذا أتطوع؟</h3><p className="muted">{v.motivation}</p></section>
+          <section className="card"><h3>المهارات</h3><div className="pill-row">{v.skills.map(skill => <span className="pill" key={skill}>{skill}</span>)}</div></section>
+          <ListBlock title="الأعمال والمشاريع" items={v.works} />
+          <ListBlock title="الإنجازات" items={v.achievements} />
+          <ListBlock title="الشهادات" items={v.certificates} />
+        </div>
+      </div>
+    </main>
+  );
+}
