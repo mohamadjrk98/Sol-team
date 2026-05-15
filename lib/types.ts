@@ -1,4 +1,5 @@
 export type HierarchyLevel = 'board' | 'coordinator' | 'volunteer';
+export type VolunteerStatus = 'active' | 'left' | 'dismissed' | 'vacation' | 'paused';
 
 export type Volunteer = {
   id?: string;
@@ -11,6 +12,7 @@ export type Volunteer = {
   position_rank: number;
   specialization: string | null;
   joined_year: number | null;
+  joined_date?: string | null;
   location: string | null;
   age: number | null;
   avatar_url: string | null;
@@ -21,6 +23,8 @@ export type Volunteer = {
   works: string[];
   certificates: string[];
   social_links: Record<string, string>;
+  volunteer_status?: VolunteerStatus;
+  exit_reason?: string | null;
   is_featured: boolean;
 };
 

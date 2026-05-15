@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import Avatar from '@/components/Avatar';
 import { getVolunteerBySlug, getVolunteers } from '@/lib/supabase';
-import { CalendarDays, GraduationCap, MapPin, UserRound } from 'lucide-react';
+import { CalendarDays, GraduationCap, MapPin, UserRound, Activity } from 'lucide-react';
 
 export const revalidate = 60;
 
@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const volunteer = await getVolunteerBySlug(params.slug);
   return { title: volunteer ? `${volunteer.full_name} - أبناء الأرض` : 'متطوع - أبناء الأرض' };
 }
+
+const statusLabels: Record<string, string> = { active: 'نشط', left: 'غادر', dismissed: 'تم فصله', vacation: 'إجازة', paused: 'معلّق' };
+const statusClass: Record<string, string> = { active: 'green', left: 'gray', dismissed: 'red', vacation: 'yellow', paused: 'orange' };
 
 function ListBlock({ title, items }: { title: string; items: string[] }) {
   return <section className="card"><h3>{title}</h3>{items.length ? <ul className="list">{items.map((item, i) => <li key={i}>{item}</li>)}</ul> : <p className="muted">لا توجد بيانات بعد.</p>}</section>;
@@ -29,13 +32,15 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
           <Avatar src={v.avatar_url} name={v.full_name} size={140} />
           <h2 style={{ marginTop: 16 }}>{v.full_name}</h2>
           <p className="muted">{v.role}</p>
+          <span className={`status-badge ${statusClass[v.volunteer_status || 'active']}`}>{statusLabels[v.volunteer_status || 'active']}</span>
           <div className="list" style={{ textAlign: 'right', marginTop: 18 }}>
             {v.department && <li>القسم: {v.department}</li>}
             {v.team_name && <li>الفريق: {v.team_name}</li>}
             {v.specialization && <li><GraduationCap size={16}/> التخصص: {v.specialization}</li>}
-            {v.joined_year && <li><CalendarDays size={16}/> عضو منذ: {v.joined_year}</li>}
+            {(v.joined_date || v.joined_year) && <li><CalendarDays size={16}/> تاريخ الانضمام: {v.joined_date || v.joined_year}</li>}
             {v.location && <li><MapPin size={16}/> الموقع: {v.location}</li>}
             {v.age && <li><UserRound size={16}/> العمر: {v.age}</li>}
+            {v.volunteer_status && <li><Activity size={16}/> الحالة: {statusLabels[v.volunteer_status]}</li>}
           </div>
         </aside>
         <div className="tabs">
@@ -45,6 +50,7 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
           <ListBlock title="الأعمال والمشاريع" items={v.works} />
           <ListBlock title="الإنجازات" items={v.achievements} />
           <ListBlock title="الشهادات" items={v.certificates} />
+          {v.exit_reason && <section className="card"><h3>ملاحظات الحالة</h3><p className="muted">{v.exit_reason}</p></section>}
         </div>
       </div>
     </main>

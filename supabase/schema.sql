@@ -11,6 +11,7 @@ create table if not exists volunteers (
   position_rank integer not null default 100,
   specialization text,
   joined_year integer,
+  joined_date date,
   location text,
   age integer,
   avatar_url text,
@@ -21,6 +22,8 @@ create table if not exists volunteers (
   works text[] default '{}',
   certificates text[] default '{}',
   social_links jsonb default '{}',
+  volunteer_status text not null default 'active' check (volunteer_status in ('active','left','dismissed','vacation','paused')),
+  exit_reason text,
   is_featured boolean default false,
   created_at timestamptz default now()
 );
@@ -58,6 +61,15 @@ create table if not exists impact_metrics (
   created_at timestamptz default now()
 );
 
+
+alter table volunteers add column if not exists joined_date date;
+alter table volunteers add column if not exists volunteer_status text not null default 'active';
+alter table volunteers add column if not exists exit_reason text;
+do $$ begin
+  alter table volunteers add constraint volunteers_status_check check (volunteer_status in ('active','left','dismissed','vacation','paused'));
+exception when duplicate_object then null;
+end $$;
+
 alter table volunteers enable row level security;
 alter table workshop_waitlist enable row level security;
 alter table initiatives enable row level security;
@@ -75,11 +87,11 @@ create policy "Public can read impact metrics" on impact_metrics for select usin
 drop policy if exists "Public can join waitlist" on workshop_waitlist;
 create policy "Public can join waitlist" on workshop_waitlist for insert with check (true);
 
-insert into volunteers (slug, full_name, role, hierarchy_level, department, team_name, position_rank, specialization, joined_year, location, bio, motivation, skills, achievements, works, is_featured)
+insert into volunteers (slug, full_name, role, hierarchy_level, department, team_name, position_rank, specialization, joined_year, joined_date, location, bio, motivation, skills, achievements, works, volunteer_status, is_featured)
 values
-('chairperson', 'اسم رئيس مجلس الإدارة', 'رئيس مجلس الإدارة', 'board', 'الإدارة', null, 1, 'إدارة العمل التطوعي', 2025, 'مصياف - سوريا', 'يقود الرؤية العامة لفريق أبناء الأرض التطوعي ويتابع تنفيذ الخطة العامة للفريق.', 'أمل ينمو وأثر يبقى؛ نعمل لنترك أثراً منظماً ومستداماً في المجتمع.', array['القيادة','التخطيط','إدارة الفريق','بناء الشراكات'], array['المساهمة في تأسيس الفريق بتاريخ 25/1/2025.','وضع الهيكل التنظيمي الأولي للفريق.'], array['متابعة اجتماعات الإدارة.','تنسيق الخطط العامة.','تمثيل الفريق أمام الشركاء.'], true),
-('media-coordinator', 'اسم منسق الفريق الإعلامي', 'منسق الفريق الإعلامي', 'coordinator', 'المنسقون', 'الفريق الإعلامي', 10, 'إعلام وتوثيق', 2025, 'مصياف - سوريا', 'يتابع توثيق الأنشطة وإدارة المحتوى البصري والنصي الخاص بالفريق.', 'التوثيق يحفظ أثر المتطوعين ويجعل رسالتهم تصل بشكل أوضح.', array['التصوير','كتابة المحتوى','إدارة وسائل التواصل','تنظيم الأرشيف'], array['إعداد خطة نشر للأنشطة.','توثيق مبادرات الفريق الأولى.'], array['نشر أخبار الفريق.','تنسيق المصممين والمصورين.','حفظ أرشيف الصور.'], true),
-('field-volunteer', 'اسم متطوع ميداني', 'متطوع في الفريق الميداني', 'volunteer', 'المتطوعون', 'الفريق الميداني', 30, 'عمل ميداني', 2025, 'مصياف - سوريا', 'يساهم في تنفيذ الأنشطة على الأرض والمساعدة في تنظيم الفعاليات.', 'أؤمن أن العمل الصغير إذا استمر يتحول إلى أثر كبير.', array['العمل الجماعي','تنظيم الفعاليات','التواصل','المبادرة'], array['المشاركة في تجهيز أنشطة الفريق.','المساعدة في الأعمال اللوجستية.'], array['دعم الحملات الميدانية.','مساعدة المنسقين.','استقبال المشاركين في الأنشطة.'], true)
+('chairperson', 'اسم رئيس مجلس الإدارة', 'رئيس مجلس الإدارة', 'board', 'الإدارة', null, 1, 'إدارة العمل التطوعي', 2025, '2025-01-25', 'مصياف - سوريا', 'يقود الرؤية العامة لفريق أبناء الأرض التطوعي ويتابع تنفيذ الخطة العامة للفريق.', 'أمل ينمو وأثر يبقى؛ نعمل لنترك أثراً منظماً ومستداماً في المجتمع.', array['القيادة','التخطيط','إدارة الفريق','بناء الشراكات'], array['المساهمة في تأسيس الفريق بتاريخ 25/1/2025.','وضع الهيكل التنظيمي الأولي للفريق.'], array['متابعة اجتماعات الإدارة.','تنسيق الخطط العامة.','تمثيل الفريق أمام الشركاء.'], 'active', true),
+('media-coordinator', 'اسم منسق الفريق الإعلامي', 'منسق الفريق الإعلامي', 'coordinator', 'المنسقون', 'الفريق الإعلامي', 10, 'إعلام وتوثيق', 2025, '2025-01-25', 'مصياف - سوريا', 'يتابع توثيق الأنشطة وإدارة المحتوى البصري والنصي الخاص بالفريق.', 'التوثيق يحفظ أثر المتطوعين ويجعل رسالتهم تصل بشكل أوضح.', array['التصوير','كتابة المحتوى','إدارة وسائل التواصل','تنظيم الأرشيف'], array['إعداد خطة نشر للأنشطة.','توثيق مبادرات الفريق الأولى.'], array['نشر أخبار الفريق.','تنسيق المصممين والمصورين.','حفظ أرشيف الصور.'], 'active', true),
+('field-volunteer', 'اسم متطوع ميداني', 'متطوع في الفريق الميداني', 'volunteer', 'المتطوعون', 'الفريق الميداني', 30, 'عمل ميداني', 2025, '2025-01-25', 'مصياف - سوريا', 'يساهم في تنفيذ الأنشطة على الأرض والمساعدة في تنظيم الفعاليات.', 'أؤمن أن العمل الصغير إذا استمر يتحول إلى أثر كبير.', array['العمل الجماعي','تنظيم الفعاليات','التواصل','المبادرة'], array['المشاركة في تجهيز أنشطة الفريق.','المساعدة في الأعمال اللوجستية.'], array['دعم الحملات الميدانية.','مساعدة المنسقين.','استقبال المشاركين في الأنشطة.'], 'active', true)
 on conflict (slug) do update set
   full_name = excluded.full_name,
   role = excluded.role,
@@ -89,12 +101,14 @@ on conflict (slug) do update set
   position_rank = excluded.position_rank,
   specialization = excluded.specialization,
   joined_year = excluded.joined_year,
+  joined_date = excluded.joined_date,
   location = excluded.location,
   bio = excluded.bio,
   motivation = excluded.motivation,
   skills = excluded.skills,
   achievements = excluded.achievements,
   works = excluded.works,
+  volunteer_status = excluded.volunteer_status,
   is_featured = excluded.is_featured;
 
 insert into initiatives (slug, title, excerpt, content, status, category, date, location, image_url, team)

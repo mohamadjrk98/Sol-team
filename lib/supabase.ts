@@ -18,7 +18,9 @@ function normalizeVolunteer(v: any): Volunteer {
     achievements: v.achievements ?? [],
     works: v.works ?? [],
     certificates: v.certificates ?? [],
-    social_links: v.social_links ?? {}
+    social_links: v.social_links ?? {},
+    volunteer_status: v.volunteer_status ?? 'active',
+    exit_reason: v.exit_reason ?? null
   };
 }
 
