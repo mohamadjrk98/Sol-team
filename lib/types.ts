@@ -3,6 +3,10 @@ export type Volunteer = {
   slug: string;
   full_name: string;
   role: string | null;
+  hierarchy_level?: 'board' | 'coordinator' | 'volunteer' | string | null;
+  department?: string | null;
+  team_name?: string | null;
+  position_rank?: number | null;
   specialization: string | null;
   joined_year: number | null;
   location: string | null;

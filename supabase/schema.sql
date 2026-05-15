@@ -1,5 +1,5 @@
--- Supabase schema for أبناء لأرض
--- Run this file in Supabase SQL Editor before deploying on Vercel.
+-- Supabase schema for فريق أبناء الأرض التطوعي
+-- Run this file in Supabase SQL Editor after every structural update.
 
 create extension if not exists "pgcrypto";
 
@@ -8,6 +8,10 @@ create table if not exists public.volunteers (
   slug text not null unique,
   full_name text not null,
   role text,
+  hierarchy_level text,
+  department text,
+  team_name text,
+  position_rank integer,
   specialization text,
   joined_year integer,
   location text,
@@ -25,6 +29,19 @@ create table if not exists public.volunteers (
   updated_at timestamptz not null default now()
 );
 
+alter table public.volunteers add column if not exists hierarchy_level text;
+alter table public.volunteers add column if not exists department text;
+alter table public.volunteers add column if not exists team_name text;
+alter table public.volunteers add column if not exists position_rank integer;
+
+create table if not exists public.training_waitlist (
+  id uuid primary key default gen_random_uuid(),
+  full_name text,
+  email text not null unique,
+  phone text,
+  created_at timestamptz not null default now()
+);
+
 create or replace function public.set_updated_at()
 returns trigger as $$
 begin
@@ -39,6 +56,7 @@ before update on public.volunteers
 for each row execute function public.set_updated_at();
 
 alter table public.volunteers enable row level security;
+alter table public.training_waitlist enable row level security;
 
 drop policy if exists "Public read volunteers" on public.volunteers;
 create policy "Public read volunteers"
@@ -46,13 +64,38 @@ on public.volunteers for select
 to anon, authenticated
 using (true);
 
--- Insert/Update/Delete are performed only by SUPABASE_SERVICE_ROLE_KEY from the server API route.
--- Do not expose SUPABASE_SERVICE_ROLE_KEY in client-side code.
+drop policy if exists "Public insert waitlist" on public.training_waitlist;
+create policy "Public insert waitlist"
+on public.training_waitlist for insert
+to anon, authenticated
+with check (true);
+
+drop policy if exists "Public update own email waitlist" on public.training_waitlist;
+create policy "Public update own email waitlist"
+on public.training_waitlist for update
+to anon, authenticated
+using (true)
+with check (true);
 
 insert into public.volunteers
-(slug, full_name, role, specialization, joined_year, location, age, avatar_url, bio, motivation, skills, achievements, works, certificates, social_links, is_featured)
+(slug, full_name, role, hierarchy_level, department, team_name, position_rank, specialization, joined_year, location, age, avatar_url, bio, motivation, skills, achievements, works, certificates, social_links, is_featured)
 values
-('ahmad-mahmoud','أحمد محمود','متطوع في فريق أبناء لأرض','هندسة بيئية',2022,'رام الله - فلسطين',24,null,'شاب طموح يهتم بالعمل البيئي والمجتمعي. انضم إلى فريق أبناء لأرض لأنه يؤمن أن العمل التطوعي هو أداة حقيقية لإحداث التغيير.','أؤمن أن كل فرد قادر على إحداث فرق، ومن خلال العمل الجماعي نستطيع بناء مستقبل أفضل لنا جميعاً.',array['إدارة المشاريع','التوعية البيئية','التصميم الجرافيكي','التواصل الفعال','العمل الجماعي'],array['قيادة حملة تنظيف في الحي بمشاركة 80 متطوعاً.','تنظيم ورشة توعية عن إعادة التدوير.','المساهمة في زراعة 300 شجرة.'],array['تنسيق المتطوعين في الفعاليات.','إعداد مواد توعوية للفريق.','متابعة مبادرات التشجير المحلية.'],array['شهادة مشاركة في برنامج القيادة الشبابية.','دورة أساسيات إدارة المشاريع التطوعية.'],'{"facebook":"#","instagram":"#","linkedin":"#"}',true),
-('sara-khaled','سارة خالد','مسؤولة محتوى وتوثيق','إعلام رقمي',2023,'نابلس - فلسطين',22,null,'تعمل على توثيق أنشطة الفريق وقصص المتطوعين ونشر رسائل الفريق بأسلوب بسيط ومؤثر.','أحب أن أوصل قصص الناس الذين يعملون بصمت من أجل الأرض والمجتمع.',array['كتابة المحتوى','التصوير','إدارة وسائل التواصل','تحرير الفيديو'],array['إطلاق سلسلة قصص المتطوعين.','توثيق أكثر من 20 نشاطاً ميدانياً.','زيادة تفاعل صفحات الفريق.'],array['نشر الأخبار والصور.','إعداد مقابلات مع المتطوعين.','تنظيم أرشيف الصور والفيديو.'],array['دورة إنتاج محتوى رقمي مجتمعي.'],'{"instagram":"#","linkedin":"#"}',true),
-('yousef-ali','يوسف علي','منسق فعاليات','إدارة أعمال',2024,'الخليل - فلسطين',26,null,'يساعد في التخطيط للفعاليات وتنظيم الموارد والتواصل مع الشركاء المحليين.','أرى أن التنظيم الجيد يحول الأفكار الجميلة إلى نتائج ملموسة.',array['تنظيم الفعاليات','التواصل مع الشركاء','إدارة الوقت','حل المشكلات'],array['تنظيم يوم تطوعي مفتوح.','بناء شراكات مع مبادرات محلية.','إعداد خطة تشغيل للفعاليات.'],array['تنسيق الجداول والمهام.','التواصل مع المؤسسات.','إدارة فرق العمل في الميدان.'],array['تدريب إدارة الفعاليات المجتمعية.'],'{"facebook":"#","linkedin":"#"}',true)
-on conflict (slug) do nothing;
+('chairperson','اسم رئيس مجلس الإدارة','رئيس مجلس الإدارة','board','الإدارة',null,1,'إدارة العمل التطوعي',2025,'مصياف - سوريا',null,null,'يقود الرؤية العامة لفريق أبناء الأرض التطوعي ويتابع تنفيذ الخطة العامة للفريق.','أمل ينمو وأثر يبقى؛ نعمل لنترك أثراً منظماً ومستداماً في المجتمع.',array['القيادة','التخطيط','إدارة الفريق','بناء الشراكات'],array['المساهمة في تأسيس الفريق بتاريخ 25/1/2025.','وضع الهيكل التنظيمي الأولي للفريق.'],array['متابعة اجتماعات الإدارة.','تنسيق الخطط العامة.','تمثيل الفريق أمام الشركاء.'],array[]::text[],'{}',true),
+('media-coordinator','اسم منسق الفريق الإعلامي','منسق الفريق الإعلامي','coordinator','المنسقون','الفريق الإعلامي',10,'إعلام وتوثيق',2025,'مصياف - سوريا',null,null,'يتابع توثيق الأنشطة وإدارة المحتوى البصري والنصي الخاص بالفريق.','التوثيق يحفظ أثر المتطوعين ويجعل رسالتهم تصل بشكل أوضح.',array['التصوير','كتابة المحتوى','إدارة وسائل التواصل','تنظيم الأرشيف'],array['إعداد خطة نشر للأنشطة.','توثيق مبادرات الفريق الأولى.'],array['نشر أخبار الفريق.','تنسيق المصممين والمصورين.','حفظ أرشيف الصور.'],array[]::text[],'{}',true),
+('field-volunteer','اسم متطوع ميداني','متطوع في الفريق الميداني','volunteer','المتطوعون','الفريق الميداني',30,'عمل ميداني',2025,'مصياف - سوريا',null,null,'يساهم في تنفيذ الأنشطة على الأرض والمساعدة في تنظيم الفعاليات.','أؤمن أن العمل الصغير إذا استمر يتحول إلى أثر كبير.',array['العمل الجماعي','تنظيم الفعاليات','التواصل','المبادرة'],array['المشاركة في تجهيز أنشطة الفريق.','المساعدة في الأعمال اللوجستية.'],array['دعم الحملات الميدانية.','مساعدة المنسقين.','استقبال المشاركين في الأنشطة.'],array[]::text[],'{}',true)
+on conflict (slug) do update set
+  role = excluded.role,
+  hierarchy_level = excluded.hierarchy_level,
+  department = excluded.department,
+  team_name = excluded.team_name,
+  position_rank = excluded.position_rank,
+  specialization = excluded.specialization,
+  joined_year = excluded.joined_year,
+  location = excluded.location,
+  bio = excluded.bio,
+  motivation = excluded.motivation,
+  skills = excluded.skills,
+  achievements = excluded.achievements,
+  works = excluded.works,
+  certificates = excluded.certificates,
+  is_featured = excluded.is_featured;

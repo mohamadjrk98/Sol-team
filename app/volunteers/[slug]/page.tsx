@@ -12,7 +12,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const volunteer = await getVolunteerBySlug(params.slug);
-  return { title: volunteer ? `${volunteer.full_name} - أبناء لأرض` : 'متطوع - أبناء لأرض' };
+  return { title: volunteer ? `${volunteer.full_name} - أبناء الأرض` : 'متطوع - أبناء الأرض' };
 }
 
 function ListBlock({ title, items }: { title: string; items: string[] }) {
@@ -30,6 +30,8 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
           <h2 style={{ marginTop: 16 }}>{v.full_name}</h2>
           <p className="muted">{v.role}</p>
           <div className="list" style={{ textAlign: 'right', marginTop: 18 }}>
+            {v.department && <li>القسم: {v.department}</li>}
+            {v.team_name && <li>الفريق: {v.team_name}</li>}
             {v.specialization && <li><GraduationCap size={16}/> التخصص: {v.specialization}</li>}
             {v.joined_year && <li><CalendarDays size={16}/> عضو منذ: {v.joined_year}</li>}
             {v.location && <li><MapPin size={16}/> الموقع: {v.location}</li>}

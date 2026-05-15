@@ -18,7 +18,11 @@ export default function AdminPage() {
     <label className="label">كلمة مرور الإدارة<input className="input" name="password" type="password" required /></label>
     <label className="label">الاسم الكامل<input className="input" name="full_name" required /></label>
     <label className="label">الرابط المختصر slug<input className="input" name="slug" placeholder="ahmad-mahmoud" required /></label>
-    <label className="label">الدور<input className="input" name="role" /></label>
+    <label className="label">الدور<input className="input" name="role" placeholder="رئيس مجلس الإدارة / منسق فريق الرصد / متطوع" /></label>
+    <label className="label">المستوى التنظيمي<select className="input" name="hierarchy_level"><option value="volunteer">متطوع</option><option value="coordinator">منسق</option><option value="board">إدارة</option></select></label>
+    <label className="label">القسم<select className="input" name="department"><option>المتطوعون</option><option>المنسقون</option><option>الإدارة</option></select></label>
+    <label className="label">الفريق<select className="input" name="team_name"><option value="">بدون</option><option>فريق الرصد</option><option>الفريق الميداني</option><option>الفريق الإعلامي</option><option>فريق التوعية</option></select></label>
+    <label className="label">ترتيب الظهور<input className="input" name="position_rank" type="number" placeholder="1 للإدارة، 10 للمنسقين، 30 للمتطوعين" /></label>
     <label className="label">التخصص<input className="input" name="specialization" /></label>
     <label className="label">سنة الانضمام<input className="input" name="joined_year" type="number" /></label>
     <label className="label">الموقع<input className="input" name="location" /></label>
