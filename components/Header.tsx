@@ -13,8 +13,9 @@ export default function Header() {
         <nav className="links">
           <Link href="/">الرئيسية</Link>
           <Link href="/volunteers">المتطوعون</Link>
-          <Link href="/#structure">الهيكل التنظيمي</Link>
-          <Link href="/#teams">الفرق</Link>
+          <Link href="/blog">الأعمال والمدونة</Link>
+          <Link href="/projects">قيد التنفيذ</Link>
+          <Link href="/impact">الإحصائيات</Link>
           <Link href="/admin">الإدارة</Link>
         </nav>
         <Link className="btn" href="/join"><UserPlus size={18}/> انضم إلينا</Link>

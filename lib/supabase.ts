@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { sampleVolunteers } from './sample-data';
-import { Volunteer } from './types';
+import { impactMetrics, initiatives, sampleVolunteers } from './sample-data';
+import { ImpactMetric, Initiative, Volunteer } from './types';
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -11,21 +11,22 @@ export const hasSupabase = Boolean(url && anonKey);
 export const supabase = hasSupabase ? createClient(url!, anonKey!) : null;
 export const supabaseAdmin = url && serviceKey ? createClient(url, serviceKey, { auth: { persistSession: false } }) : null;
 
-function normalize(v: any): Volunteer {
+function normalizeVolunteer(v: any): Volunteer {
   return {
     ...v,
     skills: v.skills ?? [],
     achievements: v.achievements ?? [],
     works: v.works ?? [],
-    certificates: v.certificates ?? []
+    certificates: v.certificates ?? [],
+    social_links: v.social_links ?? {}
   };
 }
 
 export async function getVolunteers(): Promise<Volunteer[]> {
   if (!supabase) return sampleVolunteers;
-  const { data, error } = await supabase.from('volunteers').select('*').order('created_at', { ascending: false });
+  const { data, error } = await supabase.from('volunteers').select('*').order('position_rank', { ascending: true });
   if (error || !data) return sampleVolunteers;
-  return data.map(normalize);
+  return data.map(normalizeVolunteer);
 }
 
 export async function getFeaturedVolunteers(): Promise<Volunteer[]> {
@@ -37,5 +38,46 @@ export async function getVolunteerBySlug(slug: string): Promise<Volunteer | null
   if (!supabase) return sampleVolunteers.find((v) => v.slug === slug) ?? null;
   const { data, error } = await supabase.from('volunteers').select('*').eq('slug', slug).single();
   if (error || !data) return sampleVolunteers.find((v) => v.slug === slug) ?? null;
-  return normalize(data);
+  return normalizeVolunteer(data);
+}
+
+function normalizeInitiative(i: any): Initiative {
+  return {
+    slug: i.slug,
+    title: i.title,
+    excerpt: i.excerpt,
+    content: i.content,
+    status: i.status,
+    category: i.category,
+    date: i.date,
+    location: i.location,
+    image_url: i.image_url ?? '/team-banner.jpg',
+    team: i.team
+  };
+}
+
+export async function getInitiatives(): Promise<Initiative[]> {
+  if (!supabase) return initiatives;
+  const { data, error } = await supabase.from('initiatives').select('*').order('date', { ascending: false });
+  if (error || !data) return initiatives;
+  return data.map(normalizeInitiative);
+}
+
+export async function getInitiativeBySlug(slug: string): Promise<Initiative | null> {
+  if (!supabase) return initiatives.find((i) => i.slug === slug) ?? null;
+  const { data, error } = await supabase.from('initiatives').select('*').eq('slug', slug).single();
+  if (error || !data) return initiatives.find((i) => i.slug === slug) ?? null;
+  return normalizeInitiative(data);
+}
+
+export async function getImpactMetrics(): Promise<ImpactMetric[]> {
+  if (!supabase) return impactMetrics;
+  const { data, error } = await supabase.from('impact_metrics').select('*').order('value', { ascending: false });
+  if (error || !data) return impactMetrics;
+  return data.map((m) => ({
+    label: m.label,
+    value: Number(m.value ?? 0),
+    suffix: m.suffix ?? '',
+    description: m.description ?? ''
+  }));
 }

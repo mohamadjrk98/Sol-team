@@ -1,12 +1,14 @@
+export type HierarchyLevel = 'board' | 'coordinator' | 'volunteer';
+
 export type Volunteer = {
   id?: string;
   slug: string;
   full_name: string;
-  role: string | null;
-  hierarchy_level?: 'board' | 'coordinator' | 'volunteer' | string | null;
-  department?: string | null;
-  team_name?: string | null;
-  position_rank?: number | null;
+  role: string;
+  hierarchy_level: HierarchyLevel;
+  department: string | null;
+  team_name: string | null;
+  position_rank: number;
   specialization: string | null;
   joined_year: number | null;
   location: string | null;
@@ -18,7 +20,28 @@ export type Volunteer = {
   achievements: string[];
   works: string[];
   certificates: string[];
-  social_links?: Record<string, string> | null;
-  is_featured?: boolean;
-  created_at?: string;
+  social_links: Record<string, string>;
+  is_featured: boolean;
+};
+
+export type InitiativeStatus = 'completed' | 'in_progress' | 'planned';
+
+export type Initiative = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  status: InitiativeStatus;
+  category: string;
+  date: string;
+  location: string;
+  image_url: string;
+  team: string;
+};
+
+export type ImpactMetric = {
+  label: string;
+  value: number;
+  suffix?: string;
+  description: string;
 };
