@@ -33,3 +33,119 @@ html.dark body{background:#071b17;color:var(--text)}html.dark .nav{background:rg
 @media print{body{background:#fff}.nav,.footer,.no-print{display:none!important}.section{padding:0}.container{width:100%;margin:0}.member-card{box-shadow:none;border:1px solid #ddd;width:100%;page-break-inside:avoid}.member-card-wrap{margin:0}}
 
 .member-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 14px}.member-actions .btn{border:0;cursor:pointer}.member-actions .btn:disabled{opacity:.65;cursor:not-allowed}.pdf-error{margin:0 0 12px;color:#b42318;background:#fff1f0;border:1px solid #ffccc7;border-radius:14px;padding:10px 14px;font-weight:800;text-align:center}.spin{animation:spin .9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}@media print{.member-actions,.pdf-error{display:none!important}}
+
+/* Premium laser ID membership card */
+.member-card.premium-id-card{
+  width:min(390px,100%);
+  min-height:620px;
+  padding:22px;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at 18% 12%,rgba(246,191,24,.36),transparent 30%),
+    radial-gradient(circle at 92% 26%,rgba(20,128,91,.22),transparent 34%),
+    linear-gradient(135deg,#fff8df 0%,#ffffff 40%,#edf8f1 100%);
+  border:1px solid rgba(201,156,39,.62);
+  box-shadow:0 24px 70px rgba(6,78,59,.24), inset 0 0 0 1px rgba(255,255,255,.7);
+  aspect-ratio:54/85;
+}
+.member-card.premium-id-card:before{
+  height:7px;
+  background:linear-gradient(90deg,#0b4f3a,#f6bf18,#7bdcb5,#f6bf18,#0b4f3a);
+}
+.member-card.premium-id-card:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(115deg,transparent 0 18%,rgba(255,255,255,.56) 24%,rgba(123,220,181,.22) 31%,transparent 42% 100%);
+  mix-blend-mode:screen;
+  opacity:.72;
+  z-index:1;
+}
+.logo-watermark{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background-image:url('/logo.png');
+  background-repeat:no-repeat;
+  background-position:center 55%;
+  background-size:275px 275px;
+  opacity:.055;
+  filter:grayscale(1) contrast(1.8);
+}
+.laser-lines{
+  position:absolute;
+  inset:16px;
+  border-radius:22px;
+  opacity:.35;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(0deg,rgba(11,79,58,.11) 0 1px,transparent 1px 17px),
+    repeating-linear-gradient(90deg,rgba(246,191,24,.12) 0 1px,transparent 1px 19px);
+  mask-image:linear-gradient(to bottom,transparent,black 16%,black 84%,transparent);
+}
+.member-card.premium-id-card .member-head{
+  position:relative;
+  z-index:2;
+  gap:10px;
+  padding-bottom:12px;
+  border-bottom:1px solid rgba(11,79,58,.18);
+}
+.member-card.premium-id-card .member-head img{width:48px;height:48px;border:2px solid rgba(246,191,24,.9);box-shadow:0 0 0 4px rgba(255,255,255,.54)}
+.member-card.premium-id-card .member-head strong{font-size:16px;line-height:1.25}
+.member-card.premium-id-card .member-head span{display:block;font-size:11px;color:#8b6912}
+.member-card.premium-id-card .member-head em{display:inline-flex;margin-top:6px;font-style:normal;font-size:10px;font-weight:900;color:#fff;background:#0b4f3a;border-radius:999px;padding:4px 9px;letter-spacing:.2px}
+.member-card.premium-id-card .member-body{
+  position:relative;
+  z-index:2;
+  grid-template-columns:1fr;
+  gap:14px;
+  padding:20px 0 14px;
+  text-align:center;
+}
+.member-card.premium-id-card .member-photo{
+  width:128px;
+  height:128px;
+  margin:auto;
+  border-radius:50%;
+  border:4px solid rgba(246,191,24,.96);
+  box-shadow:0 16px 36px rgba(6,78,59,.25),0 0 0 8px rgba(255,255,255,.55);
+}
+.member-card.premium-id-card .member-info h2{font-size:26px;margin-top:4px;line-height:1.2}
+.member-card.premium-id-card .member-info p{font-size:15px;margin-bottom:10px;color:#31594e}
+.member-card.premium-id-card .member-tags{justify-content:center;margin-bottom:12px}
+.member-card.premium-id-card .member-tags span{font-size:11px;padding:7px 10px;border:1px solid rgba(11,79,58,.1);background:rgba(246,191,24,.22)}
+.member-card.premium-id-card .member-info dl{
+  grid-template-columns:1fr;
+  gap:4px;
+  text-align:center;
+  background:rgba(255,255,255,.56);
+  border:1px solid rgba(11,79,58,.1);
+  border-radius:18px;
+  padding:12px;
+  backdrop-filter:blur(8px);
+}
+.member-card.premium-id-card .member-info dt{font-size:10px}
+.member-card.premium-id-card .member-info dd{font-size:13px;margin-bottom:5px}
+.member-card.premium-id-card .member-foot{
+  position:relative;
+  z-index:2;
+  flex-direction:column;
+  gap:8px;
+  text-align:center;
+  border-radius:20px;
+  padding:12px;
+  background:rgba(255,255,255,.58);
+  border:1px solid rgba(11,79,58,.12);
+  backdrop-filter:blur(8px);
+}
+.qr-box{background:#fff;border-radius:16px;padding:8px;display:grid;place-items:center;border:1px solid rgba(11,79,58,.12);box-shadow:0 10px 24px rgba(6,78,59,.12)}
+.member-card.premium-id-card .member-foot p{font-size:11px;line-height:1.5}
+html.dark .member-card.premium-id-card{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(246,191,24,.2),transparent 30%),
+    radial-gradient(circle at 92% 26%,rgba(20,128,91,.2),transparent 34%),
+    linear-gradient(135deg,#101d19,#132b24 55%,#0a1613);
+}
+html.dark .member-card.premium-id-card .member-info dl,html.dark .member-card.premium-id-card .member-foot{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+@media print{.member-card.premium-id-card{width:54mm!important;min-height:85mm!important;border-radius:5mm;padding:5mm;box-shadow:none}.member-card.premium-id-card .member-photo{width:28mm;height:28mm}.member-card.premium-id-card .member-info h2{font-size:17px}.member-card.premium-id-card .member-head strong{font-size:11px}.member-card.premium-id-card .member-head span,.member-card.premium-id-card .member-head em,.member-card.premium-id-card .member-tags span,.member-card.premium-id-card .member-info dt,.member-card.premium-id-card .member-info dd,.member-card.premium-id-card .member-foot p{font-size:8px}}

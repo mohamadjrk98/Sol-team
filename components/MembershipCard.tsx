@@ -80,13 +80,16 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
       </div>
       {error && <p className="pdf-error no-print">{error}</p>}
 
-      <div className="member-card" id="member-card-print">
+      <div className="member-card premium-id-card" id="member-card-print">
         <div className="member-bg" />
+        <div className="laser-lines" aria-hidden="true" />
+        <div className="logo-watermark" aria-hidden="true" />
         <div className="member-head">
           <Image src="/logo.png" width={58} height={58} alt="شعار أبناء الأرض" />
           <div>
             <strong>فريق أبناء الأرض التطوعي</strong>
-            <span>بطاقة عضوية رسمية</span>
+            <span>أمل ينمو و أثر يبقى</span>
+            <em>بطاقة عضوية متطوع</em>
           </div>
         </div>
         <div className="member-body">
@@ -107,8 +110,8 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
           </div>
         </div>
         <div className="member-foot">
-          <QRCodeSVG value={url} size={92} bgColor="transparent" fgColor="#0b4f3a" />
-          <p>امسح الرمز للوصول إلى صفحة العضو والتحقق من بياناته.</p>
+          <div className="qr-box"><QRCodeSVG value={url} size={78} bgColor="transparent" fgColor="#0b4f3a" /></div>
+          <p>امسح الرمز للتحقق من العضوية</p>
         </div>
       </div>
     </section>
