@@ -190,3 +190,38 @@ on conflict (email) do nothing;
 update initiatives set beneficiaries_count = 450, volunteer_hours = 180, progress_percent = 100, is_featured = true where slug = 'rain-day-field-activity';
 update initiatives set beneficiaries_count = 0, volunteer_hours = 12, progress_percent = 60, is_featured = true where slug = 'volunteer-training-waitlist';
 update initiatives set beneficiaries_count = 0, volunteer_hours = 35, progress_percent = 70, is_featured = false where slug = 'media-archive-project';
+
+-- === Volunteer login accounts + weekly star voting ===
+create table if not exists volunteer_accounts (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text unique not null,
+  phone text,
+  volunteer_slug text references volunteers(slug) on delete set null,
+  password_hash text not null,
+  password_salt text not null,
+  status text not null default 'pending' check (status in ('pending','approved','rejected','suspended')),
+  admin_notes text,
+  approved_at timestamptz,
+  last_login_at timestamptz,
+  created_at timestamptz default now()
+);
+
+create index if not exists volunteer_accounts_email_idx on volunteer_accounts(email);
+create index if not exists volunteer_accounts_status_idx on volunteer_accounts(status);
+
+alter table volunteer_accounts enable row level security;
+-- Access is handled through server routes using SUPABASE_SERVICE_ROLE_KEY.
+
+create table if not exists weekly_star_votes (
+  id uuid primary key default gen_random_uuid(),
+  volunteer_slug text not null references volunteers(slug) on delete cascade,
+  voter_name text,
+  created_at timestamptz default now()
+);
+
+create index if not exists weekly_star_votes_slug_idx on weekly_star_votes(volunteer_slug);
+create index if not exists weekly_star_votes_created_idx on weekly_star_votes(created_at);
+
+alter table weekly_star_votes enable row level security;
+-- Voting is handled through server routes using SUPABASE_SERVICE_ROLE_KEY.

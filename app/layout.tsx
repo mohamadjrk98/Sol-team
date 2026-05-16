@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PWARegister from '@/components/PWARegister';
+import FloatingSidePanel from '@/components/FloatingSidePanel';
 
 export const metadata: Metadata = {
   title: 'فريق أبناء الأرض التطوعي',
@@ -19,5 +20,5 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { themeColor: '#0b4f3a', width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="ar" dir="rtl"><body><PWARegister /><Header />{children}<Footer /></body></html>;
+  return <html lang="ar" dir="rtl"><body><PWARegister /><Header /><FloatingSidePanel />{children}<Footer /></body></html>;
 }

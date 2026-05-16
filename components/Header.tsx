@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
-import { UserPlus } from 'lucide-react';
+import { LogIn, UserPlus } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
@@ -35,7 +35,7 @@ export default function Header() {
           <Link href="/impact">الإحصائيات</Link>
           <Link href="/transparency">الشفافية</Link>
         </nav>
-        <div className="nav-actions"><ThemeToggle /><Link className="btn" href="/join"><UserPlus size={18}/> انضم إلينا</Link></div>
+        <div className="nav-actions"><ThemeToggle /><Link className="btn secondary volunteer-login-btn" href="/volunteer-login"><LogIn size={18}/> دخول المتطوعين</Link><Link className="btn" href="/join"><UserPlus size={18}/> انضم إلينا</Link></div>
       </div>
     </header>
   );

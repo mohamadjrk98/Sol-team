@@ -56,7 +56,7 @@ export default function JoinPage() {
                 <label className="label">الفريق المفضل<select className="input" name="preferred_team"><option>الفريق الميداني</option><option>الفريق الإعلامي</option><option>فريق التوعية</option><option>فريق الرصد</option><option>غير محدد</option></select></label>
                 <label className="label">أوقات التفرغ<input className="input" name="availability" placeholder="مساءً، نهاية الأسبوع..." /></label>
               </div>
-              <label className="label">لماذا تريد التطوع؟<textarea className="textarea" name="motivation" required placeholder="اكتب سبب رغبتك بالانضمام للفريق" /></label>
+              <label className="label">لماذا تطوعت؟<textarea className="textarea" name="motivation" required placeholder="اكتب سبب تطوعك وانضمامك للفريق" /></label>
               <label className="label">خبرات سابقة اختيارية<textarea className="textarea" name="experience" placeholder="أي أعمال تطوعية أو مهارات سابقة" /></label>
               <button className="btn" type="submit" disabled={loading}><Send size={18}/> {loading ? 'جارٍ الإرسال...' : 'إرسال طلب الانضمام'}</button>
             </form>
