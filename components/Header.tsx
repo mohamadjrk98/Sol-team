@@ -18,7 +18,7 @@ export default function Header() {
           <Link href="/projects">قيد التنفيذ</Link>
           <Link href="/impact">الإحصائيات</Link>
           <Link href="/transparency">الشفافية</Link>
-          <Link href="/admin">الإدارة</Link>
+          <Link href="/admin/dashboard">لوحة التحكم</Link>
         </nav>
         <div className="nav-actions"><ThemeToggle /><Link className="btn" href="/join"><UserPlus size={18}/> انضم إلينا</Link></div>
       </div>

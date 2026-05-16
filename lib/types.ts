@@ -41,6 +41,10 @@ export type Initiative = {
   location: string;
   image_url: string;
   team: string;
+  beneficiaries_count?: number;
+  volunteer_hours?: number;
+  progress_percent?: number;
+  is_featured?: boolean;
 };
 
 export type ImpactMetric = {

@@ -153,3 +153,40 @@ values
 ('مبادرات موثقة', 6, '+', 'أعمال ومبادرات قابلة للتوثيق على الموقع.'),
 ('ساعات تطوعية', 180, '+', 'تقدير أولي لساعات العمل التطوعي الجماعي.'),
 ('مستفيدين', 450, '+', 'تقدير أولي للأشخاص الذين وصلتهم المبادرات والخدمات.');
+
+-- === Platform upgrade: Dashboard, initiatives management, join applications ===
+create table if not exists join_applications (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text unique not null,
+  phone text,
+  age integer,
+  city text,
+  specialization text,
+  preferred_team text,
+  motivation text,
+  availability text,
+  experience text,
+  status text not null default 'new' check (status in ('new','reviewing','accepted','rejected','contacted')),
+  admin_notes text,
+  created_at timestamptz default now()
+);
+
+alter table initiatives add column if not exists beneficiaries_count integer default 0;
+alter table initiatives add column if not exists volunteer_hours integer default 0;
+alter table initiatives add column if not exists progress_percent integer default 0;
+alter table initiatives add column if not exists is_featured boolean default false;
+
+alter table join_applications enable row level security;
+drop policy if exists "Public can submit join applications" on join_applications;
+create policy "Public can submit join applications" on join_applications for insert with check (true);
+
+-- migrate old simple waitlist if it exists
+insert into join_applications (email, full_name, phone, status)
+select email, full_name, phone, 'new' from workshop_waitlist
+where email is not null
+on conflict (email) do nothing;
+
+update initiatives set beneficiaries_count = 450, volunteer_hours = 180, progress_percent = 100, is_featured = true where slug = 'rain-day-field-activity';
+update initiatives set beneficiaries_count = 0, volunteer_hours = 12, progress_percent = 60, is_featured = true where slug = 'volunteer-training-waitlist';
+update initiatives set beneficiaries_count = 0, volunteer_hours = 35, progress_percent = 70, is_featured = false where slug = 'media-archive-project';

@@ -54,7 +54,11 @@ function normalizeInitiative(i: any): Initiative {
     date: i.date,
     location: i.location,
     image_url: i.image_url ?? '/team-banner.jpg',
-    team: i.team
+    team: i.team,
+    beneficiaries_count: Number(i.beneficiaries_count ?? 0),
+    volunteer_hours: Number(i.volunteer_hours ?? 0),
+    progress_percent: Number(i.progress_percent ?? 0),
+    is_featured: Boolean(i.is_featured)
   };
 }
 
