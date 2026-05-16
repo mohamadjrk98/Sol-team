@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 import Avatar from '@/components/Avatar';
 import { getVolunteerBySlug, getVolunteers } from '@/lib/supabase';
-import { CalendarDays, GraduationCap, MapPin, UserRound, Activity } from 'lucide-react';
+import Link from 'next/link';
+import MembershipCard from '@/components/MembershipCard';
+import { CalendarDays, GraduationCap, MapPin, UserRound, Activity, CreditCard } from 'lucide-react';
 
 export const revalidate = 60;
 
@@ -25,6 +27,8 @@ function ListBlock({ title, items }: { title: string; items: string[] }) {
 export default async function VolunteerProfilePage({ params }: { params: { slug: string } }) {
   const v = await getVolunteerBySlug(params.slug);
   if (!v) notFound();
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sol-team.vercel.app';
+  const profileUrl = `${siteUrl.replace(/\/$/, '')}/volunteers/${v.slug}`;
   return (
     <main className="section">
       <div className="container profile">
@@ -51,6 +55,8 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
           <ListBlock title="الإنجازات" items={v.achievements} />
           <ListBlock title="الشهادات" items={v.certificates} />
           {v.exit_reason && <section className="card"><h3>ملاحظات الحالة</h3><p className="muted">{v.exit_reason}</p></section>}
+          <section className="card"><h3>QR وبطاقة العضوية</h3><p className="muted">يمكن استخدام الرمز للتحقق من صفحة المتطوع، أو طباعة بطاقة عضوية رسمية.</p><Link className="btn" href={`/volunteers/${v.slug}/card`}><CreditCard size={17}/> عرض بطاقة العضوية</Link></section>
+          <MembershipCard volunteer={v} url={profileUrl} />
         </div>
       </div>
     </main>

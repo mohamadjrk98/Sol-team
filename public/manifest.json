@@ -1,0 +1,15 @@
+{
+  "name": "فريق أبناء الأرض التطوعي",
+  "short_name": "أبناء الأرض",
+  "description": "منصة فريق أبناء الأرض التطوعي لإدارة المتطوعين والمبادرات والأثر.",
+  "start_url": "/",
+  "display": "standalone",
+  "dir": "rtl",
+  "lang": "ar",
+  "background_color": "#0b4f3a",
+  "theme_color": "#0b4f3a",
+  "icons": [
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

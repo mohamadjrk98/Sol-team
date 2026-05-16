@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { UserPlus } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   return (
@@ -16,9 +17,10 @@ export default function Header() {
           <Link href="/blog">الأعمال والمدونة</Link>
           <Link href="/projects">قيد التنفيذ</Link>
           <Link href="/impact">الإحصائيات</Link>
+          <Link href="/transparency">الشفافية</Link>
           <Link href="/admin">الإدارة</Link>
         </nav>
-        <Link className="btn" href="/join"><UserPlus size={18}/> انضم إلينا</Link>
+        <div className="nav-actions"><ThemeToggle /><Link className="btn" href="/join"><UserPlus size={18}/> انضم إلينا</Link></div>
       </div>
     </header>
   );
