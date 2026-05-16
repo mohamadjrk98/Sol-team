@@ -94,3 +94,36 @@ SUPABASE_SERVICE_ROLE_KEY=secret_service_role_key
 - لا تضع `SUPABASE_SERVICE_ROLE_KEY` داخل كود الموقع أو ضمن أي متغير يبدأ بـ `NEXT_PUBLIC`.
 - المفتاح السري يوضع فقط في Vercel Environment Variables.
 - الصورة الجماعية موجودة في `public/team-banner.jpg`.
+
+
+## رفع الصور من لوحة التحكم
+
+تم إضافة رفع صورة المتطوع مباشرة من الجهاز عبر Supabase Storage.
+
+المتطلبات:
+
+1. في Vercel أضف المتغيرات التالية:
+
+```env
+ADMIN_PASSWORD=كلمة_مرور_قوية
+SUPABASE_SERVICE_ROLE_KEY=ضع_هنا_مفتاح_sb_secret
+NEXT_PUBLIC_SUPABASE_URL=رابط_مشروع_Supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=المفتاح_العام
+```
+
+2. في Supabase شغّل ملف:
+
+```bash
+supabase/schema.sql
+```
+
+سيتم إنشاء Bucket باسم:
+
+```text
+volunteer-photos
+```
+
+القيود:
+- الحجم الأقصى للصورة: 2MB
+- الأنواع المقبولة: JPG, PNG, WEBP
+- يتم حفظ رابط الصورة تلقائياً داخل بطاقة المتطوع بعد الضغط على حفظ البيانات.

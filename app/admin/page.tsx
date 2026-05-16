@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 
 type VolunteerRow = {
   id?: string;
@@ -50,6 +50,8 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageNote, setImageNote] = useState('');
 
   const filtered = useMemo(() => volunteers.filter(v => [v.full_name, v.role, v.department, v.team_name, statusLabels[v.volunteer_status || 'active']].join(' ').includes(query)), [volunteers, query]);
 
@@ -64,6 +66,38 @@ export default function AdminPage() {
   }
 
   useEffect(() => { if (selected.full_name && !selected.slug) setSelected(s => ({ ...s, slug: makeSlug(s.full_name) })); }, [selected.full_name, selected.slug]);
+
+
+  async function uploadAvatar(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    setImageNote('');
+    setError('');
+    if (!file) return;
+    const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowed.includes(file.type)) {
+      e.target.value = '';
+      return setError('نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WEBP فقط.');
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      e.target.value = '';
+      return setError('حجم الصورة يجب ألا يتجاوز 2MB.');
+    }
+    if (!password) {
+      e.target.value = '';
+      return setError('أدخل كلمة مرور الإدارة قبل رفع الصورة.');
+    }
+    setUploadingImage(true);
+    const form = new FormData();
+    form.append('password', password);
+    form.append('slug', selected.slug || makeSlug(selected.full_name || 'volunteer'));
+    form.append('file', file);
+    const res = await fetch('/api/admin/upload', { method: 'POST', body: form });
+    const json = await res.json();
+    setUploadingImage(false);
+    if (!res.ok) return setError(json.error || 'تعذر رفع الصورة.');
+    setSelected(s => ({ ...s, avatar_url: json.url }));
+    setImageNote('تم رفع الصورة وحفظ رابطها تلقائياً. لا تنسَ الضغط على حفظ البيانات.');
+  }
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault(); setStatus(''); setError(''); setLoading(true);
@@ -161,7 +195,27 @@ export default function AdminPage() {
           <label className="label">سنة الانضمام<input className="input" name="joined_year" type="number" value={selected.joined_year || ''} onChange={e => setSelected({...selected, joined_year:Number(e.target.value)})}/></label>
           <label className="label">التخصص<input className="input" name="specialization" value={selected.specialization || ''} onChange={e => setSelected({...selected, specialization:e.target.value})}/></label>
           <label className="label">العمر<input className="input" name="age" type="number" value={selected.age || ''} onChange={e => setSelected({...selected, age:Number(e.target.value)})}/></label>
-          <label className="label wide">رابط الصورة الشخصية<input className="input" name="avatar_url" value={selected.avatar_url || ''} onChange={e => setSelected({...selected, avatar_url:e.target.value})} placeholder="https://..."/></label>
+          <div className="label wide upload-panel">
+            <span>الصورة الشخصية</span>
+            <div className="upload-layout">
+              <div className="avatar-preview-card">
+                <img src={selected.avatar_url || '/avatar.svg'} alt="معاينة الصورة الشخصية" />
+                <strong>{selected.full_name || 'اسم المتطوع'}</strong>
+                <small>{selected.role || 'المهمة / المنصب'}</small>
+                <em className={`status-badge ${statusClasses[selected.volunteer_status || 'active']}`}>{statusLabels[selected.volunteer_status || 'active']}</em>
+              </div>
+              <div className="upload-controls">
+                <input type="hidden" name="avatar_url" value={selected.avatar_url || ''} />
+                <label className="file-drop">
+                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadAvatar} disabled={uploadingImage} />
+                  <span>{uploadingImage ? 'جاري رفع الصورة...' : 'اختر صورة من الجهاز'}</span>
+                  <small>JPG / PNG / WEBP — الحد الأقصى 2MB</small>
+                </label>
+                {selected.avatar_url && <button type="button" className="btn secondary" onClick={() => setSelected({...selected, avatar_url: ''})}>إزالة الصورة</button>}
+                {imageNote && <p className="success compact">{imageNote}</p>}
+              </div>
+            </div>
+          </div>
           <label className="label wide">الموقع<input className="input" name="location" value={selected.location || ''} onChange={e => setSelected({...selected, location:e.target.value})}/></label>
           <label className="label wide">نبذة<textarea className="textarea" name="bio" value={selected.bio || ''} onChange={e => setSelected({...selected, bio:e.target.value})}/></label>
           <label className="label wide">الدافع للتطوع<textarea className="textarea" name="motivation" value={selected.motivation || ''} onChange={e => setSelected({...selected, motivation:e.target.value})}/></label>

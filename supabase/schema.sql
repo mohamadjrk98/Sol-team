@@ -1,5 +1,19 @@
 create extension if not exists "pgcrypto";
 
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'volunteer-photos',
+  'volunteer-photos',
+  true,
+  2097152,
+  array['image/jpeg','image/png','image/webp']
+)
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+
 create table if not exists volunteers (
   id uuid primary key default gen_random_uuid(),
   slug text unique not null,
@@ -86,6 +100,11 @@ create policy "Public can read impact metrics" on impact_metrics for select usin
 
 drop policy if exists "Public can join waitlist" on workshop_waitlist;
 create policy "Public can join waitlist" on workshop_waitlist for insert with check (true);
+
+drop policy if exists "Public can read volunteer photos" on storage.objects;
+create policy "Public can read volunteer photos" on storage.objects
+for select using (bucket_id = 'volunteer-photos');
+
 
 insert into volunteers (slug, full_name, role, hierarchy_level, department, team_name, position_rank, specialization, joined_year, joined_date, location, bio, motivation, skills, achievements, works, volunteer_status, is_featured)
 values
