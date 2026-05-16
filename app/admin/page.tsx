@@ -2,6 +2,17 @@
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 
+type CropDraft = {
+  src: string;
+  fileName: string;
+  mime: string;
+  zoom: number;
+  x: number;
+  y: number;
+  naturalWidth: number;
+  naturalHeight: number;
+};
+
 type VolunteerRow = {
   id?: string;
   slug: string;
@@ -52,6 +63,7 @@ export default function AdminPage() {
   const [query, setQuery] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageNote, setImageNote] = useState('');
+  const [cropDraft, setCropDraft] = useState<CropDraft | null>(null);
 
   const filtered = useMemo(() => volunteers.filter(v => [v.full_name, v.role, v.department, v.team_name, statusLabels[v.volunteer_status || 'active']].join(' ').includes(query)), [volunteers, query]);
 
@@ -68,35 +80,83 @@ export default function AdminPage() {
   useEffect(() => { if (selected.full_name && !selected.slug) setSelected(s => ({ ...s, slug: makeSlug(s.full_name) })); }, [selected.full_name, selected.slug]);
 
 
-  async function uploadAvatar(e: ChangeEvent<HTMLInputElement>) {
+  async function openImageCropper(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
+    e.target.value = '';
     setImageNote('');
     setError('');
     if (!file) return;
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    if (!allowed.includes(file.type)) {
-      e.target.value = '';
-      return setError('نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WEBP فقط.');
+    if (!allowed.includes(file.type)) return setError('نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WEBP فقط.');
+    if (file.size > 2 * 1024 * 1024) return setError('حجم الصورة يجب ألا يتجاوز 2MB قبل القص.');
+    if (!password) return setError('أدخل كلمة مرور الإدارة قبل رفع الصورة.');
+
+    const src = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+    const meta = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = reject;
+      img.src = src;
+    });
+    setCropDraft({ src, fileName: file.name, mime: file.type, zoom: 1, x: 0, y: 0, naturalWidth: meta.width, naturalHeight: meta.height });
+  }
+
+  async function cropToBlob(draft: CropDraft): Promise<Blob> {
+    const outputSize = 900;
+    const frame = 320;
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = reject;
+      image.src = draft.src;
+    });
+    const baseScale = Math.max(frame / draft.naturalWidth, frame / draft.naturalHeight) * draft.zoom;
+    const sourceW = frame / baseScale;
+    const sourceH = frame / baseScale;
+    const sx = Math.max(0, Math.min(draft.naturalWidth - sourceW, (draft.naturalWidth - sourceW) / 2 - draft.x / baseScale));
+    const sy = Math.max(0, Math.min(draft.naturalHeight - sourceH, (draft.naturalHeight - sourceH) / 2 - draft.y / baseScale));
+    const canvas = document.createElement('canvas');
+    canvas.width = outputSize;
+    canvas.height = outputSize;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('تعذر تجهيز الصورة.');
+    ctx.drawImage(img, sx, sy, sourceW, sourceH, 0, 0, outputSize, outputSize);
+    return await new Promise<Blob>((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('تعذر قص الصورة.')), draft.mime === 'image/png' ? 'image/png' : 'image/jpeg', 0.9));
+  }
+
+  async function uploadCroppedAvatar() {
+    if (!cropDraft) return;
+    setError('');
+    setImageNote('');
+    try {
+      setUploadingImage(true);
+      const blob = await cropToBlob(cropDraft);
+      if (blob.size > 2 * 1024 * 1024) {
+        setUploadingImage(false);
+        return setError('حجم الصورة بعد القص تجاوز 2MB. خفّض الزوم أو جرّب صورة أخف.');
+      }
+      const ext = cropDraft.mime.includes('png') ? 'png' : 'jpg';
+      const file = new File([blob], `cropped-avatar.${ext}`, { type: blob.type || cropDraft.mime });
+      const form = new FormData();
+      form.append('password', password);
+      form.append('slug', selected.slug || makeSlug(selected.full_name || 'volunteer'));
+      form.append('file', file);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: form });
+      const json = await res.json();
+      setUploadingImage(false);
+      if (!res.ok) return setError(json.error || 'تعذر رفع الصورة.');
+      setSelected(s => ({ ...s, avatar_url: json.url }));
+      setCropDraft(null);
+      setImageNote('تم قص الصورة ورفعها. لا تنسَ الضغط على حفظ البيانات.');
+    } catch (err) {
+      setUploadingImage(false);
+      setError(err instanceof Error ? err.message : 'حدث خطأ أثناء قص الصورة.');
     }
-    if (file.size > 2 * 1024 * 1024) {
-      e.target.value = '';
-      return setError('حجم الصورة يجب ألا يتجاوز 2MB.');
-    }
-    if (!password) {
-      e.target.value = '';
-      return setError('أدخل كلمة مرور الإدارة قبل رفع الصورة.');
-    }
-    setUploadingImage(true);
-    const form = new FormData();
-    form.append('password', password);
-    form.append('slug', selected.slug || makeSlug(selected.full_name || 'volunteer'));
-    form.append('file', file);
-    const res = await fetch('/api/admin/upload', { method: 'POST', body: form });
-    const json = await res.json();
-    setUploadingImage(false);
-    if (!res.ok) return setError(json.error || 'تعذر رفع الصورة.');
-    setSelected(s => ({ ...s, avatar_url: json.url }));
-    setImageNote('تم رفع الصورة وحفظ رابطها تلقائياً. لا تنسَ الضغط على حفظ البيانات.');
   }
 
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -207,8 +267,8 @@ export default function AdminPage() {
               <div className="upload-controls">
                 <input type="hidden" name="avatar_url" value={selected.avatar_url || ''} />
                 <label className="file-drop">
-                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadAvatar} disabled={uploadingImage} />
-                  <span>{uploadingImage ? 'جاري رفع الصورة...' : 'اختر صورة من الجهاز'}</span>
+                  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={openImageCropper} disabled={uploadingImage} />
+                  <span>{uploadingImage ? 'جاري رفع الصورة...' : 'اختر صورة وقصّها'}</span>
                   <small>JPG / PNG / WEBP — الحد الأقصى 2MB</small>
                 </label>
                 {selected.avatar_url && <button type="button" className="btn secondary" onClick={() => setSelected({...selected, avatar_url: ''})}>إزالة الصورة</button>}
@@ -229,5 +289,47 @@ export default function AdminPage() {
         <button className="btn" type="submit" disabled={loading}>{loading ? 'جاري الحفظ...' : 'حفظ البيانات'}</button>
       </form>
     </div></section>
+
+    {cropDraft && <div className="crop-modal" role="dialog" aria-modal="true">
+      <div className="crop-card">
+        <div className="crop-head">
+          <div>
+            <span className="eyebrow">قص الصورة الشخصية</span>
+            <h2>حرّك الصورة واضبطها قبل الرفع</h2>
+            <p className="muted">المعاينة مربعة لتظهر البطاقة بشكل موحّد وفاخر. الحد الأقصى النهائي 2MB.</p>
+          </div>
+          <button type="button" className="danger-btn" onClick={() => setCropDraft(null)}>إغلاق</button>
+        </div>
+        <div className="crop-body">
+          <div className="crop-frame">
+            <img
+              src={cropDraft.src}
+              alt="معاينة القص"
+              style={{
+                width: `${cropDraft.naturalWidth * Math.max(320 / cropDraft.naturalWidth, 320 / cropDraft.naturalHeight) * cropDraft.zoom}px`,
+                height: `${cropDraft.naturalHeight * Math.max(320 / cropDraft.naturalWidth, 320 / cropDraft.naturalHeight) * cropDraft.zoom}px`,
+                transform: `translate(calc(-50% + ${cropDraft.x}px), calc(-50% + ${cropDraft.y}px))`
+              }}
+            />
+            <span className="crop-ring" />
+          </div>
+          <div className="crop-controls-panel">
+            <label className="label">تكبير / تصغير
+              <input className="range" type="range" min="1" max="3" step="0.01" value={cropDraft.zoom} onChange={e => setCropDraft({ ...cropDraft, zoom: Number(e.target.value) })} />
+            </label>
+            <label className="label">تحريك أفقي
+              <input className="range" type="range" min="-160" max="160" step="1" value={cropDraft.x} onChange={e => setCropDraft({ ...cropDraft, x: Number(e.target.value) })} />
+            </label>
+            <label className="label">تحريك عمودي
+              <input className="range" type="range" min="-160" max="160" step="1" value={cropDraft.y} onChange={e => setCropDraft({ ...cropDraft, y: Number(e.target.value) })} />
+            </label>
+            <div className="crop-actions">
+              <button type="button" className="btn secondary" onClick={() => setCropDraft({ ...cropDraft, zoom: 1, x: 0, y: 0 })}>إعادة ضبط</button>
+              <button type="button" className="btn" onClick={uploadCroppedAvatar} disabled={uploadingImage}>{uploadingImage ? 'جاري الرفع...' : 'قص ورفع الصورة'}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>}
   </main>;
 }
