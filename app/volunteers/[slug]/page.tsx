@@ -49,7 +49,7 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
         </aside>
         <div className="tabs">
           <section className="card"><h3>نبذة شخصية</h3><p className="muted">{v.bio}</p></section>
-          <section className="card"><h3>لماذا أتطوع؟</h3><p className="muted">{v.motivation}</p></section>
+          <section className="card"><h3>لماذا تطوعت؟</h3><p className="muted">{v.motivation}</p></section>
           <section className="card"><h3>المهارات</h3><div className="pill-row">{v.skills.map(skill => <span className="pill" key={skill}>{skill}</span>)}</div></section>
           <ListBlock title="الأعمال والمشاريع" items={v.works} />
           <ListBlock title="الإنجازات" items={v.achievements} />
