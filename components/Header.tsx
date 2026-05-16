@@ -1,16 +1,32 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
 import { UserPlus } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
+  const router = useRouter();
+  const taps = useRef<number[]>([]);
+
+  const handleLogoTap = () => {
+    const now = Date.now();
+    taps.current = [...taps.current.filter((t) => now - t < 5000), now];
+    if (taps.current.length >= 7) {
+      taps.current = [];
+      router.push('/admin');
+    }
+  };
+
   return (
     <header className="nav">
       <div className="container nav-inner">
-        <Link href="/" className="brand">
+        <button type="button" className="brand hidden-admin-trigger" onClick={handleLogoTap} aria-label="فريق أبناء الأرض">
           <span className="logo-wrap"><Image src="/logo.png" alt="شعار فريق أبناء الأرض" width={54} height={54} /></span>
           <span>أبناء الأرض</span>
-        </Link>
+        </button>
         <nav className="links">
           <Link href="/">الرئيسية</Link>
           <Link href="/volunteers">المتطوعون</Link>
@@ -18,7 +34,6 @@ export default function Header() {
           <Link href="/projects">قيد التنفيذ</Link>
           <Link href="/impact">الإحصائيات</Link>
           <Link href="/transparency">الشفافية</Link>
-          <Link href="/admin/dashboard">لوحة التحكم</Link>
         </nav>
         <div className="nav-actions"><ThemeToggle /><Link className="btn" href="/join"><UserPlus size={18}/> انضم إلينا</Link></div>
       </div>
