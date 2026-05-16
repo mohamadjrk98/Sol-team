@@ -144,3 +144,18 @@ NEXT_PUBLIC_SITE_URL=https://your-vercel-domain.vercel.app
 ```
 
 هذا المتغير يجعل QR Code يشير إلى رابط موقعك الحقيقي.
+
+## تصدير بطاقات العضوية PDF
+
+تمت إضافة زر **تحميل بطاقة PDF** داخل بطاقة كل متطوع. تعمل الميزة عبر مكتبات:
+
+```bash
+jspdf
+html2canvas
+```
+
+في حال لم تظهر الميزة بعد الرفع، نفّذ على Vercel إعادة نشر Redeploy وتأكد من وجود المتغير:
+
+```env
+NEXT_PUBLIC_SITE_URL=https://sol-team.vercel.app
+```

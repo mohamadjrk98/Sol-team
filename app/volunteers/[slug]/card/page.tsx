@@ -21,7 +21,7 @@ export default async function VolunteerMemberCardPage({ params }: { params: { sl
   const profileUrl = `${siteUrl.replace(/\/$/, '')}/volunteers/${v.slug}`;
   return <main className="section print-page">
     <div className="container">
-      <div className="section-head no-print"><div><span className="eyebrow dark-label">بطاقة عضوية</span><h2>بطاقة {v.full_name}</h2><p className="muted">لطباعة البطاقة أو حفظها PDF استخدم أمر الطباعة من المتصفح: Ctrl + P.</p></div></div>
+      <div className="section-head no-print"><div><span className="eyebrow dark-label">بطاقة عضوية</span><h2>بطاقة {v.full_name}</h2><p className="muted">يمكنك تحميل البطاقة كملف PDF مباشرة أو طباعتها من الزر المخصص.</p></div></div>
       <MembershipCard volunteer={v} url={profileUrl} />
     </div>
   </main>;
