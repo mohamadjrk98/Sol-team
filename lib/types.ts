@@ -53,3 +53,17 @@ export type ImpactMetric = {
   suffix?: string;
   description: string;
 };
+
+export type SiteSettings = {
+  id: string;
+  team_name: string;
+  short_name: string;
+  slogan: string;
+  description: string;
+  location: string;
+  phone: string;
+  instagram: string;
+  founded_at: string;
+  meeting_text: string;
+  join_intro: string;
+};

@@ -54,7 +54,6 @@ function num(value: FormDataEntryValue | null) { const n = Number(value); return
 function makeSlug(name: string) { return name.trim().toLowerCase().replace(/[\u064B-\u0652]/g, '').replace(/[^a-z0-9\u0600-\u06FF]+/g, '-').replace(/^-+|-+$/g, ''); }
 
 export default function AdminPage() {
-  const [password, setPassword] = useState('');
   const [volunteers, setVolunteers] = useState<VolunteerRow[]>([]);
   const [selected, setSelected] = useState<VolunteerRow>(emptyVolunteer);
   const [status, setStatus] = useState('');
@@ -68,15 +67,15 @@ export default function AdminPage() {
   const filtered = useMemo(() => volunteers.filter(v => [v.full_name, v.role, v.department, v.team_name, statusLabels[v.volunteer_status || 'active']].join(' ').includes(query)), [volunteers, query]);
 
   async function loadVolunteers() {
-    if (!password) return setError('أدخل كلمة مرور الإدارة أولاً.');
     setError(''); setStatus(''); setLoading(true);
-    const res = await fetch('/api/admin/volunteers', { headers: { 'x-admin-password': password } });
+    const res = await fetch('/api/admin/volunteers');
     const json = await res.json(); setLoading(false);
     if (!res.ok) return setError(json.error || 'تعذر تحميل البيانات.');
     setVolunteers(json.volunteers || []);
     setStatus('تم تحميل بيانات المتطوعين.');
   }
 
+  useEffect(() => { loadVolunteers(); }, []);
   useEffect(() => { if (selected.full_name && !selected.slug) setSelected(s => ({ ...s, slug: makeSlug(s.full_name) })); }, [selected.full_name, selected.slug]);
 
 
@@ -89,7 +88,6 @@ export default function AdminPage() {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowed.includes(file.type)) return setError('نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WEBP فقط.');
     if (file.size > 2 * 1024 * 1024) return setError('حجم الصورة يجب ألا يتجاوز 2MB قبل القص.');
-    if (!password) return setError('أدخل كلمة مرور الإدارة قبل رفع الصورة.');
 
     const src = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
@@ -143,7 +141,6 @@ export default function AdminPage() {
       const ext = cropDraft.mime.includes('png') ? 'png' : 'jpg';
       const file = new File([blob], `cropped-avatar.${ext}`, { type: blob.type || cropDraft.mime });
       const form = new FormData();
-      form.append('password', password);
       form.append('slug', selected.slug || makeSlug(selected.full_name || 'volunteer'));
       form.append('file', file);
       const res = await fetch('/api/admin/upload', { method: 'POST', body: form });
@@ -163,7 +160,6 @@ export default function AdminPage() {
     e.preventDefault(); setStatus(''); setError(''); setLoading(true);
     const form = new FormData(e.currentTarget);
     const payload = {
-      password,
       slug: String(form.get('slug') || '').trim() || makeSlug(String(form.get('full_name') || '')),
       full_name: String(form.get('full_name') || '').trim(),
       role: String(form.get('role') || '').trim(),
@@ -199,7 +195,7 @@ export default function AdminPage() {
   async function remove(slug: string) {
     if (!confirm('هل أنت متأكد من حذف هذه البطاقة؟')) return;
     setLoading(true); setError(''); setStatus('');
-    const res = await fetch(`/api/admin/volunteers?slug=${encodeURIComponent(slug)}&password=${encodeURIComponent(password)}`, { method: 'DELETE' });
+    const res = await fetch(`/api/admin/volunteers?slug=${encodeURIComponent(slug)}`, { method: 'DELETE' });
     const json = await res.json(); setLoading(false);
     if (!res.ok) return setError(json.error || 'تعذر الحذف.');
     setStatus('تم حذف المتطوع.');
@@ -215,12 +211,10 @@ export default function AdminPage() {
           <h1>إدارة المتطوعين والهيكل التنظيمي</h1>
           <p className="lead small">إضافة، تعديل، حذف، وحفظ بيانات الإدارة والمنسقين والمتطوعين مع بطاقة فاخرة منسجمة مع هوية فريق أبناء الأرض التطوعي.</p>
         </div>
-        <div className="admin-login-card">
-          <label className="label">كلمة مرور الإدارة
-            <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="ADMIN_PASSWORD" />
-          </label>
-          <button className="btn yellow" onClick={loadVolunteers} disabled={loading}>{loading ? 'جاري التحميل...' : 'تحميل البيانات'}</button>
-          <p className="muted">اضبط ADMIN_PASSWORD و SUPABASE_SERVICE_ROLE_KEY داخل Vercel لحماية العمليات.</p>
+        <div className="admin-login-card session-card">
+          <strong>جلسة الإدارة فعّالة</strong>
+          <p>تم التحقق من صلاحيتك. يمكنك إدارة السجلات والصور مباشرة دون إعادة كتابة كلمة المرور.</p>
+          <button className="btn yellow" onClick={loadVolunteers} disabled={loading}>{loading ? 'جاري التحديث...' : 'تحديث البيانات'}</button>
         </div>
       </div>
     </section>

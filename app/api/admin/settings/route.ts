@@ -1,0 +1,9 @@
+import { NextResponse } from 'next/server';
+import { isAdminRequest } from '@/lib/admin-auth';
+import { supabaseAdmin } from '@/lib/supabase';
+import { defaultSiteSettings } from '@/lib/sample-data';
+
+function deny(req:Request){return !isAdminRequest(req)?NextResponse.json({error:'انتهت جلسة الإدارة أو لا تملك صلاحية.'},{status:401}):null}
+function clean(body:any){return {id:'main',team_name:String(body.team_name||'').trim(),short_name:String(body.short_name||'').trim(),slogan:String(body.slogan||'').trim(),description:String(body.description||'').trim(),location:String(body.location||'').trim(),phone:String(body.phone||'').trim(),instagram:String(body.instagram||'').trim().replace(/^@/,''),founded_at:String(body.founded_at||'').trim(),meeting_text:String(body.meeting_text||'').trim(),join_intro:String(body.join_intro||'').trim()}}
+export async function GET(req:Request){const d=deny(req);if(d)return d;if(!supabaseAdmin)return NextResponse.json({settings:defaultSiteSettings,warning:'Supabase غير مضبوط؛ يتم عرض الإعدادات الافتراضية فقط.'});const{data,error}=await supabaseAdmin.from('site_settings').select('*').eq('id','main').maybeSingle();if(error)return NextResponse.json({error:error.message},{status:500});return NextResponse.json({settings:{...defaultSiteSettings,...data}})}
+export async function PUT(req:Request){const d=deny(req);if(d)return d;if(!supabaseAdmin)return NextResponse.json({error:'إعدادات Supabase الخاصة بالإدارة غير مكتملة.'},{status:500});const body=await req.json();const payload=clean(body);if(!payload.team_name||!payload.short_name||!payload.slogan)return NextResponse.json({error:'اسم الفريق والاسم المختصر والشعار النصي مطلوبة.'},{status:400});const{error}=await supabaseAdmin.from('site_settings').upsert(payload,{onConflict:'id'});if(error)return NextResponse.json({error:error.message},{status:500});return NextResponse.json({ok:true,settings:payload})}

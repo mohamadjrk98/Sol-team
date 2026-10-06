@@ -12,7 +12,7 @@ export default async function ImpactPage() {
         <div className="container">
           <span className="eyebrow">تأثير الفريق بالأرقام</span>
           <h1>إحصائيات ومؤشرات الأثر</h1>
-          <p className="lead">لوحة تعرض أثر المبادرات والمتطوعين بشكل مبسط وقابل للتحديث من Supabase لاحقاً.</p>
+          <p className="lead">لوحة تعرض أثر المبادرات والمتطوعين بأرقام مرتبطة ببيانات المنصة وقابلة للتحديث المستمر.</p>
         </div>
       </section>
       <section className="section">

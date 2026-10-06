@@ -1,104 +1,32 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, BarChart3, CalendarDays, HeartHandshake, Leaf, Network, Newspaper, Users } from 'lucide-react';
+import { ArrowLeft, BarChart3, CalendarDays, CheckCircle2, HeartHandshake, Leaf, Network, Newspaper, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import VolunteerCard from '@/components/VolunteerCard';
-import { getFeaturedVolunteers, getInitiatives } from '@/lib/supabase';
-import { fieldTeams, organization, teamDepartments } from '@/lib/sample-data';
+import { getFeaturedVolunteers, getImpactMetrics, getInitiatives, getSiteSettings, getVolunteers } from '@/lib/supabase';
+import { fieldTeams, teamDepartments } from '@/lib/sample-data';
 
-export default async function HomePage() {
-  const volunteers = await getFeaturedVolunteers();
-  const latest = (await getInitiatives()).slice(0, 3);
+export default async function HomePage(){
+ const [settings,volunteers,featured,initiatives,metrics]=await Promise.all([getSiteSettings(),getVolunteers(),getFeaturedVolunteers(),getInitiatives(),getImpactMetrics()]);
+ const latest=initiatives.slice(0,3);const active=volunteers.filter(v=>(v.volunteer_status||'active')==='active').length;const teams=new Set(volunteers.map(v=>v.team_name).filter(Boolean)).size||fieldTeams.length;const completed=initiatives.filter(i=>i.status==='completed').length;const hours=metrics.find(m=>m.label.includes('ساعات'));
+ return <main>
+  <section className="hero home-hero"><div className="container hero-grid"><div className="hero-copy"><span className="eyebrow"><Sparkles size={15}/> تأسس بتاريخ {settings.founded_at}</span><h1>{settings.team_name}</h1><p className="slogan">{settings.slogan}</p><p className="lead">{settings.description}</p><div className="hero-actions"><Link className="btn yellow" href="/join">انضم إلى الفريق <ArrowLeft size={18}/></Link><Link className="btn secondary" href="/blog">استكشف أعمالنا</Link></div><div className="hero-trust"><span><CheckCircle2/> بدون حساب للتطوع</span><span><ShieldCheck/> إدارة منظمة للطلبات</span><span><HeartHandshake/> أثر موثق وشفاف</span></div></div><div className="team-photo premium-photo"><Image src="/team-banner.jpg" alt={`صورة ${settings.team_name}`} width={760} height={520} priority/><div className="photo-caption"><strong>{settings.slogan}</strong><span>{settings.location}</span></div></div></div></section>
 
-  return (
-    <main>
-      <section className="hero">
-        <div className="container hero-grid">
-          <div>
-            <span className="eyebrow">تأسس بتاريخ {organization.foundedAt}</span>
-            <h1>{organization.name}</h1>
-            <p className="slogan">{organization.slogan}</p>
-            <p className="lead">{organization.description}</p>
-            <div className="hero-actions">
-              <Link className="btn yellow" href="/join">انضم إلينا <ArrowLeft size={18}/></Link>
-              <Link className="btn secondary" href="/blog">شاهد أعمالنا</Link>
-              <Link className="btn secondary" href="/impact">إحصائيات الأثر</Link>
-            </div>
-          </div>
-          <div className="team-photo">
-            <Image src="/team-banner.jpg" alt="صورة جماعية لفريق أبناء الأرض التطوعي" width={760} height={520} priority />
-          </div>
-        </div>
-      </section>
+  <div className="banner-strip"><div className="container"><span>عطاء • تنظيم • أثر مستدام</span><span>{settings.location} • {settings.phone} • @{settings.instagram}</span></div></div>
 
-      <div className="banner-strip">
-        <div className="container">
-          <span>هوية الفريق: عطاء، تنظيم، أثر مستدام</span>
-          <span>{organization.location} • {organization.phone} • @{organization.instagram}</span>
-        </div>
-      </div>
+  <section className="container stats modern-stats" aria-label="إحصائيات الفريق"><div className="stat"><Users/><strong>{active}</strong><span>متطوع/ة نشطون</span></div><div className="stat"><Network/><strong>{teams}</strong><span>فرق اختصاصية</span></div><div className="stat"><HeartHandshake/><strong>{completed}+</strong><span>مبادرات منجزة</span></div><div className="stat"><CalendarDays/><strong>{hours?`${hours.value}${hours.suffix||''}`:settings.founded_at}</strong><span>{hours?'ساعات تطوعية':'تاريخ التأسيس'}</span></div></section>
 
-      <section className="container stats" aria-label="إحصائيات الفريق">
-        <div className="stat"><CalendarDays /><strong>{organization.foundedAt}</strong><span>تاريخ التأسيس</span></div>
-        <div className="stat"><Network /><strong>4</strong><span>فرق اختصاصية</span></div>
-        <div className="stat"><Users /><strong>27</strong><span>متطوع/ة</span></div>
-        <div className="stat"><HeartHandshake /><strong>6+</strong><span>مبادرات موثقة</span></div>
-      </section>
+  <section id="about" className="section"><div className="container"><div className="section-head"><div><span className="section-kicker">من نحن؟</span><h2>التطوع عندنا منظومة، لا مجرد نشاط عابر</h2><p className="muted">نعمل ضمن أدوار واضحة ونوثق المبادرات والمتطوعين حتى يبقى الأثر قابلاً للقياس والتطوير.</p></div></div><div className="grid"><div className="card feature-card"><HeartHandshake/><h3>خدمة مجتمعية</h3><p className="muted">مبادرات اجتماعية وتنموية تستجيب للحاجة وتُنفّذ بروح الفريق.</p></div><div className="card feature-card"><Network/><h3>تنظيم واضح</h3><p className="muted">إدارة، منسقون، فرق اختصاصية ومتطوعون ضمن مسار مسؤوليات مفهوم.</p></div><div className="card feature-card"><BarChart3/><h3>أثر قابل للمتابعة</h3><p className="muted">نوثق الأعمال والساعات والمستفيدين ونحوّل النشاط إلى معرفة تساعدنا على التحسن.</p></div></div></div></section>
 
-      <section id="about" className="section">
-        <div className="container">
-          <div className="section-head">
-            <div><h2>عن الفريق</h2><p className="muted">فريق أبناء الأرض التطوعي يعمل ضمن هيكل تنظيمي واضح يربط الإدارة بالمنسقين والمتطوعين لضمان جودة العمل واستمرارية الأثر.</p></div>
-          </div>
-          <div className="grid">
-            <div className="card feature-card"><h3>تنمية وخدمة مجتمعية</h3><p className="muted">مبادرات وخدمات اجتماعية وتنموية تهدف إلى تحسين جودة الحياة وتعزيز التعاون.</p></div>
-            <div className="card feature-card"><h3>تنظيم ووضوح مهام</h3><p className="muted">توزيع أدوار واضح بين الإدارة والمنسقين والمتطوعين والفرق المختصة.</p></div>
-            <div className="card feature-card"><h3>توثيق الأثر</h3><p className="muted">لكل متطوع صفحة تعرض سيرته وأعماله وإنجازاته داخل الفريق.</p></div>
-          </div>
-        </div>
-      </section>
+  <section className="section volunteer-journey-section"><div className="container"><div className="section-head"><div><span className="section-kicker">رحلة المتطوع</span><h2>ثلاث مراحل واضحة من الاهتمام إلى المشاركة</h2></div><Link className="btn" href="/join">ابدأ طلبك</Link></div><div className="journey-grid"><article className="journey-card"><span>01</span><h3>أرسل طلبك</h3><p>بدون إنشاء حساب. أخبرنا عن مهاراتك ودافعك وأوقات تفرغك.</p></article><article className="journey-card"><span>02</span><h3>مراجعة الإدارة</h3><p>تصل بياناتك مباشرة إلى لوحة الإدارة ليتم فرزها وتوثيق الملاحظات.</p></article><article className="journey-card"><span>03</span><h3>التواصل والانضمام</h3><p>عند توفر الفرصة المناسبة، يتواصل الفريق معك ويحدد الخطوة التالية.</p></article></div></div></section>
 
-      <section id="structure" className="section section-warm">
-        <div className="container">
-          <div className="section-head"><div><h2>الهيكل التنظيمي</h2><p className="muted">تراتبية واضحة تساعد الزائر على فهم الأدوار داخل الفريق.</p></div></div>
-          <div className="grid">{teamDepartments.map((d) => <div className="card structure-card" key={d.title}><h3>{d.title}</h3><p className="muted">{d.description}</p><div className="pill-row">{d.roles.map((r) => <span className="pill" key={r}>{r}</span>)}</div></div>)}</div>
-        </div>
-      </section>
+  <section id="structure" className="section section-warm"><div className="container"><div className="section-head"><div><span className="section-kicker">الهيكل التنظيمي</span><h2>كل شخص يعرف دوره ومسؤوليته</h2></div></div><div className="grid">{teamDepartments.map(d=><div className="card structure-card" key={d.title}><h3>{d.title}</h3><p className="muted">{d.description}</p><div className="pill-row">{d.roles.map(r=><span className="pill" key={r}>{r}</span>)}</div></div>)}</div></div></section>
 
-      <section id="teams" className="section">
-        <div className="container">
-          <div className="section-head"><div><h2>فرق العمل</h2><p className="muted">لكل فريق منسق خاص ومهام محددة ضمن خطة العمل.</p></div></div>
-          <div className="grid">{fieldTeams.map((t) => <div className="card team-card" key={t.name}><Leaf /><h3>{t.name}</h3><p className="muted">{t.text}</p></div>)}</div>
-        </div>
-      </section>
+  <section id="teams" className="section"><div className="container"><div className="section-head"><div><span className="section-kicker">فرق العمل</span><h2>اختصاصات مختلفة لهدف واحد</h2><p className="muted">يختار المتطوع المجال الأقرب لمهاراته، مع مرونة التعاون بين الفرق حسب الحاجة.</p></div></div><div className="grid">{fieldTeams.map(t=><div className="card team-card" key={t.name}><Leaf/><h3>{t.name}</h3><p className="muted">{t.text}</p></div>)}</div></div></section>
 
-      <section className="section section-warm">
-        <div className="container">
-          <div className="section-head">
-            <div><h2>آخر أعمال الفريق</h2><p className="muted">مدونة مصغرة تعرض الأعمال المنجزة والأعمال الحالية قيد التنفيذ.</p></div>
-            <Link className="btn secondary" href="/blog"><Newspaper size={18}/> كل الأعمال</Link>
-          </div>
-          <div className="grid">{latest.map((item) => <article className="card post-card" key={item.slug}><div className="post-image"><Image src={item.image_url} alt={item.title} width={520} height={320}/></div><div className="post-content"><span className={`pill status-${item.status}`}>{item.status === 'completed' ? 'منجز' : item.status === 'in_progress' ? 'قيد التنفيذ' : 'مخطط'}</span><h3>{item.title}</h3><p className="muted">{item.excerpt}</p><Link className="btn secondary" href={`/blog/${item.slug}`}>قراءة التفاصيل</Link></div></article>)}</div>
-        </div>
-      </section>
+  <section className="section section-warm"><div className="container"><div className="section-head"><div><span className="section-kicker">من الميدان</span><h2>آخر أعمال الفريق</h2><p className="muted">المبادرات المنشورة من لوحة الإدارة تظهر هنا مباشرة.</p></div><Link className="btn secondary" href="/blog"><Newspaper size={18}/> كل الأعمال</Link></div><div className="grid">{latest.map(item=><article className="card post-card" key={item.slug}><div className="post-image"><Image src={item.image_url} alt={item.title} width={520} height={320}/></div><div className="post-content"><span className={`pill status-${item.status}`}>{item.status==='completed'?'منجز':item.status==='in_progress'?'قيد التنفيذ':'مخطط'}</span><h3>{item.title}</h3><p className="muted">{item.excerpt}</p><Link className="text-link" href={`/blog/${item.slug}`}>قراءة التفاصيل <ArrowLeft size={16}/></Link></div></article>)}</div></div></section>
 
-      <section className="section">
-        <div className="container">
-          <div className="section-head">
-            <div><h2>إحصائيات وتأثير</h2><p className="muted">صفحة مخصصة تعرض تأثير الفريق بالأرقام والرسوم البيانية.</p></div>
-            <Link className="btn" href="/impact"><BarChart3 size={18}/> عرض الإحصائيات</Link>
-          </div>
-        </div>
-      </section>
+  {featured.length>0&&<section className="section"><div className="container"><div className="section-head"><div><span className="section-kicker">وجوه تصنع الأثر</span><h2>متطوعون بارزون</h2><p className="muted">نماذج من أعضاء الفريق، ويمكن تحديثهم بالكامل من لوحة الإدارة.</p></div><Link className="btn secondary" href="/volunteers">عرض الجميع</Link></div><div className="grid">{featured.map(v=><VolunteerCard key={v.slug} volunteer={v}/>)}</div></div></section>}
 
-      <section className="section" style={{ background: '#fff' }}>
-        <div className="container">
-          <div className="section-head">
-            <div><h2>متطوعون بارزون</h2><p className="muted">نماذج يمكن تعديلها من Supabase ولوحة الإدارة.</p></div>
-            <Link className="btn secondary" href="/volunteers">عرض الجميع</Link>
-          </div>
-          <div className="grid">{volunteers.map((v) => <VolunteerCard key={v.slug} volunteer={v} />)}</div>
-        </div>
-      </section>
-    </main>
-  );
+  <section className="section final-cta"><div className="container final-cta-card"><div><span className="section-kicker">لديك وقت أو مهارة؟</span><h2>حوّلها إلى أثر يبقى</h2><p>{settings.join_intro}</p></div><Link className="btn yellow" href="/join">أرسل طلب الانضمام <ArrowLeft size={18}/></Link></div></section>
+ </main>
 }

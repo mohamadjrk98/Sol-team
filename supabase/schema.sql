@@ -191,28 +191,7 @@ update initiatives set beneficiaries_count = 450, volunteer_hours = 180, progres
 update initiatives set beneficiaries_count = 0, volunteer_hours = 12, progress_percent = 60, is_featured = true where slug = 'volunteer-training-waitlist';
 update initiatives set beneficiaries_count = 0, volunteer_hours = 35, progress_percent = 70, is_featured = false where slug = 'media-archive-project';
 
--- === Volunteer login accounts + weekly star voting ===
-create table if not exists volunteer_accounts (
-  id uuid primary key default gen_random_uuid(),
-  full_name text not null,
-  email text unique not null,
-  phone text,
-  volunteer_slug text references volunteers(slug) on delete set null,
-  password_hash text not null,
-  password_salt text not null,
-  status text not null default 'pending' check (status in ('pending','approved','rejected','suspended')),
-  admin_notes text,
-  approved_at timestamptz,
-  last_login_at timestamptz,
-  created_at timestamptz default now()
-);
-
-create index if not exists volunteer_accounts_email_idx on volunteer_accounts(email);
-create index if not exists volunteer_accounts_status_idx on volunteer_accounts(status);
-
-alter table volunteer_accounts enable row level security;
--- Access is handled through server routes using SUPABASE_SERVICE_ROLE_KEY.
-
+-- === Weekly star voting ===
 create table if not exists weekly_star_votes (
   id uuid primary key default gen_random_uuid(),
   volunteer_slug text not null references volunteers(slug) on delete cascade,
@@ -225,3 +204,24 @@ create index if not exists weekly_star_votes_created_idx on weekly_star_votes(cr
 
 alter table weekly_star_votes enable row level security;
 -- Voting is handled through server routes using SUPABASE_SERVICE_ROLE_KEY.
+
+-- === General site settings managed from the admin panel ===
+create table if not exists site_settings (
+  id text primary key default 'main',
+  team_name text not null,
+  short_name text not null,
+  slogan text not null,
+  description text not null default '',
+  location text not null default '',
+  phone text not null default '',
+  instagram text not null default '',
+  founded_at text not null default '',
+  meeting_text text not null default '',
+  join_intro text not null default ''
+);
+alter table site_settings enable row level security;
+drop policy if exists "Public can read site settings" on site_settings;
+create policy "Public can read site settings" on site_settings for select using (true);
+insert into site_settings (id,team_name,short_name,slogan,description,location,phone,instagram,founded_at,meeting_text,join_intro)
+values ('main','فريق أبناء الأرض التطوعي','أبناء الأرض','أمل ينمو و أثر يبقى','فريق تطوعي يسعى للمساهمة في بناء مجتمع متماسك ومزدهر من خلال تقديم خدمات اجتماعية وتنموية تركز على تعزيز جودة الحياة.','مصياف - سوريا','0988 260 910','s.o.l.team','25/1/2025','الاجتماع العام: الخميس الساعة 5','نبحث عن أشخاص يؤمنون بالأثر والالتزام والعمل الجماعي. أرسل طلبك وسيتواصل معك الفريق عند مراجعته.')
+on conflict (id) do nothing;

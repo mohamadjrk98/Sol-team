@@ -152,3 +152,17 @@ export const sampleVolunteers: Volunteer[] = [
     is_featured: true
   }
 ];
+
+export const defaultSiteSettings = {
+  id: 'main',
+  team_name: organization.name,
+  short_name: 'أبناء الأرض',
+  slogan: organization.slogan,
+  description: organization.description,
+  location: organization.location,
+  phone: organization.phone,
+  instagram: organization.instagram,
+  founded_at: organization.foundedAt,
+  meeting_text: 'الاجتماع العام: الخميس الساعة 5',
+  join_intro: 'نبحث عن أشخاص يؤمنون بالأثر والالتزام والعمل الجماعي. أرسل طلبك وسيتواصل معك الفريق عند مراجعته.'
+};

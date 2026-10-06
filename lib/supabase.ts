@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { impactMetrics, initiatives, sampleVolunteers } from './sample-data';
-import { ImpactMetric, Initiative, Volunteer } from './types';
+import { defaultSiteSettings, impactMetrics, initiatives, sampleVolunteers } from './sample-data';
+import { ImpactMetric, Initiative, SiteSettings, Volunteer } from './types';
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -53,7 +53,7 @@ function normalizeInitiative(i: any): Initiative {
     category: i.category,
     date: i.date,
     location: i.location,
-    image_url: i.image_url ?? '/team-banner.jpg',
+    image_url: i.image_url || '/team-banner.jpg',
     team: i.team,
     beneficiaries_count: Number(i.beneficiaries_count ?? 0),
     volunteer_hours: Number(i.volunteer_hours ?? 0),
@@ -86,4 +86,12 @@ export async function getImpactMetrics(): Promise<ImpactMetric[]> {
     suffix: m.suffix ?? '',
     description: m.description ?? ''
   }));
+}
+
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  if (!supabase) return defaultSiteSettings;
+  const { data, error } = await supabase.from('site_settings').select('*').eq('id', 'main').maybeSingle();
+  if (error || !data) return defaultSiteSettings;
+  return { ...defaultSiteSettings, ...data } as SiteSettings;
 }
