@@ -7,6 +7,6 @@ export async function POST(req:Request){
  const body=await req.json().catch(()=>({}));const volunteer_slug=String(body.volunteer_slug||'').trim();const voter_name=String(body.voter_name||'').trim().slice(0,80)||null;if(!volunteer_slug)return NextResponse.json({error:'يرجى اختيار متطوع.'},{status:400});
  if(!supabaseAdmin)return NextResponse.json({error:'نظام التصويت غير متصل بقاعدة البيانات حالياً.'},{status:503});
  const{data:vol}=await supabaseAdmin.from('volunteers').select('slug,volunteer_status').eq('slug',volunteer_slug).maybeSingle();if(!vol||vol.volunteer_status!=='active')return NextResponse.json({error:'المتطوع المحدد غير متاح للتصويت حالياً.'},{status:400});
- const{error}=await supabaseAdmin.from('weekly_star_votes').insert({volunteer_slug,voter_name});if(error)return NextResponse.json({error:'تعذر تسجيل التصويت حالياً.'},{status:500});
+ const{error}=await supabaseAdmin.from('weekly_star_votes').insert({volunteer_slug,voter_name});if(error)return NextResponse.json({error:'تعذر تسجيل التصويت حالياً.',details:error.message,code:error.code},{status:500});
  const res=NextResponse.json({ok:true});res.cookies.set(VOTE_COOKIE,volunteer_slug,{httpOnly:true,sameSite:'lax',secure:process.env.NODE_ENV==='production',path:'/',maxAge:WEEK});return res;
 }
