@@ -39,7 +39,7 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
           <span className={`status-badge ${statusClass[v.volunteer_status || 'active']}`}>{statusLabels[v.volunteer_status || 'active']}</span>
           <div className="list" style={{ textAlign: 'right', marginTop: 18 }}>
             {v.department && <li>القسم: {v.department}</li>}
-            {v.team_name && <li>الفريق: {v.team_name}</li>}
+            {(v.team_names?.length || v.team_name) && <li>الفرق: {v.team_names?.length ? v.team_names.join(' • ') : v.team_name}</li>}
             {v.specialization && <li><GraduationCap size={16}/> التخصص: {v.specialization}</li>}
             {(v.joined_date || v.joined_year) && <li><CalendarDays size={16}/> تاريخ الانضمام: {v.joined_date || v.joined_year}</li>}
             {v.location && <li><MapPin size={16}/> الموقع: {v.location}</li>}

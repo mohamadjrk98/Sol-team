@@ -21,6 +21,7 @@ type VolunteerRow = {
   hierarchy_level: string;
   department: string;
   team_name: string;
+  team_names: string[];
   position_rank: number | null;
   specialization: string;
   joined_year: number | null;
@@ -40,7 +41,7 @@ type VolunteerRow = {
 };
 
 const emptyVolunteer: VolunteerRow = {
-  slug: '', full_name: '', role: '', hierarchy_level: 'volunteer', department: 'المتطوعون', team_name: '', position_rank: 30,
+  slug: '', full_name: '', role: '', hierarchy_level: 'volunteer', department: 'المتطوعون', team_name: '', team_names: [], position_rank: 30,
   specialization: '', joined_year: new Date().getFullYear(), joined_date: '', location: 'مصياف - سوريا', age: null, avatar_url: '', bio: '', motivation: '',
   skills: [], achievements: [], works: [], certificates: [], volunteer_status: 'active', exit_reason: '', is_featured: false
 };
@@ -49,7 +50,8 @@ const statusLabels: Record<string, string> = { active: 'نشط', left: 'غادر
 const statusClasses: Record<string, string> = { active: 'green', left: 'gray', dismissed: 'red', vacation: 'yellow', paused: 'orange' };
 
 function arrToText(items?: string[]) { return (items || []).join('\n'); }
-function textToArr(value: FormDataEntryValue | null) { return String(value || '').split(/[\n،,]/).map(v => v.trim()).filter(Boolean); }
+function textToArr(value: FormDataEntryValue | null) { return String(value || '').split(/\r?\n/); }
+function cleanTextArr(value: FormDataEntryValue | null) { return String(value || '').split(/\r?\n/).map(v => v.trim()).filter(Boolean); }
 function num(value: FormDataEntryValue | null) { const n = Number(value); return Number.isFinite(n) && n > 0 ? n : null; }
 function makeSlug(name: string) { return name.trim().toLowerCase().replace(/[\u064B-\u0652]/g, '').replace(/[^a-z0-9\u0600-\u06FF]+/g, '-').replace(/^-+|-+$/g, ''); }
 
@@ -64,7 +66,39 @@ export default function AdminPage() {
   const [imageNote, setImageNote] = useState('');
   const [cropDraft, setCropDraft] = useState<CropDraft | null>(null);
 
-  const filtered = useMemo(() => volunteers.filter(v => [v.full_name, v.role, v.department, v.team_name, statusLabels[v.volunteer_status || 'active']].join(' ').includes(query)), [volunteers, query]);
+  const filtered = useMemo(() => volunteers.filter(v => [
+    v.full_name,
+    v.role,
+    v.department,
+    v.team_name,
+    ...(v.team_names || []),
+    statusLabels[v.volunteer_status || 'active']
+  ].join(' ').includes(query)), [volunteers, query]);
+
+  const teamOptions = [
+    'مكتب المؤثرات الإعلامية والتمكين البشري',
+    'فريق الدراسات العامة',
+    'فريق الخدمات الميدانية',
+    'فريق التبرعات'
+  ];
+
+  function toggleTeam(team: string) {
+    setSelected(current => {
+      const existing = current.team_names?.length
+        ? current.team_names
+        : (current.team_name ? [current.team_name] : []);
+
+      const team_names = existing.includes(team)
+        ? existing.filter(t => t !== team)
+        : [...existing, team];
+
+      return {
+        ...current,
+        team_names,
+        team_name: team_names[0] || ''
+      };
+    });
+  }
 
   async function loadVolunteers() {
     setError(''); setStatus(''); setLoading(true);
@@ -165,7 +199,10 @@ export default function AdminPage() {
       role: String(form.get('role') || '').trim(),
       hierarchy_level: String(form.get('hierarchy_level') || 'volunteer'),
       department: String(form.get('department') || ''),
-      team_name: String(form.get('team_name') || ''),
+      team_name: selected.team_names?.[0] || selected.team_name || '',
+      team_names: selected.team_names?.length
+        ? selected.team_names
+        : (selected.team_name ? [selected.team_name] : []),
       position_rank: num(form.get('position_rank')),
       specialization: String(form.get('specialization') || ''),
       joined_year: num(form.get('joined_year')),
@@ -175,10 +212,10 @@ export default function AdminPage() {
       avatar_url: String(form.get('avatar_url') || ''),
       bio: String(form.get('bio') || ''),
       motivation: String(form.get('motivation') || ''),
-      skills: textToArr(form.get('skills')),
-      achievements: textToArr(form.get('achievements')),
-      works: textToArr(form.get('works')),
-      certificates: textToArr(form.get('certificates')),
+      skills: cleanTextArr(form.get('skills')),
+      achievements: cleanTextArr(form.get('achievements')),
+      works: cleanTextArr(form.get('works')),
+      certificates: cleanTextArr(form.get('certificates')),
       volunteer_status: String(form.get('volunteer_status') || 'active'),
       exit_reason: String(form.get('exit_reason') || ''),
       is_featured: form.get('is_featured') === 'true'
@@ -225,9 +262,9 @@ export default function AdminPage() {
         <input className="input" placeholder="بحث بالاسم أو المنصب أو الحالة..." value={query} onChange={e => setQuery(e.target.value)} />
         <button className="btn secondary" onClick={() => setSelected(emptyVolunteer)} style={{ width: '100%', marginTop: 12 }}>+ بطاقة جديدة</button>
         <div className="admin-vol-list">
-          {filtered.map(v => <button key={v.slug} className="admin-vol-item" onClick={() => setSelected({ ...emptyVolunteer, ...v })}>
+          {filtered.map(v => <button key={v.slug} className="admin-vol-item" onClick={() => setSelected({ ...emptyVolunteer, ...v, team_names: v.team_names?.length ? v.team_names : (v.team_name ? [v.team_name] : []) })}>
             <img src={v.avatar_url || '/avatar.svg'} alt="" />
-            <span><strong>{v.full_name}</strong><small>{v.role || 'بدون منصب'} — {v.team_name || v.department}</small></span>
+            <span><strong>{v.full_name}</strong><small>{v.role || 'بدون منصب'} — {v.team_names?.length ? v.team_names.join(' • ') : (v.team_name || v.department)}</small></span>
             <em className={`status-badge ${statusClasses[v.volunteer_status || 'active']}`}>{statusLabels[v.volunteer_status || 'active']}</em>
           </button>)}
         </div>
@@ -243,7 +280,28 @@ export default function AdminPage() {
           <label className="label">الحالة<select className="input" name="volunteer_status" value={selected.volunteer_status || 'active'} onChange={e => setSelected({...selected, volunteer_status:e.target.value})}><option value="active">نشط</option><option value="vacation">إجازة</option><option value="paused">معلّق</option><option value="left">غادر</option><option value="dismissed">تم فصله</option></select></label>
           <label className="label">المستوى التنظيمي<select className="input" name="hierarchy_level" value={selected.hierarchy_level} onChange={e => setSelected({...selected, hierarchy_level:e.target.value})}><option value="board">إدارة</option><option value="coordinator">منسق</option><option value="volunteer">متطوع</option></select></label>
           <label className="label">القسم<select className="input" name="department" value={selected.department || ''} onChange={e => setSelected({...selected, department:e.target.value})}><option>الإدارة</option><option>المنسقون</option><option>المتطوعون</option></select></label>
-          <label className="label">الفريق<select className="input" name="team_name" value={selected.team_name || ''} onChange={e => setSelected({...selected, team_name:e.target.value})}><option value="">بدون</option><option>فريق الرصد</option><option>الفريق الميداني</option><option>الفريق الإعلامي</option><option>فريق التوعية</option></select></label>
+          <div className="label wide">
+            <span>الفرق / يمكن اختيار أكثر من فريق</span>
+            <div className="team-multi-select">
+              {teamOptions.map(team => {
+                const checked = (selected.team_names?.length
+                  ? selected.team_names
+                  : (selected.team_name ? [selected.team_name] : [])
+                ).includes(team);
+
+                return (
+                  <label key={team} className={`team-choice ${checked ? 'selected' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleTeam(team)}
+                    />
+                    <span>{team}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
           <label className="label">ترتيب الظهور<input className="input" name="position_rank" type="number" value={selected.position_rank || ''} onChange={e => setSelected({...selected, position_rank:Number(e.target.value)})}/></label>
           <label className="label">تاريخ الانضمام<input className="input" name="joined_date" type="date" value={selected.joined_date || ''} onChange={e => setSelected({...selected, joined_date:e.target.value})}/></label>
           <label className="label">سنة الانضمام<input className="input" name="joined_year" type="number" value={selected.joined_year || ''} onChange={e => setSelected({...selected, joined_year:Number(e.target.value)})}/></label>

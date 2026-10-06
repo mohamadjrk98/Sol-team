@@ -9,6 +9,7 @@ export type Volunteer = {
   hierarchy_level: HierarchyLevel;
   department: string | null;
   team_name: string | null;
+  team_names?: string[];
   position_rank: number;
   specialization: string | null;
   joined_year: number | null;

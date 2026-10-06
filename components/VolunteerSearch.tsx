@@ -13,11 +13,11 @@ export default function VolunteerSearch({ volunteers }: { volunteers: Volunteer[
   const [status, setStatus] = useState('all');
   const [level, setLevel] = useState('all');
 
-  const teams = useMemo(() => Array.from(new Set(volunteers.map(v => v.team_name).filter(Boolean))) as string[], [volunteers]);
+  const teams = useMemo(() => Array.from(new Set(volunteers.flatMap(v => v.team_names?.length ? v.team_names : (v.team_name ? [v.team_name] : [])))) as string[], [volunteers]);
   const filtered = useMemo(() => volunteers.filter(v => {
-    const haystack = [v.full_name, v.role, v.department, v.team_name, v.specialization, v.location, ...(v.skills || []), ...(v.works || [])].join(' ').toLowerCase();
+    const haystack = [v.full_name, v.role, v.department, v.team_name, ...(v.team_names || []), v.specialization, v.location, ...(v.skills || []), ...(v.works || [])].join(' ').toLowerCase();
     return (!q || haystack.includes(q.toLowerCase())) &&
-      (team === 'all' || v.team_name === team) &&
+      (team === 'all' || v.team_names?.includes(team) || v.team_name === team) &&
       (status === 'all' || (v.volunteer_status || 'active') === status) &&
       (level === 'all' || v.hierarchy_level === level);
   }), [volunteers, q, team, status, level]);

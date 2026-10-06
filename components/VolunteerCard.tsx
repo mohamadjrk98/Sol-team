@@ -16,7 +16,7 @@ export default function VolunteerCard({ volunteer }: { volunteer: Volunteer }) {
     <p className="muted role-line"><ShieldCheck size={16}/> {volunteer.role || 'عضو في فريق أبناء الأرض'}</p>
     <div className="pill-row center">
       {volunteer.department && <span className="pill yellow">{volunteer.department}</span>}
-      {volunteer.team_name && <span className="pill">{volunteer.team_name}</span>}
+      {(volunteer.team_names?.length ? volunteer.team_names : (volunteer.team_name ? [volunteer.team_name] : [])).map(team => <span className="pill" key={team}>{team}</span>)}
     </div>
     {(volunteer.joined_date || volunteer.joined_year) && <p className="muted join-line"><CalendarDays size={16}/> تاريخ الانضمام: {volunteer.joined_date || volunteer.joined_year}</p>}
     <p className="muted" style={{ minHeight: 52 }}>{volunteer.bio?.slice(0, 95) || 'صفحة تعريفية للمتطوع وأعماله وإنجازاته.'}</p>

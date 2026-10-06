@@ -98,7 +98,7 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
             <h2>{volunteer.full_name}</h2>
             <p>{volunteer.role || 'متطوع'}</p>
             <div className="member-tags">
-              <span>{volunteer.team_name || volunteer.department || 'أبناء الأرض'}</span>
+              <span>{volunteer.team_names?.length ? volunteer.team_names.join(' • ') : (volunteer.team_name || volunteer.department || 'أبناء الأرض')}</span>
               <span>{statusLabels[volunteer.volunteer_status || 'active']}</span>
             </div>
             <dl>
