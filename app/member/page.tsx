@@ -323,37 +323,24 @@ export default function MemberPage() {
             {error && <p className="error">{error}</p>}
 
             {volunteer && (
-              <div
-                className="card"
-                style={{
-                  marginTop: 20,
-                  display: 'grid',
-                  gridTemplateColumns: 'minmax(110px, 140px) 1fr auto',
-                  gap: 22,
-                  alignItems: 'center'
-                }}
-              >
+              <div className="card dashboard-member-card">
                 <img
+                  className="dashboard-member-photo"
                   src={volunteer.avatar_url || '/avatar.svg'}
                   alt={volunteer.full_name}
-                  style={{
-                    width: 120,
-                    height: 120,
-                    borderRadius: 24,
-                    objectFit: 'cover'
-                  }}
                 />
 
-                <div>
+                <div className="dashboard-member-info">
                   <span className="eyebrow">بطاقة المتطوع</span>
-                  <h2 style={{ margin: '8px 0' }}>{volunteer.full_name}</h2>
+                  <h2>{volunteer.full_name}</h2>
+
                   <p><strong>المنصب:</strong> {volunteer.role || 'متطوع'}</p>
                   <p><strong>الفريق:</strong> {memberTeams.join(' • ') || 'غير محدد'}</p>
 
                   {volunteer.certificates?.length > 0 && (
-                    <div style={{ marginTop: 12 }}>
+                    <div className="dashboard-member-certificates">
                       <strong>الشهادات:</strong>
-                      <div className="pill-row" style={{ marginTop: 8 }}>
+                      <div className="pill-row">
                         {volunteer.certificates.map((certificate, index) => (
                           <span className="pill" key={`${certificate}-${index}`}>
                             {certificate}
@@ -364,23 +351,14 @@ export default function MemberPage() {
                   )}
                 </div>
 
-                <div style={{ textAlign: 'center' }}>
-                  <div
-                    style={{
-                      background: '#fff',
-                      padding: 10,
-                      borderRadius: 16,
-                      display: 'inline-flex'
-                    }}
-                  >
+                <div className="dashboard-member-qr">
+                  <div className="dashboard-member-qr-box">
                     <QRCodeSVG
                       value={`${window.location.origin}/volunteers/${volunteer.slug}`}
                       size={100}
                     />
                   </div>
-                  <p className="muted" style={{ fontSize: 12, marginTop: 7 }}>
-                    امسح الرمز لعرض معلومات المتطوع
-                  </p>
+                  <p className="muted">امسح الرمز لعرض معلومات المتطوع</p>
                 </div>
               </div>
             )}
