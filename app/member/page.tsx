@@ -359,6 +359,14 @@ export default function MemberPage() {
                     />
                   </div>
                   <p className="muted">امسح الرمز لعرض معلومات المتطوع</p>
+
+                  <a
+                    className="member-my-id-btn"
+                    href={`/volunteers/${volunteer.slug}/card`}
+                  >
+                    <span className="member-my-id-title">MY ID</span>
+                    <span className="member-my-id-subtitle">عرض بطاقتك التعريفية التطوعية</span>
+                  </a>
                 </div>
               </div>
             )}
