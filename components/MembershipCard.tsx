@@ -101,11 +101,24 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
               <span>{volunteer.team_names?.length ? volunteer.team_names.join(' • ') : (volunteer.team_name || volunteer.department || 'أبناء الأرض')}</span>
               <span>{statusLabels[volunteer.volunteer_status || 'active']}</span>
             </div>
+            <div className="myid-number">
+              <span>VOLUNTEER ID</span>
+              <strong>{memberId}</strong>
+            </div>
+
             <dl>
-              <dt>رقم العضوية</dt>
-              <dd>{memberId}</dd>
               <dt>تاريخ الانضمام</dt>
               <dd>{volunteer.joined_date || volunteer.joined_year || 'غير محدد'}</dd>
+
+              {volunteer.specialization && (
+                <>
+                  <dt>الاختصاص</dt>
+                  <dd>{volunteer.specialization}</dd>
+                </>
+              )}
+
+              <dt>حالة العضوية</dt>
+              <dd>{statusLabels[volunteer.volunteer_status || 'active']}</dd>
             </dl>
           </div>
         </div>
