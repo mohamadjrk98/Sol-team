@@ -64,6 +64,12 @@ export default function AdminPage() {
   const [query, setQuery] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageNote, setImageNote] = useState('');
+  const [accountUsername, setAccountUsername] = useState("");
+  const [accountPassword, setAccountPassword] = useState("");
+  const [accountRole, setAccountRole] = useState<"volunteer" | "coordinator">("volunteer");
+  const [coordinatorTeams, setCoordinatorTeams] = useState<string[]>([]);
+  const [accountExists, setAccountExists] = useState(false);
+  const [accountLoading, setAccountLoading] = useState(false);
   const [cropDraft, setCropDraft] = useState<CropDraft | null>(null);
 
   const filtered = useMemo(() => volunteers.filter(v => [
@@ -109,6 +115,29 @@ export default function AdminPage() {
     setStatus('تم تحميل بيانات المتطوعين.');
   }
 
+  async function loadVolunteerAccount(volunteerId?: string) {
+    setAccountUsername('');
+    setAccountPassword('');
+    setAccountRole('volunteer');
+    setCoordinatorTeams([]);
+    setAccountExists(false);
+    if (!volunteerId) return;
+
+    setAccountLoading(true);
+    const res = await fetch(`/api/admin/volunteer-accounts?volunteer_id=${encodeURIComponent(volunteerId)}`);
+    const json = await res.json();
+    setAccountLoading(false);
+
+    if (!res.ok) return setError(json.error || 'تعذر تحميل حساب المتطوع.');
+    if (!json.account) return;
+
+    setAccountExists(true);
+    setAccountUsername(json.account.username || "");
+    setAccountRole(json.account.role === 'coordinator' ? 'coordinator' : 'volunteer');
+    setCoordinatorTeams(json.account.coordinator_teams || []);
+  }
+
+  useEffect(() => { loadVolunteerAccount(selected.id); }, [selected.id]);
   useEffect(() => { loadVolunteers(); }, []);
   useEffect(() => { if (selected.full_name && !selected.slug) setSelected(s => ({ ...s, slug: makeSlug(s.full_name) })); }, [selected.full_name, selected.slug]);
 
@@ -229,6 +258,41 @@ export default function AdminPage() {
     await loadVolunteers();
   }
 
+  async function createVolunteerAccount() {
+    if (!selected.id) return setError('احفظ بيانات المتطوع أولاً قبل إنشاء حساب دخول.');
+    if (accountUsername.trim().length < 3) return setError('اسم المستخدم يجب أن يكون 3 أحرف على الأقل.');
+    if (accountPassword.length < 8) return setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل.');
+    if (accountRole === 'coordinator' && coordinatorTeams.length === 0) {
+      return setError('اختر فريقاً واحداً على الأقل للمنسق.');
+    }
+
+    setAccountLoading(true);
+    setError('');
+    setStatus('');
+
+    const res = await fetch('/api/admin/volunteer-accounts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        volunteer_id: selected.id,
+        username: accountUsername,
+        password: accountPassword,
+        role: accountRole,
+        coordinator_teams: accountRole === 'coordinator' ? coordinatorTeams : []
+      })
+    });
+
+    const json = await res.json();
+    setAccountLoading(false);
+
+    if (!res.ok) return setError(json.error || 'تعذر إنشاء حساب المتطوع.');
+
+    setAccountExists(true);
+    setAccountPassword('');
+    setStatus('تم إنشاء حساب دخول المتطوع بنجاح.');
+    await loadVolunteerAccount(selected.id);
+  }
+
   async function remove(slug: string) {
     if (!confirm('هل أنت متأكد من حذف هذه البطاقة؟')) return;
     setLoading(true); setError(''); setStatus('');
@@ -339,6 +403,96 @@ export default function AdminPage() {
         </div>
         <label className="featured-check"><input type="checkbox" name="is_featured" value="true" checked={selected.is_featured || false} onChange={e => setSelected({...selected, is_featured:e.target.checked})}/> إظهار كبطاقة بارزة</label>
         <button className="btn" type="submit" disabled={loading}>{loading ? 'جاري الحفظ...' : 'حفظ البيانات'}</button>
+        {selected.id && (
+          <div className="account-panel">
+            <div className="section-head">
+              <div>
+                <h2>حساب دخول المتطوع</h2>
+                <p className="muted">
+                  {accountExists ? 'يوجد حساب دخول مرتبط بهذا المتطوع.' : 'أنشئ اسم مستخدم وكلمة مرور لهذا المتطوع.'}
+                </p>
+              </div>
+            </div>
+
+            <div className="form-grid">
+              <label className="label">
+                اسم المستخدم
+                <input
+                  className="input"
+                  value={accountUsername}
+                  onChange={e => setAccountUsername(e.target.value)}
+                  disabled={accountExists || accountLoading}
+                  autoComplete="off"
+                />
+              </label>
+
+              {!accountExists && (
+                <label className="label">
+                  كلمة المرور
+                  <input
+                    className="input"
+                    type="password"
+                    value={accountPassword}
+                    onChange={e => setAccountPassword(e.target.value)}
+                    disabled={accountLoading}
+                    autoComplete="new-password"
+                  />
+                </label>
+              )}
+
+              <label className="label">
+                نوع الحساب
+                <select
+                  className="input"
+                  value={accountRole}
+                  onChange={e => setAccountRole(e.target.value === 'coordinator' ? 'coordinator' : 'volunteer')}
+                  disabled={accountExists || accountLoading}
+                >
+                  <option value="volunteer">متطوع</option>
+                  <option value="coordinator">منسق</option>
+                </select>
+              </label>
+            </div>
+
+            {accountRole === 'coordinator' && (
+              <div className="label wide">
+                <span>الفرق التي يشرف عليها المنسق</span>
+                <div className="team-multi-select">
+                  {teamOptions.map(team => {
+                    const checked = coordinatorTeams.includes(team);
+                    return (
+                      <label key={team} className={`team-choice ${checked ? 'selected' : ''}`}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={accountExists || accountLoading}
+                          onChange={() => setCoordinatorTeams(current =>
+                            current.includes(team)
+                              ? current.filter(item => item !== team)
+                              : [...current, team]
+                          )}
+                        />
+                        <span>{team}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {!accountExists && (
+              <button
+                type="button"
+                className="btn secondary"
+                disabled={accountLoading}
+                onClick={createVolunteerAccount}
+              >
+                {accountLoading ? 'جاري إنشاء الحساب...' : 'إنشاء حساب الدخول'}
+              </button>
+            )}
+          </div>
+        )}
+
       </form>
     </div></section>
 

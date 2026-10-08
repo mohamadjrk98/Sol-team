@@ -229,3 +229,165 @@ create policy "Public can read site settings" on site_settings for select using 
 insert into site_settings (id,team_name,short_name,slogan,description,location,phone,instagram,founded_at,meeting_text,join_intro)
 values ('main','فريق أبناء الأرض التطوعي','أبناء الأرض','أمل ينمو و أثر يبقى','فريق تطوعي يسعى للمساهمة في بناء مجتمع متماسك ومزدهر من خلال تقديم خدمات اجتماعية وتنموية تركز على تعزيز جودة الحياة.','مصياف - سوريا','0988 260 910','s.o.l.team','25/1/2025','الاجتماع العام: الخميس الساعة 5','نبحث عن أشخاص يؤمنون بالأثر والالتزام والعمل الجماعي. أرسل طلبك وسيتواصل معك الفريق عند مراجعته.')
 on conflict (id) do nothing;
+
+-- === Volunteer accounts and work hours ===
+create table if not exists volunteer_accounts (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  volunteer_id uuid not null unique references volunteers(id) on delete cascade,
+  username text not null,
+  role text not null default 'volunteer'
+    check (role in ('volunteer','coordinator')),
+  coordinator_teams text[] not null default '{}',
+  active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists volunteer_accounts_username_unique
+  on volunteer_accounts (lower(username));
+
+create index if not exists volunteer_accounts_volunteer_idx
+  on volunteer_accounts(volunteer_id);
+
+create table if not exists volunteer_hours (
+  id uuid primary key default gen_random_uuid(),
+  volunteer_id uuid not null references volunteers(id) on delete cascade,
+  team_name text not null,
+  work_date date not null default current_date,
+  hours numeric(6,2) not null check (hours > 0 and hours <= 24),
+  description text not null,
+  status text not null default 'pending'
+    check (status in ('pending','approved','rejected')),
+  reviewed_by uuid references volunteer_accounts(user_id) on delete set null,
+  reviewed_at timestamptz,
+  rejection_reason text,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists volunteer_hours_volunteer_idx
+  on volunteer_hours(volunteer_id);
+
+create index if not exists volunteer_hours_team_status_idx
+  on volunteer_hours(team_name,status);
+
+alter table volunteer_accounts enable row level security;
+alter table volunteer_hours enable row level security;
+
+-- Authenticated volunteer can read their own account.
+drop policy if exists "account_read_own" on volunteer_accounts;
+create policy "account_read_own"
+on volunteer_accounts
+for select
+to authenticated
+using (user_id = auth.uid());
+
+-- Volunteer can read only their own hour records.
+drop policy if exists "volunteer_read_own_hours" on volunteer_hours;
+create policy "volunteer_read_own_hours"
+on volunteer_hours
+for select
+to authenticated
+using (
+  volunteer_id = (
+    select va.volunteer_id
+    from volunteer_accounts va
+    where va.user_id = auth.uid()
+      and va.active = true
+  )
+);
+
+-- Volunteer can submit hours only for a team they belong to.
+drop policy if exists "volunteer_insert_own_hours" on volunteer_hours;
+create policy "volunteer_insert_own_hours"
+on volunteer_hours
+for insert
+to authenticated
+with check (
+  status = 'pending'
+  and reviewed_by is null
+  and reviewed_at is null
+  and rejection_reason is null
+  and exists (
+    select 1
+    from volunteer_accounts va
+    join volunteers v on v.id = va.volunteer_id
+    where va.user_id = auth.uid()
+      and va.active = true
+      and va.volunteer_id = volunteer_hours.volunteer_id
+      and volunteer_hours.team_name = any(v.team_names)
+  )
+);
+
+-- Coordinator can read pending/history records for assigned teams.
+drop policy if exists "coordinator_read_team_hours" on volunteer_hours;
+create policy "coordinator_read_team_hours"
+on volunteer_hours
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from volunteer_accounts va
+    where va.user_id = auth.uid()
+      and va.active = true
+      and va.role = 'coordinator'
+      and volunteer_hours.team_name = any(va.coordinator_teams)
+  )
+);
+
+-- Coordinator can review pending records only for assigned teams.
+drop policy if exists "coordinator_review_team_hours" on volunteer_hours;
+create policy "coordinator_review_team_hours"
+on volunteer_hours
+for update
+to authenticated
+using (
+  status = 'pending'
+  and exists (
+    select 1
+    from volunteer_accounts va
+    where va.user_id = auth.uid()
+      and va.active = true
+      and va.role = 'coordinator'
+      and volunteer_hours.team_name = any(va.coordinator_teams)
+  )
+)
+with check (
+  status in ('approved','rejected')
+  and reviewed_by = auth.uid()
+  and reviewed_at is not null
+  and exists (
+    select 1
+    from volunteer_accounts va
+    where va.user_id = auth.uid()
+      and va.active = true
+      and va.role = 'coordinator'
+      and volunteer_hours.team_name = any(va.coordinator_teams)
+  )
+);
+
+-- Protect the original hour request while a coordinator reviews it.
+create or replace function protect_volunteer_hour_content()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.volunteer_id is distinct from old.volunteer_id
+     or new.team_name is distinct from old.team_name
+     or new.work_date is distinct from old.work_date
+     or new.hours is distinct from old.hours
+     or new.description is distinct from old.description
+     or new.created_at is distinct from old.created_at then
+    raise exception 'Volunteer hour content cannot be changed during review';
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists protect_volunteer_hour_content_trigger
+on volunteer_hours;
+
+create trigger protect_volunteer_hour_content_trigger
+before update on volunteer_hours
+for each row
+execute function protect_volunteer_hour_content();
