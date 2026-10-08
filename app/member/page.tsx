@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { QRCodeSVG } from 'qrcode.react';
 
 type MemberAccount = {
   user_id: string;
@@ -15,11 +16,13 @@ type MemberAccount = {
 
 type MemberVolunteer = {
   id: string;
+  slug: string;
   full_name: string;
   role: string;
   avatar_url: string | null;
   team_name: string | null;
   team_names: string[];
+  certificates: string[];
 };
 
 type VolunteerHour = {
@@ -86,7 +89,7 @@ export default function MemberPage() {
 
     const { data: volunteerData, error: volunteerError } = await supabase
       .from('volunteers')
-      .select('id,full_name,role,avatar_url,team_name,team_names')
+      .select('id,slug,full_name,role,avatar_url,team_name,team_names,certificates')
       .eq('id', accountData.volunteer_id)
       .maybeSingle();
 
@@ -309,8 +312,8 @@ export default function MemberPage() {
             <div className="form-title">
               <div>
                 <span className="eyebrow">لوحة المتطوع</span>
-                <h1>{volunteer?.full_name}</h1>
-                <p className="muted">{volunteer?.role}</p>
+                <h1>أهلاً وسهلاً، {volunteer?.full_name} 👋</h1>
+                <p className="muted">سعداء بوجودك ضمن فريق أبناء الأرض التطوعي، وشكراً للأثر الذي تصنعه معنا.</p>
               </div>
               <button className="btn btn-secondary" type="button" onClick={logout}>
                 تسجيل الخروج
@@ -319,7 +322,68 @@ export default function MemberPage() {
 
             {error && <p className="error">{error}</p>}
 
-            <p><strong>الفرق:</strong> {memberTeams.join(' • ') || '—'}</p>
+            {volunteer && (
+              <div
+                className="card"
+                style={{
+                  marginTop: 20,
+                  display: 'grid',
+                  gridTemplateColumns: 'minmax(110px, 140px) 1fr auto',
+                  gap: 22,
+                  alignItems: 'center'
+                }}
+              >
+                <img
+                  src={volunteer.avatar_url || '/avatar.svg'}
+                  alt={volunteer.full_name}
+                  style={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: 24,
+                    objectFit: 'cover'
+                  }}
+                />
+
+                <div>
+                  <span className="eyebrow">بطاقة المتطوع</span>
+                  <h2 style={{ margin: '8px 0' }}>{volunteer.full_name}</h2>
+                  <p><strong>المنصب:</strong> {volunteer.role || 'متطوع'}</p>
+                  <p><strong>الفريق:</strong> {memberTeams.join(' • ') || 'غير محدد'}</p>
+
+                  {volunteer.certificates?.length > 0 && (
+                    <div style={{ marginTop: 12 }}>
+                      <strong>الشهادات:</strong>
+                      <div className="pill-row" style={{ marginTop: 8 }}>
+                        {volunteer.certificates.map((certificate, index) => (
+                          <span className="pill" key={`${certificate}-${index}`}>
+                            {certificate}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div style={{ textAlign: 'center' }}>
+                  <div
+                    style={{
+                      background: '#fff',
+                      padding: 10,
+                      borderRadius: 16,
+                      display: 'inline-flex'
+                    }}
+                  >
+                    <QRCodeSVG
+                      value={`${window.location.origin}/volunteers/${volunteer.slug}`}
+                      size={100}
+                    />
+                  </div>
+                  <p className="muted" style={{ fontSize: 12, marginTop: 7 }}>
+                    امسح الرمز لعرض معلومات المتطوع
+                  </p>
+                </div>
+              </div>
+            )}
 
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 20 }}>
               <div className="card" style={{ flex: 1, minWidth: 180 }}>
