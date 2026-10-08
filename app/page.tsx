@@ -9,7 +9,17 @@ export default async function HomePage(){
  const [settings,volunteers,featured,initiatives,metrics]=await Promise.all([getSiteSettings(),getVolunteers(),getFeaturedVolunteers(),getInitiatives(),getImpactMetrics()]);
  const latest=initiatives.slice(0,3);const active=volunteers.filter(v=>(v.volunteer_status||'active')==='active').length;const teams=new Set(volunteers.flatMap(v=>v.team_names?.length?v.team_names:(v.team_name?[v.team_name]:[]))).size||fieldTeams.length;const completed=initiatives.filter(i=>i.status==='completed').length;const hours=metrics.find(m=>m.label.includes('ساعات'));
  return <main>
-  <section className="hero home-hero"><div className="container hero-grid"><div className="hero-copy"><span className="eyebrow"><Sparkles size={15}/> تأسس بتاريخ {settings.founded_at}</span><h1>{settings.team_name}</h1><p className="slogan">{settings.slogan}</p><p className="lead">{settings.description}</p><div className="hero-actions"><Link className="btn yellow" href="/join">انضم إلى الفريق <ArrowLeft size={18}/></Link><Link className="btn secondary" href="/blog">استكشف أعمالنا</Link></div><div className="hero-trust"><span><CheckCircle2/> بدون حساب للتطوع</span><span><ShieldCheck/> إدارة منظمة للطلبات</span><span><HeartHandshake/> أثر موثق وشفاف</span></div></div><div className="team-photo premium-photo"><Image src="/team-banner.jpg" alt={`صورة ${settings.team_name}`} width={760} height={520} priority/><div className="photo-caption"><strong>{settings.slogan}</strong><span>{settings.location}</span></div></div></div></section>
+  <section className="hero home-hero"><div className="container hero-grid"><div className="hero-copy"><span className="eyebrow"><Sparkles size={15}/> تأسس بتاريخ {settings.founded_at}</span><h1>{settings.team_name}</h1><p className="slogan">{settings.slogan}</p><p className="lead">{settings.description}</p><div className="hero-actions">
+<Link className="btn yellow" href="/join">انضم إلى الفريق <ArrowLeft size={18}/></Link>
+<Link className="btn secondary" href="/blog">استكشف أعمالنا</Link>
+<Link className="btn" href="/member/login">تسجيل دخول كمتطوع</Link>
+<a
+  className="btn secondary"
+  href="https://wa.me/963934053425?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D9%88%D8%AF%20%D8%A3%D9%86%20%D8%AA%D9%86%D8%B4%D8%A6%20%D9%84%D9%8A%20%D8%AD%D8%B3%D8%A7%D8%A8%D8%A7%D9%8B%20%D8%B9%D9%84%D9%89%20%D9%85%D9%88%D9%82%D8%B9%20%D8%A7%D9%84%D9%81%D8%B1%D9%8A%D9%82%20%D9%88%D8%B3%D8%A3%D8%B1%D8%B3%D9%84%20%D9%84%D9%83%20%D9%83%D9%84%D9%85%D8%A9%20%D8%A7%D9%84%D8%B3%D8%B1%20%D9%84%D9%84%D8%AD%D8%B3%D8%A7%D8%A8."
+  target="_blank"
+  rel="noopener noreferrer"
+>طلب إنشاء حساب من المسؤول</a>
+</div><div className="hero-trust"><span><CheckCircle2/> بدون حساب للتطوع</span><span><ShieldCheck/> إدارة منظمة للطلبات</span><span><HeartHandshake/> أثر موثق وشفاف</span></div></div><div className="team-photo premium-photo"><Image src="/team-banner.jpg" alt={`صورة ${settings.team_name}`} width={760} height={520} priority/><div className="photo-caption"><strong>{settings.slogan}</strong><span>{settings.location}</span></div></div></div></section>
 
   <div className="banner-strip"><div className="container"><span>عطاء • تنظيم • أثر مستدام</span><span>{settings.location} • {settings.phone} • @{settings.instagram}</span></div></div>
 
