@@ -437,3 +437,100 @@ html.dark .admin-secret-modal,html.dark .join-steps,html.dark .premium-form-card
 .team-choice.selected{border-color:var(--green2);background:var(--mint);color:var(--green3)}
 html.dark .team-choice.selected{background:#163b31;color:#fff}
 @media(max-width:600px){.team-multi-select{grid-template-columns:1fr}}
+
+/* Volunteer dashboard profile card */
+.dashboard-member-card{
+  margin-top:20px;
+  display:grid;
+  grid-template-columns:120px minmax(0,1fr) 125px;
+  gap:22px;
+  align-items:center;
+  overflow:hidden;
+}
+
+.dashboard-member-photo{
+  width:120px;
+  height:120px;
+  border-radius:24px;
+  object-fit:cover;
+  display:block;
+}
+
+.dashboard-member-info{
+  min-width:0;
+}
+
+.dashboard-member-info h2{
+  overflow-wrap:anywhere;
+}
+
+.dashboard-member-qr{
+  text-align:center;
+  min-width:0;
+}
+
+.dashboard-member-qr-box{
+  background:#fff;
+  padding:10px;
+  border-radius:16px;
+  display:inline-flex;
+  max-width:100%;
+}
+
+.dashboard-member-qr-box svg{
+  display:block;
+  max-width:100%;
+  height:auto;
+}
+
+@media (max-width: 640px){
+  .dashboard-member-card{
+    grid-template-columns:1fr;
+    gap:16px;
+    text-align:center;
+    padding:20px 16px;
+  }
+
+  .dashboard-member-photo{
+    width:112px;
+    height:112px;
+    margin:0 auto;
+    border-radius:50%;
+  }
+
+  .dashboard-member-info{
+    width:100%;
+  }
+
+  .dashboard-member-info h2{
+    font-size:26px;
+    line-height:1.35;
+    margin:8px 0 14px!important;
+  }
+
+  .dashboard-member-info p{
+    margin:8px 0;
+    line-height:1.7;
+  }
+
+  .dashboard-member-info .pill-row{
+    justify-content:center;
+    width:100%;
+  }
+
+  .dashboard-member-info .pill{
+    max-width:100%;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    line-height:1.55;
+  }
+
+  .dashboard-member-qr{
+    width:100%;
+    padding-top:4px;
+  }
+
+  .dashboard-member-qr-box{
+    margin:0 auto;
+  }
+}
