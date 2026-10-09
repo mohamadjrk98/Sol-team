@@ -232,8 +232,8 @@ export default function AdminPage() {
       team_names: selected.team_names?.length
         ? selected.team_names
         : (selected.team_name ? [selected.team_name] : []),
-      position_rank: num(form.get('position_rank')),
-      specialization: String(form.get('specialization') || ''),
+      position_rank: selected.position_rank ?? 30,
+      specialization: selected.specialization || '',
       joined_year: num(form.get('joined_year')),
       joined_date: String(form.get('joined_date') || '') || null,
       location: String(form.get('location') || ''),
@@ -366,10 +366,8 @@ export default function AdminPage() {
               })}
             </div>
           </div>
-          <label className="label">ترتيب الظهور<input className="input" name="position_rank" type="number" value={selected.position_rank || ''} onChange={e => setSelected({...selected, position_rank:Number(e.target.value)})}/></label>
           <label className="label">تاريخ الانضمام<input className="input" name="joined_date" type="date" value={selected.joined_date || ''} onChange={e => setSelected({...selected, joined_date:e.target.value})}/></label>
           <label className="label">سنة الانضمام<input className="input" name="joined_year" type="number" value={selected.joined_year || ''} onChange={e => setSelected({...selected, joined_year:Number(e.target.value)})}/></label>
-          <label className="label">التخصص<input className="input" name="specialization" value={selected.specialization || ''} onChange={e => setSelected({...selected, specialization:e.target.value})}/></label>
           <label className="label">العمر<input className="input" name="age" type="number" value={selected.age || ''} onChange={e => setSelected({...selected, age:Number(e.target.value)})}/></label>
           <div className="label wide upload-panel">
             <span>الصورة الشخصية</span>
@@ -393,12 +391,27 @@ export default function AdminPage() {
             </div>
           </div>
           <label className="label wide">الموقع<input className="input" name="location" value={selected.location || ''} onChange={e => setSelected({...selected, location:e.target.value})}/></label>
+          <details className="sol-optional-details">
+            <summary className="sol-optional-summary">
+              <span className="sol-optional-icon">＋</span>
+              <span className="sol-optional-heading">
+                <strong>معلومات إضافية</strong>
+                <small>اختياري — الشهادات والمهارات والإنجازات والمزيد</small>
+              </span>
+              <span className="sol-optional-arrow">⌄</span>
+            </summary>
+            <div className="sol-optional-content">
+              <p className="muted">هذه المعلومات اختيارية بالكامل، ويمكن تركها فارغة.</p>
+              <div className="form-grid">
           <label className="label wide">نبذة<textarea className="textarea" name="bio" value={selected.bio || ''} onChange={e => setSelected({...selected, bio:e.target.value})}/></label>
           <label className="label wide">الدافع للتطوع<textarea className="textarea" name="motivation" value={selected.motivation || ''} onChange={e => setSelected({...selected, motivation:e.target.value})}/></label>
           <label className="label wide">الأعمال / كل سطر عمل<textarea className="textarea" name="works" value={arrToText(selected.works)} onChange={e => setSelected({...selected, works:textToArr(e.target.value)})}/></label>
           <label className="label wide">الإنجازات / كل سطر إنجاز<textarea className="textarea" name="achievements" value={arrToText(selected.achievements)} onChange={e => setSelected({...selected, achievements:textToArr(e.target.value)})}/></label>
           <label className="label wide">المهارات / كل سطر مهارة<textarea className="textarea" name="skills" value={arrToText(selected.skills)} onChange={e => setSelected({...selected, skills:textToArr(e.target.value)})}/></label>
           <label className="label wide">الشهادات / كل سطر شهادة<textarea className="textarea" name="certificates" value={arrToText(selected.certificates)} onChange={e => setSelected({...selected, certificates:textToArr(e.target.value)})}/></label>
+              </div>
+            </div>
+          </details>
           <label className="label wide">ملاحظات الحالة أو سبب المغادرة<textarea className="textarea" name="exit_reason" value={selected.exit_reason || ''} onChange={e => setSelected({...selected, exit_reason:e.target.value})}/></label>
         </div>
         <label className="featured-check"><input type="checkbox" name="is_featured" value="true" checked={selected.is_featured || false} onChange={e => setSelected({...selected, is_featured:e.target.checked})}/> إظهار كبطاقة بارزة</label>
