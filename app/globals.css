@@ -956,3 +956,253 @@ html.dark .member-card.premium-id-card .member-info dd{
     height:64px!important;
   }
 }
+
+/* ==================================================
+   SOL DESIGN SYSTEM V1 — CINEMATIC LUXURY EMERALD
+   ================================================== */
+
+:root {
+  --sol-luxury-emerald: #063d30;
+  --sol-luxury-green: #08785a;
+  --sol-luxury-gold: #d6ad45;
+  --sol-luxury-deep: #041e19;
+}
+
+/* Cinematic hero */
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 650px;
+  display: flex;
+  align-items: center;
+  background:
+    linear-gradient(115deg,rgba(3,25,21,.97),rgba(6,61,48,.91) 55%,rgba(4,30,25,.94)),
+    url('/team-banner.jpg') center/cover;
+}
+
+.home-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 12% 18%,rgba(214,173,69,.20),transparent 36%),
+    radial-gradient(ellipse at 85% 75%,rgba(15,160,112,.24),transparent 42%);
+  animation: solAmbient 12s ease-in-out infinite alternate;
+}
+
+.home-hero::after {
+  content: "";
+  position: absolute;
+  width: 580px;
+  height: 580px;
+  right: -220px;
+  bottom: -350px;
+  border: 1px solid rgba(214,173,69,.22);
+  border-radius: 50%;
+  background: radial-gradient(circle,rgba(214,173,69,.10),transparent 70%);
+  pointer-events: none;
+}
+
+.home-hero .hero-grid {
+  position: relative;
+  z-index: 2;
+  gap: 55px;
+}
+
+.home-hero .hero-copy {
+  animation: solReveal .9s ease both;
+}
+
+.home-hero .eyebrow {
+  color: #f1d58b;
+  border-color: rgba(214,173,69,.35);
+  background: rgba(214,173,69,.09);
+  backdrop-filter: blur(10px);
+}
+
+.home-hero h1 {
+  color: #fff;
+  font-size: clamp(43px,6vw,78px);
+  line-height: 1.17;
+  letter-spacing: -.7px;
+  text-shadow: 0 8px 35px rgba(0,0,0,.25);
+}
+
+.home-hero .slogan {
+  color: #eac56d;
+  text-shadow: 0 0 30px rgba(214,173,69,.16);
+}
+
+.home-hero .lead {
+  max-width: 610px;
+  color: rgba(240,250,245,.88);
+  line-height: 2;
+}
+
+.home-hero .hero-actions .btn {
+  min-height: 48px;
+  border-radius: 15px;
+  transition: transform .25s ease,box-shadow .25s ease;
+}
+
+.home-hero .hero-actions .btn:hover {
+  transform: translateY(-3px);
+}
+
+.home-hero .hero-actions .btn.yellow {
+  color: #103d2e;
+  background: linear-gradient(135deg,#f5d780,#d6ad45);
+  box-shadow: 0 12px 30px rgba(214,173,69,.22);
+}
+
+.home-hero .hero-actions .btn.secondary {
+  color: #fff;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(10px);
+}
+
+/* Cinematic team image */
+.home-hero .team-photo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 32px;
+  border: 1px solid rgba(214,173,69,.50);
+  background: #092d25;
+  box-shadow:
+    0 35px 90px rgba(0,0,0,.38),
+    0 0 55px rgba(214,173,69,.09);
+  animation: solPhotoReveal 1.1s ease both;
+}
+
+.home-hero .team-photo img {
+  height: 430px;
+  object-fit: cover;
+  transition: transform .7s ease;
+}
+
+.home-hero .team-photo:hover img {
+  transform: scale(1.045);
+}
+
+.home-hero .team-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg,transparent 55%,rgba(3,25,21,.35));
+}
+
+/* Premium stats */
+.modern-stats .stat {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(214,173,69,.22);
+  border-radius: 24px;
+  background: linear-gradient(145deg,#fff,#f4faf6);
+  box-shadow: 0 15px 45px rgba(6,61,48,.09);
+  transition: transform .3s ease,box-shadow .3s ease;
+}
+
+.modern-stats .stat::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg,#063d30,#d6ad45,#08785a);
+}
+
+.modern-stats .stat:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 55px rgba(6,61,48,.16);
+}
+
+.modern-stats .stat strong {
+  color: #063d30;
+  font-weight: 900;
+}
+
+.modern-stats .stat svg {
+  color: #b58b2d;
+}
+
+/* Dark mode */
+html.dark .modern-stats .stat {
+  background: linear-gradient(145deg,#102e26,#081d18);
+  border-color: rgba(214,173,69,.20);
+}
+
+html.dark .modern-stats .stat strong {
+  color: #eac56d;
+}
+
+/* Animations */
+@keyframes solReveal {
+  from {opacity:0;transform:translateY(28px)}
+  to {opacity:1;transform:translateY(0)}
+}
+
+@keyframes solPhotoReveal {
+  from {opacity:0;transform:translateY(20px) scale(.96)}
+  to {opacity:1;transform:translateY(0) scale(1)}
+}
+
+@keyframes solAmbient {
+  from {opacity:.55;transform:scale(1)}
+  to {opacity:1;transform:scale(1.08)}
+}
+
+/* Responsive */
+@media(max-width:920px) {
+  .home-hero {
+    min-height:auto;
+    padding:76px 0 70px;
+  }
+
+  .home-hero .hero-grid {
+    gap:32px;
+  }
+
+  .home-hero .team-photo img {
+    height:330px;
+  }
+}
+
+@media(max-width:540px) {
+  .home-hero {
+    padding:65px 0 58px;
+  }
+
+  .home-hero h1 {
+    font-size:clamp(37px,10vw,54px);
+  }
+
+  .home-hero .team-photo {
+    border-radius:24px;
+  }
+
+  .home-hero .team-photo img {
+    height:260px;
+  }
+
+  .modern-stats .stat:hover {
+    transform:none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .home-hero::before,
+  .home-hero .hero-copy,
+  .home-hero .team-photo {
+    animation:none!important;
+  }
+
+  .home-hero .team-photo img,
+  .home-hero .hero-actions .btn,
+  .modern-stats .stat {
+    transition:none!important;
+  }
+}
