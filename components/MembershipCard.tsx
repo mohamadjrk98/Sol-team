@@ -3,7 +3,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Download, Loader2, Printer } from 'lucide-react';
+import { Download, Loader2, Printer, RefreshCw } from 'lucide-react';
 import { Volunteer } from '@/lib/types';
 
 const statusLabels: Record<string, string> = {
@@ -25,11 +25,12 @@ function safeFileName(value: string) {
 export default function MembershipCard({ volunteer, url }: { volunteer: Volunteer; url: string }) {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState('');
+  const [flipped, setFlipped] = useState(false);
   const memberId = `SOL-${String(volunteer.position_rank || 0).padStart(3, '0')}-${volunteer.slug.slice(0, 4).toUpperCase()}`;
 
+
   async function downloadPDF() {
-    const card = document.getElementById('member-card-print');
-    if (!card || isExporting) return;
+    if (isExporting) return;
 
     setError('');
     setIsExporting(true);
@@ -40,91 +41,205 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
         import('jspdf'),
       ]);
 
-      const canvas = await html2canvas(card, {
-        scale: 3,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: null,
-        logging: false,
-      });
+      const faces = [
+        document.getElementById('sol-id-front-export'),
+        document.getElementById('sol-id-back-export'),
+      ];
 
-      const imgData = canvas.toDataURL('image/png');
+      if (faces.some(face => !face)) {
+        throw new Error('Missing export face');
+      }
+
       const pdf = new jsPDF({
-        orientation: canvas.width >= canvas.height ? 'landscape' : 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height],
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [85, 135],
         compress: true,
       });
 
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height, undefined, 'FAST');
+      for (let i = 0; i < faces.length; i++) {
+        const canvas = await html2canvas(faces[i]!, {
+          scale: 3,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: '#063d30',
+          logging: false,
+        });
+
+        if (i > 0) pdf.addPage([85, 135], 'portrait');
+
+        pdf.addImage(
+          canvas.toDataURL('image/png'),
+          'PNG',
+          0,
+          0,
+          85,
+          135,
+          undefined,
+          'FAST'
+        );
+      }
+
       pdf.save(`بطاقة-عضوية-${safeFileName(volunteer.full_name || volunteer.slug)}.pdf`);
     } catch (err) {
       console.error(err);
-      setError('تعذر تصدير البطاقة كـ PDF. جرّب الطباعة أو تأكد من أن الصورة مرفوعة بشكل صحيح.');
+      setError('تعذر تجهيز PDF. تأكد من تحميل الصورة ثم حاول مجدداً.');
     } finally {
       setIsExporting(false);
     }
   }
 
+  const teams = volunteer.team_names?.length
+    ? volunteer.team_names.join(' • ')
+    : (volunteer.team_name || volunteer.department || 'أبناء الأرض');
+
+  const status = statusLabels[volunteer.volunteer_status || 'active'] || 'غير محدد';
+
+  function CardFront() {
+    return (
+      <div className="sol-id-content">
+        <div className="sol-id-glow" aria-hidden="true" />
+        <header className="sol-id-header">
+          <Image src="/logo.png" width={62} height={62} alt="شعار الفريق" />
+          <div>
+            <strong>فريق أبناء الأرض التطوعي</strong>
+            <small>أمل ينمو وأثر يبقى</small>
+            <span>VOLUNTEER IDENTITY</span>
+          </div>
+        </header>
+
+        <div className="sol-id-center">
+          <div className="sol-id-avatar-frame">
+            <img
+              src={volunteer.avatar_url || '/avatar.svg'}
+              alt={volunteer.full_name}
+              crossOrigin="anonymous"
+            />
+          </div>
+
+          <h2>{volunteer.full_name}</h2>
+          <p className="sol-id-role">{volunteer.role || 'متطوع'}</p>
+          <p className="sol-id-team">{teams}</p>
+        </div>
+
+        <footer className="sol-id-bottom">
+          <span>OFFICIAL VOLUNTEER CARD</span>
+          <strong>{memberId}</strong>
+        </footer>
+      </div>
+    );
+  }
+
+  function CardBack() {
+    return (
+      <div className="sol-id-content sol-id-back-content">
+        <div className="sol-id-glow" aria-hidden="true" />
+
+        <header className="sol-id-back-header">
+          <Image src="/logo.png" width={55} height={55} alt="شعار الفريق" />
+          <strong>الهوية التطوعية الرقمية</strong>
+          <span>DIGITAL MEMBERSHIP</span>
+        </header>
+
+        <div className="sol-id-details">
+          <div>
+            <span>رقم العضوية</span>
+            <strong dir="ltr">{memberId}</strong>
+          </div>
+
+          <div>
+            <span>تاريخ الانضمام</span>
+            <strong>{volunteer.joined_date || volunteer.joined_year || 'غير محدد'}</strong>
+          </div>
+
+          {volunteer.specialization && (
+            <div>
+              <span>الاختصاص</span>
+              <strong>{volunteer.specialization}</strong>
+            </div>
+          )}
+
+          <div>
+            <span>حالة العضوية</span>
+            <strong>{status}</strong>
+          </div>
+        </div>
+
+        <div className="sol-id-qr">
+          <div>
+            <QRCodeSVG
+              value={url}
+              size={110}
+              bgColor="#ffffff"
+              fgColor="#063d30"
+              marginSize={2}
+            />
+          </div>
+          <p>امسح الرمز لعرض الملف التعريفي للمتطوع</p>
+        </div>
+
+        <footer className="sol-id-back-footer">
+          SOL TEAM • OFFICIAL IDENTITY
+        </footer>
+      </div>
+    );
+  }
+
   return (
-    <section className="member-card-wrap">
+    <section className="member-card-wrap sol-id-wrap">
       <div className="member-actions no-print">
-        <button className="btn" type="button" onClick={downloadPDF} disabled={isExporting}>
-          {isExporting ? <Loader2 size={17} className="spin" /> : <Download size={17} />}
-          {isExporting ? 'جاري تجهيز PDF...' : 'تحميل بطاقة PDF'}
+        <button
+          className="btn sol-id-flip-btn"
+          type="button"
+          onClick={() => setFlipped(value => !value)}
+          aria-pressed={flipped}
+        >
+          <RefreshCw size={17} />
+          {flipped ? 'عرض الوجه الأمامي' : 'قلب البطاقة'}
         </button>
-        <button className="btn ghost" type="button" onClick={() => window.print()}>
+
+        <button
+          className="btn"
+          type="button"
+          onClick={downloadPDF}
+          disabled={isExporting}
+        >
+          {isExporting
+            ? <Loader2 size={17} className="spin" />
+            : <Download size={17} />}
+          {isExporting ? 'جاري تجهيز PDF...' : 'تحميل PDF — الوجهين'}
+        </button>
+
+        <button
+          className="btn ghost"
+          type="button"
+          onClick={() => window.print()}
+        >
           <Printer size={17} />
           طباعة
         </button>
       </div>
+
       {error && <p className="pdf-error no-print">{error}</p>}
 
-      <div className="member-card premium-id-card" id="member-card-print">
-        <div className="member-bg" />
-        <div className="laser-lines" aria-hidden="true" />
-        <div className="logo-watermark" aria-hidden="true" />
-        <div className="member-head">
-          <Image src="/logo.png" width={58} height={58} alt="شعار أبناء الأرض" />
-          <div>
-            <strong>فريق أبناء الأرض التطوعي</strong>
-            <span>أمل ينمو و أثر يبقى</span>
-            <em>بطاقة عضوية متطوع</em>
+      <div className="sol-3d-scene no-print">
+        <div className={`sol-3d-card ${flipped ? 'is-flipped' : ''}`}>
+          <div className="sol-3d-face sol-3d-front">
+            <CardFront />
+          </div>
+
+          <div className="sol-3d-face sol-3d-back">
+            <CardBack />
           </div>
         </div>
-        <div className="member-body">
-          <img className="member-photo" src={volunteer.avatar_url || '/avatar.svg'} alt={volunteer.full_name} crossOrigin="anonymous" />
-          <div className="member-info">
-            <h2>{volunteer.full_name}</h2>
-            <p>{volunteer.role || 'متطوع'}</p>
-            <div className="member-tags">
-              <span>{volunteer.team_names?.length ? volunteer.team_names.join(' • ') : (volunteer.team_name || volunteer.department || 'أبناء الأرض')}</span>
-              <span>{statusLabels[volunteer.volunteer_status || 'active']}</span>
-            </div>
-            <div className="myid-number">
-              <span>VOLUNTEER ID</span>
-              <strong>{memberId}</strong>
-            </div>
+      </div>
 
-            <dl>
-              <dt>تاريخ الانضمام</dt>
-              <dd>{volunteer.joined_date || volunteer.joined_year || 'غير محدد'}</dd>
-
-              {volunteer.specialization && (
-                <>
-                  <dt>الاختصاص</dt>
-                  <dd>{volunteer.specialization}</dd>
-                </>
-              )}
-
-              <dt>حالة العضوية</dt>
-              <dd>{statusLabels[volunteer.volunteer_status || 'active']}</dd>
-            </dl>
-          </div>
+      <div className="sol-id-export-area" aria-hidden="true">
+        <div id="sol-id-front-export" className="sol-id-export-face">
+          <CardFront />
         </div>
-        <div className="member-foot">
-          <div className="qr-box"><QRCodeSVG value={url} size={78} bgColor="transparent" fgColor="#0b4f3a" /></div>
-          <p>امسح الرمز للتحقق من العضوية</p>
+        <div id="sol-id-back-export" className="sol-id-export-face">
+          <CardBack />
         </div>
       </div>
     </section>

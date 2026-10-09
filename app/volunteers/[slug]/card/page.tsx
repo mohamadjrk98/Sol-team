@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function VolunteerMemberCardPage({ params }: { params: { slug: string } }) {
   const v = await getVolunteerBySlug(params.slug);
   if (!v) notFound();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sol-team.vercel.app';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://sol-team1.vercel.app';
   const profileUrl = `${siteUrl.replace(/\/$/, '')}/volunteers/${v.slug}`;
   return <main className="section print-page">
     <div className="container">
