@@ -2050,3 +2050,28 @@ body { overflow-x:clip; }
     transform: translateY(-4px);
   }
 }
+
+/* .sol-v4-journey-contrast-fix: ensure readable cards in light and dark themes */
+.volunteer-journey-section .section-head h2 {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+.volunteer-journey-section .journey-card {
+  background: #ffffff !important;
+  border: 1px solid #d8e9e0 !important;
+  box-shadow: 0 12px 32px rgba(0, 30, 22, .13);
+}
+.volunteer-journey-section .journey-card h3 {
+  color: #07523b !important;
+  -webkit-text-fill-color: #07523b !important;
+}
+.volunteer-journey-section .journey-card p {
+  color: #344054 !important;
+  -webkit-text-fill-color: #344054 !important;
+  opacity: 1 !important;
+}
+.volunteer-journey-section .journey-card > span {
+  background: linear-gradient(135deg, #13b990, #4e8ce8) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
