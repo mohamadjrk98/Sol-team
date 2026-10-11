@@ -14,8 +14,7 @@ export default function RegistrationPage(){
  <label>شو اسمك الكامل؟ <span className="sol-warm-required">*</span><input name="full_name" required maxLength={120} placeholder="الاسم كما تحب أن يظهر على البطاقة" autoComplete="name"/></label>
  <label>رقم للتواصل معك (اختياري)<input name="phone" type="tel" maxLength={30} placeholder="رقم الهاتف" autoComplete="tel"/></label>
  <label>بأي فريق عم تترك بصمتك؟ <span className="sol-warm-required">*</span><select name="team_name" required defaultValue=""><option value="" disabled>اختَر فريقك</option>{['مكتب المؤثرات الإعلامية والتمكين البشري','فريق الدراسات العامة','فريق الخدمات الميدانية','فريق التبرعات','غير محدد بعد'].map(t=><option key={t}>{t}</option>)}</select></label>
- <label>شو صفتك التطوعية؟ <span className="sol-warm-required">*</span><input name="role" required maxLength={80} defaultValue="متطوع"/></label>
- <label>اختصاصك أو المجال اللي بتحبه (اختياري)<input name="specialization" maxLength={120} placeholder="مثلاً: تصميم، تنظيم، تصوير، دعم ميداني..."/></label>
+ <label>شو صفتك التطوعية؟ <span className="sol-warm-required">*</span><select name="role" required defaultValue=""><option value="" disabled>اختَر صفتك التطوعية</option>{['متطوع','منسق','إدارة','غير ذلك'].map(role=><option key={role} value={role}>{role}</option>)}</select></label>
  <div className="sol-warm-section-title">صورتك… لتكون بطاقتك أقرب إلك 📸</div>
  <p className="sol-warm-helper">اختَر صورة واضحة لوجهك، ويفضّل بخلفية بسيطة.</p>
  <label>الصورة الشخصية <span className="sol-warm-required">*</span><input name="avatar" type="file" accept="image/jpeg,image/png,image/webp" required/><small>JPG أو PNG أو WEBP — الحجم الأقصى 2 ميغابايت</small></label>
