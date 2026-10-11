@@ -2421,3 +2421,41 @@ body:has(.sol-private-intake) > header,body:has(.sol-private-intake) > footer,bo
 .sol-profile-stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:28px 0}.sol-profile-stat{background:#fff;border:1px solid #d7e8df;border-radius:18px;text-align:center;padding:24px 10px;box-shadow:0 5px 20px #063c2110}.sol-profile-stat strong{display:block;font-size:32px;color:#08784e}.sol-profile-stat span{font-size:13px;color:#4d6759}
 .sol-profile-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.sol-profile-sections .card{margin:0;min-width:0}.sol-profile-sections h2,.sol-profile-membership h2{font-size:21px;color:#075b3d}.sol-profile-sections p{line-height:1.9;white-space:pre-line}.sol-profile-membership{margin-top:30px}.sol-profile-membership>p{margin:10px 0 22px;color:#567166}
 @media(max-width:650px){.sol-public-profile{padding-top:12px}.sol-profile-cover{min-height:195px;border-radius:17px}.sol-profile-identity{margin:-53px 12px 0;gap:12px}.sol-profile-portrait{width:112px;height:112px;border-width:5px}.sol-profile-maininfo{padding-top:55px}.sol-profile-id-link{margin:8px 0 0;width:100%;justify-content:center}.sol-profile-facts{margin:22px 5px}.sol-profile-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.sol-profile-stat{padding:17px 5px}.sol-profile-sections{grid-template-columns:1fr}}
+
+
+/* SOL TEAM mobile public profile V5 - isolated responsive layout */
+.sol-public-profile,.sol-public-profile *{box-sizing:border-box}
+.sol-public-profile{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:clip!important}
+.sol-public-profile>.container{display:block!important;float:none!important;position:relative!important;width:min(100% - 36px,1100px)!important;max-width:1100px!important;min-width:0!important;margin-inline:auto!important;padding:0!important;transform:none!important}
+.sol-public-profile .sol-profile-cover,.sol-public-profile .sol-profile-identity,.sol-public-profile .sol-profile-facts,.sol-public-profile .sol-profile-stat-grid,.sol-public-profile .sol-profile-sections,.sol-public-profile .sol-profile-membership{max-width:100%;min-width:0}
+.sol-public-profile .sol-profile-sections>.card{width:100%;max-width:100%}
+@media(max-width:700px){
+ html,body{max-width:100%;overflow-x:clip}
+ .sol-public-profile{padding:12px 0 48px!important;min-height:100dvh}
+ .sol-public-profile>.container{width:calc(100% - 28px)!important;max-width:520px!important;margin:0 auto!important;padding:0!important}
+ .sol-public-profile .sol-profile-cover{width:100%;height:178px;min-height:178px;border-radius:20px;padding:18px 20px}
+ .sol-public-profile .sol-profile-brand{font-size:11px}
+ .sol-public-profile .sol-profile-cover-caption{font-size:25px;line-height:1.4}
+ .sol-public-profile .sol-profile-identity{display:grid!important;grid-template-columns:92px minmax(0,1fr)!important;align-items:center!important;column-gap:14px;row-gap:14px;margin:-37px 12px 0!important;width:calc(100% - 24px)!important;flex-wrap:unset!important}
+ .sol-public-profile .sol-profile-portrait{width:92px!important;height:92px!important;border:5px solid #fff;grid-column:1;grid-row:1}
+ .sol-public-profile .sol-profile-maininfo{grid-column:2;grid-row:1;min-width:0!important;padding-top:39px!important}
+ .sol-public-profile .sol-profile-maininfo h1{font-size:clamp(20px,5.8vw,27px)!important;line-height:1.35;overflow-wrap:anywhere}
+ .sol-public-profile .sol-profile-maininfo p{font-size:14px}
+ .sol-public-profile .sol-profile-id-link{grid-column:1/-1;grid-row:2;margin:0!important;min-height:46px;width:100%!important}
+ .sol-public-profile .sol-profile-facts{margin:20px 0!important;display:flex;gap:8px}
+ .sol-public-profile .sol-profile-facts span{max-width:100%;font-size:12px;line-height:1.7;padding:9px 12px;overflow-wrap:anywhere}
+ .sol-public-profile .sol-profile-stat-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:20px 0!important}
+ .sol-public-profile .sol-profile-stat{padding:17px 6px!important;border-radius:15px}
+ .sol-public-profile .sol-profile-stat strong{font-size:27px}
+ .sol-public-profile .sol-profile-stat span{font-size:12px}
+ .sol-public-profile .sol-profile-sections{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:12px!important;width:100%!important}
+ .sol-public-profile .sol-profile-sections .card{padding:18px!important;overflow-wrap:anywhere}
+ .sol-public-profile .sol-profile-membership{width:100%!important;min-width:0!important;margin-top:26px!important}
+ .sol-public-profile .sol-profile-membership h2{font-size:21px}
+ .sol-public-profile .sol-profile-membership .member-card-wrap,.sol-public-profile .sol-profile-membership .sol-id-wrap{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;margin-inline:auto!important}
+ .sol-public-profile .sol-profile-membership .member-actions{display:grid!important;grid-template-columns:1fr!important;gap:9px!important;width:100%!important;margin-bottom:20px}
+ .sol-public-profile .sol-profile-membership .member-actions button{width:100%!important;min-height:45px!important;justify-content:center!important;white-space:normal}
+ .sol-public-profile .sol-profile-membership .sol-3d-scene{width:100%!important;max-width:380px!important;margin:0 auto!important;min-width:0!important;perspective:1400px}
+ .sol-public-profile .sol-profile-membership .sol-3d-card{max-width:100%!important;margin:0 auto!important}
+ .sol-public-profile .sol-profile-membership .sol-id-export-area{position:absolute!important;pointer-events:none!important}
+}
