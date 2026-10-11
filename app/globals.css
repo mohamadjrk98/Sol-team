@@ -2043,3 +2043,10 @@ body { overflow-x:clip; }
 .sol-org-team-title{min-width:0;overflow-wrap:anywhere}
 .sol-org-admin-actions{display:flex;flex-wrap:wrap;gap:8px}
 }
+
+/* SOL TEAM V4: align header logo upward on mobile without moving header controls */
+@media (max-width: 768px) {
+  .nav .brand .hidden-admin-trigger .logo-wrap img {
+    transform: translateY(-4px);
+  }
+}
