@@ -17,5 +17,5 @@ export const viewport: Viewport = { themeColor: '#0b4f3a', width: 'device-width'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSiteSettings();
-  return <html lang="ar" dir="rtl"><body><PWARegister/><Header shortName={settings.short_name}/><FloatingSidePanel meetingText={settings.meeting_text}/>{children}<Footer settings={settings}/></body></html>;
+  return <html lang="ar" dir="rtl"><body><PWARegister/><Header shortName={settings.short_name}/>{children}<Footer settings={settings}/></body></html>;
 }
