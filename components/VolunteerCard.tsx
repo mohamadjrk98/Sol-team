@@ -8,10 +8,10 @@ const statusClass: Record<string, string> = { active: 'green', left: 'gray', dis
 
 export default function VolunteerCard({ volunteer }: { volunteer: Volunteer }) {
   const status = volunteer.volunteer_status || 'active';
-  return <article className="card vol-card luxury-vol-card">
-    <div className="card-shine" />
+  return <article className="card vol-card luxury-vol-card sol-premium-vol-card">
+    <div className="card-shine" /><div className="sol-premium-cover"><strong>SOL <span>TEAM</span></strong><small>VOLUNTEER PROFILE</small></div>
     <span className={`status-badge ${statusClass[status]}`}>{statusLabels[status]}</span>
-    <Avatar src={volunteer.avatar_url} name={volunteer.full_name}/>
+    <div className="sol-premium-avatar"><Avatar src={volunteer.avatar_url} name={volunteer.full_name}/></div>
     <h3>{volunteer.full_name}</h3>
     <p className="muted role-line"><ShieldCheck size={16}/> {volunteer.role || 'عضو في فريق أبناء الأرض'}</p>
     <div className="pill-row center">

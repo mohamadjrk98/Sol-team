@@ -97,7 +97,7 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
 
   function CardFront() {
     return (
-      <div className="sol-id-content">
+      <div className="sol-id-content sol-premium-id-front">
         <div className="sol-id-glow" aria-hidden="true" />
         <header className="sol-id-header">
           <Image src="/logo.png" width={62} height={62} alt="شعار الفريق" />
@@ -108,7 +108,7 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
           </div>
         </header>
 
-        <div className="sol-id-center">
+        <div className="sol-id-center"><span className="sol-premium-id-label">بطاقة متطوع رسمية</span>
           <div className="sol-id-avatar-frame">
             <img
               src={volunteer.avatar_url || '/avatar.svg'}
@@ -132,7 +132,7 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
 
   function CardBack() {
     return (
-      <div className="sol-id-content sol-id-back-content">
+      <div className="sol-id-content sol-id-back-content sol-premium-id-back">
         <div className="sol-id-glow" aria-hidden="true" />
 
         <header className="sol-id-back-header">

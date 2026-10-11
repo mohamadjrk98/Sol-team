@@ -2075,3 +2075,22 @@ body { overflow-x:clip; }
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
 }
+
+/* SOL TEAM premium unified volunteer cards */
+.sol-premium-vol-card{position:relative;overflow:hidden!important;padding-top:0!important;border-radius:22px!important;border:1px solid #d7e8df!important;background:#fff!important;box-shadow:0 14px 36px rgba(0,55,38,.10)!important;transition:transform .2s ease,box-shadow .2s ease}
+.sol-premium-vol-card:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(0,55,38,.16)!important}
+.sol-premium-cover{height:110px;margin:0 -24px 0;padding:19px 23px;background:linear-gradient(125deg,#063c30,#08795b 70%,#21ac85);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;color:white}
+.sol-premium-cover strong{letter-spacing:1.5px;font-size:15px}
+.sol-premium-cover strong span{color:#d5f0ae}
+.sol-premium-cover small{font-size:9px;letter-spacing:1px;color:#e0f6e9}
+.sol-premium-vol-card>.status-badge{z-index:4}
+.sol-premium-avatar{position:relative;z-index:2;width:126px;height:126px;margin:-62px auto 12px;border:5px solid white;border-radius:50%;background:#e9f5ee;box-shadow:0 8px 24px rgba(0,44,33,.18);overflow:hidden}
+.sol-premium-avatar .avatar{width:100%!important;height:100%!important;object-fit:cover;margin:0!important;border-radius:50%}
+.sol-premium-vol-card h3{color:#104535!important;line-height:1.5}
+.sol-premium-vol-card .role-line{display:flex;align-items:center;justify-content:center;gap:6px}
+.sol-premium-vol-card .join-line{display:flex;align-items:center;justify-content:center;gap:6px}
+.sol-premium-vol-card>.btn{margin-top:auto;width:100%;justify-content:center}
+.sol-premium-id-front,.sol-premium-id-back{background-image:radial-gradient(circle at 50% 10%,rgba(111,228,167,.16),transparent 55%)}
+.sol-premium-id-label{display:block;text-align:center;color:#c6f5dc;font-weight:800;font-size:11px;margin-bottom:8px}
+@media(max-width:600px){.sol-premium-cover{height:95px}.sol-premium-avatar{width:116px;height:116px;margin-top:-57px}}
+@media(prefers-reduced-motion:reduce){.sol-premium-vol-card{transition:none}.sol-premium-vol-card:hover{transform:none}}
