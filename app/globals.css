@@ -2024,3 +2024,22 @@ body { overflow-x:clip; }
 @media(max-width:680px){.sol-v4-admin-workspace{border-radius:21px;padding:18px;margin-bottom:20px}.sol-v4-admin-workspace-title{align-items:flex-start}.sol-v4-admin-workspace-mark{font-size:11px;padding:10px}.sol-v4-admin-workspace-grid{gap:9px}.sol-v4-admin-task{min-height:138px;padding:14px;border-radius:16px;gap:9px}.sol-v4-admin-task strong{font-size:14px}.sol-v4-admin-task small{font-size:11px}.admin-topbar-inner{gap:8px}.admin-topbar .admin-nav{flex:1 1 auto}.admin-shell .admin-hero h1{font-size:clamp(29px,8vw,43px);line-height:1.2}.admin-shell .dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-shell .dash-card{padding:15px}}
 @media(max-width:380px){.sol-v4-admin-workspace-grid{grid-template-columns:1fr}.sol-v4-admin-task{min-height:0;flex-direction:row;align-items:center}.sol-v4-admin-task>span:last-child{margin:auto 0 auto auto}}
 @media(prefers-reduced-motion:reduce){.sol-v4-admin-task{transition:none}.sol-v4-admin-task:hover{transform:none}}
+
+/* SOL TEAM V4 Stage 5 — organization navigation and mobile usability */
+.sol-v4-org-summary{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:16px 0;padding:12px 16px;border-radius:16px;background:#effaf4;border:1px solid #cce9d8;color:#07523b;font-weight:800}
+.sol-v4-org-summary button{border:1px solid #b6d9c7;border-radius:999px;background:#fff;color:#07523b;padding:8px 14px;font:inherit;font-weight:800;cursor:pointer}
+.sol-v4-org-jumps{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 24px}
+.sol-v4-org-jumps a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 15px;border-radius:999px;border:1px solid #d7e8df;background:#fff;color:#0b4f3a;font-weight:800;transition:background .2s,border-color .2s}
+.sol-v4-org-jumps a:hover,.sol-v4-org-jumps a:focus-visible{background:#e9f8ef;border-color:#138a5b}
+#sol-v4-org-board,#sol-v4-org-coordinators,#sol-v4-org-teams{scroll-margin-top:105px}
+@media(max-width:640px){
+.sol-v4-org-jumps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.sol-v4-org-jumps a{padding:9px 5px;text-align:center;font-size:12px;line-height:1.4;min-height:46px}
+.sol-v4-org-summary{font-size:14px}
+.sol-org-toolbar{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+.sol-org-toolbar input{min-width:0;width:100%}
+.sol-org-expand{min-height:44px}
+.sol-org-team-toggle,.sol-org-node{max-width:100%}
+.sol-org-team-title{min-width:0;overflow-wrap:anywhere}
+.sol-org-admin-actions{display:flex;flex-wrap:wrap;gap:8px}
+}

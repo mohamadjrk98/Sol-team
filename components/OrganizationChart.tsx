@@ -78,6 +78,7 @@ function PersonCard({
 
 export default function OrganizationChart({ volunteers, adminMode = false }: Props) {
   const [query, setQuery] = useState('');
+  // sol-v4-stage5-org: mobile-friendly tree navigation and search feedback
   const [openTeams, setOpenTeams] = useState<string[]>([]);
   const [boardOpen, setBoardOpen] = useState(true);
   const [coordinatorsOpen, setCoordinatorsOpen] = useState(true);
@@ -165,6 +166,12 @@ export default function OrganizationChart({ volunteers, adminMode = false }: Pro
   const allOpen = teams.length > 0 &&
     teams.every(([name]) => openTeams.includes(name));
 
+  const visiblePeopleCount = new Set([
+    ...visibleBoard,
+    ...visibleCoordinators,
+    ...visibleTeams.flatMap(([, members]) => members)
+  ].map(person => person.id || person.slug)).size;
+
   return (
     <div className="sol-org" dir="rtl">
       {adminMode && (
@@ -212,8 +219,17 @@ export default function OrganizationChart({ volunteers, adminMode = false }: Pro
         </button>
       </div>
 
+      <div className="sol-v4-org-summary" role="status" aria-live="polite">
+        <span>{search ? `نتائج البحث: ${visiblePeopleCount} عضو` : `إجمالي الأعضاء: ${people.length}`}</span>
+        {search && <button type="button" onClick={() => setQuery('')}>مسح البحث</button>}
+      </div>
+      <nav className="sol-v4-org-jumps" aria-label="التنقل بين أقسام الهيكل التنظيمي">
+        <a href="#sol-v4-org-board">مجلس الإدارة</a>
+        <a href="#sol-v4-org-coordinators">المنسقون</a>
+        <a href="#sol-v4-org-teams">الفرق التطوعية</a>
+      </nav>
       <div className="sol-org-tree">
-        <section className="sol-org-tier">
+        <section id="sol-v4-org-board" className="sol-org-tier">
           <button
             type="button"
             className="sol-org-node sol-org-board-node"
@@ -236,7 +252,7 @@ export default function OrganizationChart({ volunteers, adminMode = false }: Pro
 
         <div className="sol-org-connector" aria-hidden="true"/>
 
-        <section className="sol-org-tier">
+        <section id="sol-v4-org-coordinators" className="sol-org-tier">
           <button
             type="button"
             className="sol-org-node sol-org-coordinator-node"
@@ -259,7 +275,7 @@ export default function OrganizationChart({ volunteers, adminMode = false }: Pro
 
         <div className="sol-org-connector" aria-hidden="true"/>
 
-        <section className="sol-org-tier">
+        <section id="sol-v4-org-teams" className="sol-org-tier">
           <div className="sol-org-node sol-org-team-node">
             <Network size={26}/>
             <span><strong>الفرق التطوعية</strong><small>{teams.length} فريق</small></span>
