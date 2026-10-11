@@ -1996,3 +1996,31 @@ body { overflow-x:clip; }
 @media(prefers-reduced-motion:reduce) {
   .v4-orbit:before { animation:none!important; }
 }
+
+/* SOL TEAM V4 STAGE 3: administration workspace, responsive admin navigation */
+.sol-v4-admin-workspace{margin:0 0 28px;padding:clamp(20px,3vw,32px);border:1px solid #ccebe4;border-radius:28px;background:linear-gradient(125deg,#edfff8 0%,#fff 58%,#fff7df 100%);box-shadow:0 18px 48px #0b735f14}
+.sol-v4-admin-workspace-title{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:23px}
+.sol-v4-admin-workspace-title h2{font-size:clamp(23px,2.7vw,34px);line-height:1.3;margin:5px 0 8px;color:#093f3b}
+.sol-v4-admin-workspace-title p{margin:0;color:#56716f}
+.sol-v4-admin-workspace-mark{flex-shrink:0;border-radius:16px;background:#0a6e5c;color:#fff;padding:13px 16px;font-weight:900;letter-spacing:.05em}
+.sol-v4-admin-workspace-mark b{color:#ffc857}
+.sol-v4-admin-workspace-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.sol-v4-admin-task{display:flex;align-items:flex-start;flex-direction:column;gap:14px;min-width:0;min-height:154px;padding:19px;border-radius:20px;border:1px solid #dfefea;background:#fff;color:#164943;text-decoration:none;transition:transform .2s,border-color .2s,box-shadow .2s}
+.sol-v4-admin-task>svg{color:#0b9275;flex-shrink:0}
+.sol-v4-admin-task span:nth-child(2){display:flex;flex-direction:column;gap:5px}
+.sol-v4-admin-task strong{font-size:16px}
+.sol-v4-admin-task small{font-size:12px;line-height:1.55;color:#627b78}
+.sol-v4-admin-task>span:last-child{align-self:flex-end;margin-top:auto;font-size:21px}
+.sol-v4-admin-task:hover,.sol-v4-admin-task:focus-visible{transform:translateY(-3px);border-color:#0ca781;box-shadow:0 12px 28px #0b735f1c}
+.sol-v4-admin-task-primary{background:#0b735f;color:#fff;border-color:#0b735f}
+.sol-v4-admin-task-primary>svg,.sol-v4-admin-task-primary small{color:#d9fff0}
+.admin-topbar-inner{min-width:0}
+.admin-topbar .admin-nav{min-width:0;overflow-x:auto;scrollbar-width:thin;overscroll-behavior-x:contain}
+.admin-topbar .admin-nav a{white-space:nowrap;flex-shrink:0}
+.admin-shell .dashboard-cards,.admin-shell .admin-shortcuts{align-items:stretch}
+.admin-shell .dash-card,.admin-shell .shortcut-card{min-width:0}
+.admin-shell .dashboard-blocks .card{min-width:0;overflow:hidden}
+@media(max-width:1100px){.sol-v4-admin-workspace-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.sol-v4-admin-workspace{border-radius:21px;padding:18px;margin-bottom:20px}.sol-v4-admin-workspace-title{align-items:flex-start}.sol-v4-admin-workspace-mark{font-size:11px;padding:10px}.sol-v4-admin-workspace-grid{gap:9px}.sol-v4-admin-task{min-height:138px;padding:14px;border-radius:16px;gap:9px}.sol-v4-admin-task strong{font-size:14px}.sol-v4-admin-task small{font-size:11px}.admin-topbar-inner{gap:8px}.admin-topbar .admin-nav{flex:1 1 auto}.admin-shell .admin-hero h1{font-size:clamp(29px,8vw,43px);line-height:1.2}.admin-shell .dashboard-cards{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-shell .dash-card{padding:15px}}
+@media(max-width:380px){.sol-v4-admin-workspace-grid{grid-template-columns:1fr}.sol-v4-admin-task{min-height:0;flex-direction:row;align-items:center}.sol-v4-admin-task>span:last-child{margin:auto 0 auto auto}}
+@media(prefers-reduced-motion:reduce){.sol-v4-admin-task{transition:none}.sol-v4-admin-task:hover{transform:none}}
