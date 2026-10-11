@@ -64,6 +64,7 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageNote, setImageNote] = useState('');
   const [accountUsername, setAccountUsername] = useState("");
@@ -76,14 +77,12 @@ export default function AdminPage() {
   const [showOrganization, setShowOrganization] = useState(false);
   const handledOrganizationAction = useRef(false);
 
-  const filtered = useMemo(() => volunteers.filter(v => [
-    v.full_name,
-    v.role,
-    v.department,
-    v.team_name,
-    ...(v.team_names || []),
-    statusLabels[v.volunteer_status || 'active']
-  ].join(' ').includes(query)), [volunteers, query]);
+  const filtered = useMemo(() => volunteers.filter(v => {
+    const matchesStatus = statusFilter === 'all' || (v.volunteer_status || 'active') === statusFilter;
+    const searchableText = [v.full_name, v.role, v.department, v.team_name, ...(v.team_names || []), statusLabels[v.volunteer_status || 'active']]
+      .join(' ').toLocaleLowerCase('ar');
+    return matchesStatus && searchableText.includes(query.trim().toLocaleLowerCase('ar'));
+  }), [volunteers, query, statusFilter]);
 
   const teamOptions = [
     'مكتب المؤثرات الإعلامية والتمكين البشري',
@@ -397,7 +396,15 @@ export default function AdminPage() {
     <section className="section"><div className="container admin-grid">
       <aside className="card admin-list-card">
         <div className="section-head"><div><h2>السجلات</h2><p className="muted">اختر بطاقة لتعديلها أو أنشئ بطاقة جديدة.</p></div></div>
-        <input className="input" placeholder="بحث بالاسم أو المنصب أو الحالة..." value={query} onChange={e => setQuery(e.target.value)} />
+        <label className="label" htmlFor="sol-admin-volunteer-search">البحث عن متطوع</label>
+        <input id="sol-admin-volunteer-search" className="input" placeholder="بحث بالاسم أو المنصب أو الفريق..." value={query} onChange={e => setQuery(e.target.value)} />
+        <label className="label" htmlFor="sol-admin-status-filter" style={{ marginTop: 12 }}>تصفية حسب الحالة</label>
+        <select id="sol-admin-status-filter" className="input" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+          <option value="all">جميع الحالات</option>
+          {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+        </select>
+        <p className="muted" aria-live="polite" style={{ margin: '10px 0 0' }}>عرض {filtered.length} من أصل {volunteers.length} متطوع</p>
+        {filtered.length === 0 && <div className="empty" role="status">لا يوجد متطوعون مطابقون للبحث أو التصفية.</div>}
         <button className="btn secondary" onClick={() => setSelected(emptyVolunteer)} style={{ width: '100%', marginTop: 12 }}>+ بطاقة جديدة</button>
         <div className="admin-vol-list">
           {filtered.map(v => <button key={v.slug} className="admin-vol-item" onClick={() => setSelected({ ...emptyVolunteer, ...v, team_names: v.team_names?.length ? v.team_names : (v.team_name ? [v.team_name] : []) })}>
