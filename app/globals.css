@@ -1705,3 +1705,62 @@ html.dark .modern-stats .stat strong {
     font-size: 11px;
   }
 }
+
+/* SOL DESIGN SYSTEM — INTERACTIVE ORGANIZATION CHART */
+.sol-org { --org-green:#086b50; --org-gold:#c5a253; }
+.sol-org-hero { background-image:linear-gradient(125deg,rgba(4,54,42,.96),rgba(6,104,78,.85)); }
+.sol-org-stats { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:26px; }
+.sol-org-stats>div { display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;padding:20px 12px;border:1px solid rgba(12,130,95,.2);border-radius:18px;background:var(--card-bg,rgba(10,105,78,.06)); }
+.sol-org-stats svg { color:var(--org-green); }
+.sol-org-stats strong { font-size:25px;font-weight:800; }
+.sol-org-stats span { font-size:13px;opacity:.75; }
+.sol-org-toolbar { display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:28px; }
+.sol-org-search { display:flex;align-items:center;gap:10px;padding:0 15px;flex:1;min-width:0;border:1px solid rgba(13,124,92,.25);border-radius:15px;background:var(--card-bg,rgba(10,105,78,.05)); }
+.sol-org-search svg { color:var(--org-green);flex-shrink:0; }
+.sol-org-search input { width:100%;min-width:0;height:48px;border:0;background:transparent;color:inherit;outline:0;font:inherit; }
+.sol-org-expand { border:1px solid rgba(13,124,92,.3);border-radius:13px;background:transparent;color:inherit;padding:14px 18px;cursor:pointer;font:inherit;white-space:nowrap; }
+.sol-org-tree { max-width:1100px;margin:auto;text-align:center; }
+.sol-org-tier { display:flex;flex-direction:column;align-items:center;gap:19px; }
+.sol-org-node { width:min(100%,420px);display:flex;align-items:center;justify-content:center;gap:14px;border:1px solid rgba(197,162,83,.38);border-radius:22px;padding:20px 22px;background:linear-gradient(125deg,#064c3b,#087557);color:white;box-shadow:0 12px 32px rgba(3,65,48,.16);text-align:right;font:inherit; }
+button.sol-org-node { cursor:pointer; }
+.sol-org-board-node { background:linear-gradient(120deg,#053b30,#075f49); }
+.sol-org-coordinator-node { background:linear-gradient(120deg,#075743,#0a8060); }
+.sol-org-team-node { background:linear-gradient(120deg,#09634b,#0b8a68); }
+.sol-org-node>span { flex:1;display:flex;flex-direction:column;gap:4px; }
+.sol-org-node strong { font-size:19px; }
+.sol-org-node small { color:rgba(255,255,255,.76);font-size:12px; }
+.sol-org-node>svg:last-child { transition:transform .25s; }
+.sol-org-rotated { transform:rotate(180deg); }
+.sol-org-connector { width:2px;height:45px;margin:0 auto;background:linear-gradient(var(--org-gold),var(--org-green)); }
+.sol-org-people { width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,255px),1fr));gap:14px;text-align:right; }
+.sol-org-person { display:flex;align-items:center;gap:13px;padding:14px;border:1px solid rgba(13,124,92,.18);border-radius:17px;background:var(--card-bg,rgba(12,118,89,.06));color:inherit;text-decoration:none;transition:transform .2s,border-color .2s,box-shadow .2s;min-width:0; }
+.sol-org-person:hover { transform:translateY(-4px);border-color:var(--org-gold);box-shadow:0 10px 24px rgba(4,85,64,.13); }
+.sol-org-person img { width:59px;height:59px;flex-shrink:0;object-fit:cover;border-radius:16px;border:2px solid rgba(197,162,83,.4); }
+.sol-org-person-info { display:flex;flex:1;min-width:0;flex-direction:column;gap:4px; }
+.sol-org-person-info strong { font-size:14px;overflow-wrap:anywhere; }
+.sol-org-person-info small { font-size:12px;opacity:.8; }
+.sol-org-person-info em { font-size:11px;opacity:.65;font-style:normal;overflow-wrap:anywhere; }
+.sol-org-person-arrow { color:var(--org-green);flex-shrink:0; }
+.sol-org-leader { border-color:rgba(197,162,83,.4);background:linear-gradient(130deg,rgba(197,162,83,.1),rgba(8,107,80,.05)); }
+.sol-org-teams { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;width:100%;text-align:right; }
+.sol-org-team { border:1px solid rgba(13,124,92,.2);border-radius:20px;overflow:hidden;background:var(--card-bg,rgba(12,118,89,.04));align-self:start; }
+.sol-org-team-toggle { display:flex;align-items:center;gap:12px;width:100%;padding:18px;border:0;background:transparent;color:inherit;text-align:right;cursor:pointer;font:inherit; }
+.sol-org-team-icon { display:grid;place-items:center;flex-shrink:0;width:43px;height:43px;border-radius:13px;background:rgba(8,107,80,.12);color:var(--org-green); }
+.sol-org-team-title { display:flex;flex:1;min-width:0;flex-direction:column;gap:5px; }
+.sol-org-team-title strong { font-size:15px;overflow-wrap:anywhere; }
+.sol-org-team-title small { font-size:12px;opacity:.65; }
+.sol-org-team-toggle>svg:last-child { transition:transform .25s; }
+.sol-org-team-members { display:flex;flex-direction:column;gap:10px;padding:14px;border-top:1px solid rgba(13,124,92,.14); }
+.sol-org-empty { padding:20px;opacity:.7;text-align:center; }
+.sol-org-footnote { display:flex;align-items:center;justify-content:center;gap:8px;margin-top:24px;font-size:12px;opacity:.7;text-align:center; }
+@media(max-width:760px) {
+  .sol-org-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sol-org-teams { grid-template-columns:1fr; }
+  .sol-org-toolbar { flex-direction:column;align-items:stretch; }
+  .sol-org-expand { width:100%; }
+  .sol-org-node { padding:17px; }
+  .sol-org-node strong { font-size:17px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .sol-org-person,.sol-org-node>svg:last-child,.sol-org-team-toggle>svg:last-child { transition:none; }
+}

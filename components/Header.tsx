@@ -51,7 +51,7 @@ export default function Header({ shortName = 'أبناء الأرض' }: { shortN
   }
 
   const links = [
-    ['/', 'الرئيسية'], ['/volunteers', 'المتطوعون'], ['/blog', 'الأعمال والمدونة'],
+    ['/', 'الرئيسية'], ['/volunteers', 'المتطوعون'], ['/organization', 'الهيكل التنظيمي'], ['/blog', 'الأعمال والمدونة'],
     ['/projects', 'قيد التنفيذ'], ['/impact', 'الإحصائيات'], ['/transparency', 'الشفافية']
   ];
 
