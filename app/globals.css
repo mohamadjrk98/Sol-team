@@ -2380,3 +2380,12 @@ body { overflow-x:clip; }
   .sol-premium-id-front .sol-id-center h2 {font-size:20px !important}
   .sol-premium-id-front .sol-id-team {font-size:10px !important}
 }
+
+/* Confidential standalone volunteer registration page */
+body:has(.sol-private-intake) > header,body:has(.sol-private-intake) > footer,body:has(.sol-private-intake) .site-header,body:has(.sol-private-intake) .site-footer,body:has(.sol-private-intake) .floating-side-panel{display:none!important}
+.sol-private-intake{min-height:100vh;background:linear-gradient(150deg,#eaf5ed,#f9fcfa);color:#183c2b;display:flex;align-items:center;justify-content:center;padding:35px 14px}
+.sol-private-box{width:min(100%,570px);background:#fff;border:1px solid #d8e7dd;border-radius:22px;box-shadow:0 15px 60px #123b2a1b;padding:clamp(20px,5vw,40px)}
+.sol-private-box>span{color:#21754f;font-weight:800;font-size:13px}.sol-private-box h1{font-size:clamp(23px,5vw,31px);line-height:1.4;margin:12px 0}.sol-private-box p{line-height:1.8;font-size:14px;color:#466052}
+.sol-private-box form{display:grid;gap:17px;margin-top:24px}.sol-private-box label{display:grid;gap:7px;font-size:14px;font-weight:700}.sol-private-box input:not([type=checkbox]),.sol-private-box select{padding:12px;width:100%;border:1px solid #c8dacd;border-radius:10px;background:#fff;color:#173b2b;font:inherit;min-width:0}
+.sol-private-box .sol-private-consent{display:flex;align-items:flex-start;gap:10px;font-size:12px;line-height:1.8}.sol-private-consent input{margin-top:5px;accent-color:#176d4c}
+.sol-private-box button{background:#176e4c;color:white;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:800;cursor:pointer}.sol-private-box button:disabled{opacity:.6}.sol-private-box .sol-private-error{color:#a22}
