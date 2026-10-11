@@ -1896,3 +1896,103 @@ body{background:#f6fafc;background-image:radial-gradient(circle at 8% 10%,rgba(9
 @media(max-width:920px){.home-hero .hero-grid,.v4-intro-inner{grid-template-columns:1fr}.home-hero{padding:70px 0}.home-hero .team-photo{max-width:640px;margin:auto;transform:none}.v4-orbit{min-height:250px}.v4-orbit:before{width:220px;height:220px}.v4-intro-inner{gap:5px}}
 @media(max-width:680px){.container{width:calc(100% - 28px)}.home-hero{padding:55px 0 64px;min-height:0}.home-hero h1{font-size:clamp(41px,11vw,63px)}.home-hero .hero-actions{display:grid;grid-template-columns:1fr 1fr}.home-hero .hero-actions .btn{font-size:13px;padding:11px 8px;min-height:51px}.home-hero .team-photo{border-width:5px;border-radius:22px}.home-hero .team-photo img{height:250px}.v4-section-intro{padding:54px 0 10px}.v4-orbit{min-height:240px}.v4-orbit-bubble{font-size:12px;padding:10px}.modern-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.modern-stats .stat{padding:17px 9px;border-radius:18px}.modern-stats .stat strong{font-size:29px}.modern-stats .stat span{font-size:12px}.section{padding:56px 0}.feature-card,.team-card,.structure-card{padding:23px;min-height:0}.sol-banner-frame{min-height:390px;border-radius:23px}.sol-banner-content{padding:65px 23px 90px}.admin-hero{padding:55px 0 35px}.admin-grid{grid-template-columns:1fr}.admin-list-card{position:static}}
 @media(prefers-reduced-motion:reduce){.v4-orbit:before{animation:none}.btn,.card,.post-image img,.team-photo{transition:none!important}}
+
+/* SOL TEAM V4 Stage 2 — responsive refinements, original brand preserved */
+:root { --sol-stage2-green:#086b58; --sol-stage2-mint:#12b995; --sol-stage2-gold:#ffc857; }
+html { scroll-padding-top:112px; }
+body { overflow-x:clip; }
+.nav { z-index:30; }
+.nav-inner { gap:12px; }
+.home-hero .hero-copy,.home-hero .hero-grid > * { min-width:0; }
+.home-hero h1 { overflow-wrap:break-word; }
+.home-hero .hero-actions .btn { text-align:center; justify-content:center; line-height:1.5; }
+.home-hero .hero-trust { display:flex; }
+.v4-section-intro { padding-bottom:58px; }
+.v4-intro-inner > * { min-width:0; }
+.v4-intro-pills span { box-shadow:0 8px 22px rgba(5,95,79,.05); }
+.v4-orbit-center { box-shadow:0 20px 52px rgba(7,136,117,.24); }
+.modern-stats { margin-block:26px 46px; }
+.modern-stats .stat { min-width:0; }
+.modern-stats .stat strong { overflow-wrap:anywhere; line-height:1.2; }
+.banner-strip { position:relative; z-index:1; }
+.section-head h2 { line-height:1.25; text-wrap:balance; overflow-wrap:break-word; }
+.post-card,.feature-card,.team-card,.structure-card { min-width:0; }
+.post-card .post-content { min-width:0; }
+.post-card .post-content h3 { line-height:1.4; }
+.admin-shell .admin-hero h1 { line-height:1.2; }
+.admin-shortcuts .shortcut-card { align-content:start; }
+.admin-shortcuts .shortcut-card strong { line-height:1.4; }
+.dashboard-cards .dash-card { min-width:0; }
+.sol-org-team-toggle { min-height:65px; }
+.sol-org-team-toggle:focus-visible,.sol-org-person:focus-visible { outline:3px solid #ffc857; outline-offset:2px; }
+@media(max-width:920px) {
+  .v4-intro-inner { gap:22px; }
+  .v4-intro-inner h2 { font-size:clamp(30px,5.7vw,48px); }
+  .admin-shortcuts { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+  .dashboard-cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .admin-topbar { top:76px; }
+}
+@media(max-width:680px) {
+  html { scroll-padding-top:86px; }
+  .nav-inner { min-height:74px; gap:8px; }
+  .logo-wrap { width:48px; height:48px; flex-shrink:0; }
+  .nav-actions { gap:7px; }
+  .home-hero { padding:42px 0 52px; }
+  .home-hero .hero-grid { gap:27px; }
+  .home-hero h1 { font-size:clamp(36px,9.5vw,53px); line-height:1.16; letter-spacing:-.5px; }
+  .home-hero .slogan { font-size:clamp(22px,6.3vw,30px); line-height:1.4; }
+  .home-hero .lead { font-size:clamp(15px,4.5vw,18px); line-height:1.8; }
+  .home-hero .hero-actions { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .home-hero .hero-actions .btn { min-width:0; min-height:54px; font-size:clamp(12px,3.35vw,14px); padding:11px 7px; }
+  .home-hero .hero-trust { gap:8px; }
+  .home-hero .hero-trust span { font-size:12px; padding:8px 10px; }
+  .home-hero .team-photo img { height:225px; }
+  .sol-banner-section { padding:16px 0; }
+  .sol-banner-frame { min-height:330px; border-radius:22px; }
+  .sol-banner-content { padding:48px 18px 88px; }
+  .sol-banner-content h2 { font-size:clamp(24px,6.4vw,34px); }
+  .v4-section-intro { padding:48px 0 26px; }
+  .v4-intro-inner { gap:12px; }
+  .v4-intro-inner h2 { font-size:clamp(29px,8.4vw,40px); line-height:1.32; letter-spacing:0; }
+  .v4-intro-inner p { font-size:16px; line-height:1.8; }
+  .v4-intro-pills { gap:8px; margin-top:16px; }
+  .v4-intro-pills span { font-size:13px; padding:10px 12px; }
+  .v4-orbit { min-height:285px; max-width:370px; width:100%; margin:0 auto; }
+  .v4-orbit:before { width:215px; height:215px; }
+  .v4-orbit-center { width:136px; height:136px; border-radius:30px; font-size:28px; }
+  .v4-orbit-bubble { font-size:12px; padding:9px 11px; }
+  .v4-orbit-bubble.one { right:0; top:11%; }
+  .v4-orbit-bubble.two { left:1%; bottom:9%; }
+  .v4-orbit-bubble.three { left:0; top:15%; }
+  .modern-stats { margin:20px auto 34px; gap:10px; }
+  .modern-stats .stat { padding:18px 8px; }
+  .modern-stats .stat strong { font-size:clamp(23px,7.2vw,32px); }
+  .section { padding:48px 0; }
+  .section-head h2 { font-size:clamp(26px,7.3vw,35px); line-height:1.33; letter-spacing:0; }
+  .section-head p { font-size:15px; }
+  .post-image { height:205px; }
+  .post-content { padding:20px; }
+  .post-content h3 { font-size:21px; }
+  .banner-strip .container { display:flex; flex-direction:column; gap:8px; align-items:center; text-align:center; }
+  .banner-strip .container span { overflow-wrap:anywhere; line-height:1.7; }
+  .admin-topbar { top:74px; }
+  .admin-hero { padding:40px 0 28px; }
+  .admin-hero h1 { font-size:clamp(29px,8vw,40px); }
+  .admin-shortcuts { grid-template-columns:1fr!important; }
+  .admin-shortcuts .shortcut-card { min-height:115px; padding:19px; }
+  .dashboard-cards { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .dashboard-cards .dash-card { padding:16px 12px; }
+  .dashboard-cards .dash-card strong { font-size:30px; }
+  .sol-org-teams { grid-template-columns:minmax(0,1fr); }
+  .sol-org-team-toggle { padding:14px; }
+  .sol-org-person { padding:11px; }
+}
+@media(max-width:370px) {
+  .home-hero .hero-actions { grid-template-columns:1fr; }
+  .v4-orbit-bubble { font-size:11px; padding:7px 9px; }
+  .v4-orbit:before { width:190px; height:190px; }
+  .dashboard-cards { grid-template-columns:1fr; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .v4-orbit:before { animation:none!important; }
+}
