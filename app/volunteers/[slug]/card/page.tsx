@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import MembershipCard from '@/components/MembershipCard';
 import { getVolunteerBySlug, getVolunteers } from '@/lib/supabase';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export async function generateStaticParams() {
   const volunteers = await getVolunteers();
