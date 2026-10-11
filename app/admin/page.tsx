@@ -1,6 +1,8 @@
 'use client';
 
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import OrganizationChart from '@/components/OrganizationChart';
+import type { Volunteer } from '@/lib/types';
 
 type CropDraft = {
   src: string;
@@ -71,6 +73,8 @@ export default function AdminPage() {
   const [accountExists, setAccountExists] = useState(false);
   const [accountLoading, setAccountLoading] = useState(false);
   const [cropDraft, setCropDraft] = useState<CropDraft | null>(null);
+  const [showOrganization, setShowOrganization] = useState(false);
+  const handledOrganizationAction = useRef(false);
 
   const filtered = useMemo(() => volunteers.filter(v => [
     v.full_name,
@@ -139,6 +143,56 @@ export default function AdminPage() {
 
   useEffect(() => { loadVolunteerAccount(selected.id); }, [selected.id]);
   useEffect(() => { loadVolunteers(); }, []);
+
+  useEffect(() => {
+    if (handledOrganizationAction.current || volunteers.length === 0) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const action = params.get('orgAction');
+    if (action !== 'add' && action !== 'edit') return;
+
+    handledOrganizationAction.current = true;
+    setShowOrganization(true);
+
+    if (action === 'edit') {
+      const person = volunteers.find(v => v.slug === params.get('slug'));
+      if (person) {
+        setSelected({
+          ...emptyVolunteer,
+          ...person,
+          team_names: person.team_names?.length
+            ? person.team_names
+            : (person.team_name ? [person.team_name] : [])
+        });
+      } else {
+        setError('لم يتم العثور على العضو المطلوب تعديله.');
+      }
+    } else {
+      const level = params.get('level');
+      const team = params.get('team') || '';
+      const hierarchy_level = ['board', 'coordinator', 'volunteer'].includes(level || '')
+        ? String(level)
+        : 'volunteer';
+
+      setSelected({
+        ...emptyVolunteer,
+        hierarchy_level,
+        department: hierarchy_level === 'board'
+          ? 'الإدارة'
+          : hierarchy_level === 'coordinator'
+            ? 'المنسقون'
+            : 'المتطوعون',
+        team_name: team,
+        team_names: team ? [team] : [],
+        role: hierarchy_level === 'coordinator' ? 'منسق' : ''
+      });
+    }
+
+    window.requestAnimationFrame(() => {
+      document.getElementById('admin-volunteer-form')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }, [volunteers]);
   useEffect(() => { if (selected.full_name && !selected.slug) setSelected(s => ({ ...s, slug: makeSlug(s.full_name) })); }, [selected.full_name, selected.slug]);
 
 
@@ -320,6 +374,26 @@ export default function AdminPage() {
       </div>
     </section>
 
+    <section className="section">
+      <div className="container">
+        <button
+          type="button"
+          className="btn yellow"
+          onClick={() => setShowOrganization(v => !v)}
+        >
+          {showOrganization ? 'إخفاء الشجرة التنظيمية' : 'إدارة الشجرة التنظيمية'}
+        </button>
+        {showOrganization && (
+          <div className="sol-org-admin-preview">
+            <OrganizationChart
+              volunteers={volunteers as unknown as Volunteer[]}
+              adminMode
+            />
+          </div>
+        )}
+      </div>
+    </section>
+
     <section className="section"><div className="container admin-grid">
       <aside className="card admin-list-card">
         <div className="section-head"><div><h2>السجلات</h2><p className="muted">اختر بطاقة لتعديلها أو أنشئ بطاقة جديدة.</p></div></div>
@@ -334,7 +408,7 @@ export default function AdminPage() {
         </div>
       </aside>
 
-      <form className="card admin-form luxury-form" onSubmit={submit}>
+      <form id="admin-volunteer-form" className="card admin-form luxury-form" onSubmit={submit}>
         {status && <p className="success">{status}</p>}{error && <p className="error">{error}</p>}
         <div className="form-title"><h2>{selected.slug ? 'تعديل بطاقة' : 'إنشاء بطاقة'} المتطوع</h2>{selected.slug && <button type="button" className="danger-btn" onClick={() => remove(selected.slug)}>حذف</button>}</div>
         <div className="form-grid">

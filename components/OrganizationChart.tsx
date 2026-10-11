@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { Plus, Pencil, UserPlus } from 'lucide-react';
 import {
   Crown, Users, Network, ChevronDown,
   Search, ArrowLeft, ShieldCheck, UserRound
@@ -10,6 +11,7 @@ import type { Volunteer } from '@/lib/types';
 
 type Props = {
   volunteers: Volunteer[];
+  adminMode?: boolean;
 };
 
 const rank = (v: Volunteer) =>
@@ -38,34 +40,43 @@ function teamsOf(v: Volunteer): string[] {
 
 function PersonCard({
   person,
-  variant = 'normal'
+  variant = 'normal',
+  adminMode = false
 }: {
   person: Volunteer;
   variant?: 'normal' | 'leader';
+  adminMode?: boolean;
 }) {
   return (
-    <Link
-      href={`/volunteers/${encodeURIComponent(person.slug)}`}
-      className={`sol-org-person ${variant === 'leader' ? 'sol-org-leader' : ''}`}
-    >
-      <img
-        src={person.avatar_url || '/avatar.svg'}
-        alt={person.full_name}
-        loading="lazy"
-      />
-      <span className="sol-org-person-info">
-        <strong>{person.full_name}</strong>
-        <small>{person.role || 'متطوع'}</small>
-        {teamsOf(person).length > 0 && (
-          <em>{teamsOf(person).join(' • ')}</em>
-        )}
-      </span>
-      <ArrowLeft size={17} className="sol-org-person-arrow" />
-    </Link>
+    <div className="sol-org-person-wrap">
+      <Link
+        href={`/volunteers/${encodeURIComponent(person.slug)}`}
+        className={`sol-org-person ${variant === 'leader' ? 'sol-org-leader' : ''}`}
+      >
+        <img
+          src={person.avatar_url || '/avatar.svg'}
+          alt={person.full_name}
+          loading="lazy"
+        />
+        <span className="sol-org-person-info">
+          <strong>{person.full_name}</strong>
+          <small>{person.role || 'متطوع'}</small>
+        </span>
+        <ArrowLeft size={17} className="sol-org-person-arrow" />
+      </Link>
+      {adminMode && (
+        <Link
+          className="sol-org-edit"
+          href={`/admin?orgAction=edit&slug=${encodeURIComponent(person.slug)}#admin-volunteer-form`}
+        >
+          <Pencil size={15}/> تعديل
+        </Link>
+      )}
+    </div>
   );
 }
 
-export default function OrganizationChart({ volunteers }: Props) {
+export default function OrganizationChart({ volunteers, adminMode = false }: Props) {
   const [query, setQuery] = useState('');
   const [openTeams, setOpenTeams] = useState<string[]>([]);
   const [boardOpen, setBoardOpen] = useState(true);
@@ -88,9 +99,16 @@ export default function OrganizationChart({ volunteers }: Props) {
 
   const teams = useMemo(() => {
     const map = new Map<string, Volunteer[]>();
+    const configuredTeams = [
+      'مكتب المؤثرات الإعلامية والتمكين البشري',
+      'فريق الدراسات العامة',
+      'فريق الخدمات الميدانية',
+      'فريق التبرعات'
+    ];
+    configuredTeams.forEach(name => map.set(name, []));
 
     for (const person of people) {
-      if (person.hierarchy_level !== 'volunteer') continue;
+      if (person.hierarchy_level === 'board') continue;
 
       const names = teamsOf(person);
       const assigned = names.length ? names : ['غير محدد الفريق'];
@@ -101,9 +119,16 @@ export default function OrganizationChart({ volunteers }: Props) {
       }
     }
 
-    return Array.from(map.entries()).sort((a, b) =>
-      a[0].localeCompare(b[0], 'ar')
-    );
+    return Array.from(map.entries())
+      .map(([name, members]) => [
+        name,
+        [...members].sort((a, b) =>
+          (a.hierarchy_level === 'coordinator' ? 0 : 1) -
+          (b.hierarchy_level === 'coordinator' ? 0 : 1) ||
+          rank(a) - rank(b)
+        )
+      ] as [string, Volunteer[]])
+      .sort((a, b) => a[0].localeCompare(b[0], 'ar'));
   }, [people]);
 
   const search = query.trim().toLocaleLowerCase();
@@ -127,7 +152,7 @@ export default function OrganizationChart({ volunteers }: Props) {
         ? members
         : members.filter(matches)
     ] as [string, Volunteer[]])
-    .filter(([, members]) => members.length > 0);
+    .filter(([, members]) => adminMode || !search || members.length > 0);
 
   const toggleTeam = (name: string) => {
     setOpenTeams(current =>
@@ -142,6 +167,22 @@ export default function OrganizationChart({ volunteers }: Props) {
 
   return (
     <div className="sol-org" dir="rtl">
+      {adminMode && (
+        <div className="sol-org-admin-bar">
+          <div>
+            <strong>إدارة الشجرة التنظيمية</strong>
+            <p>أضف الأعضاء وعدّل مواقعهم مباشرة من الهيكل.</p>
+          </div>
+          <div className="sol-org-admin-actions">
+            <Link href="/admin?orgAction=add&level=board#admin-volunteer-form">
+              <Plus size={16}/> إضافة عضو إدارة
+            </Link>
+            <Link href="/organization" target="_blank">
+              معاينة الشجرة العامة
+            </Link>
+          </div>
+        </div>
+      )}
       <div className="sol-org-stats">
         <div><Crown size={21}/><strong>{board.length}</strong><span>الإدارة</span></div>
         <div><ShieldCheck size={21}/><strong>{coordinators.length}</strong><span>المنسقون</span></div>
@@ -186,7 +227,7 @@ export default function OrganizationChart({ volunteers }: Props) {
           {(boardOpen || search) && (
             <div className="sol-org-people sol-org-board-people">
               {visibleBoard.map(person => (
-                <PersonCard key={person.id || person.slug} person={person} variant="leader"/>
+                <PersonCard key={person.id || person.slug} person={person} variant="leader" adminMode={adminMode}/>
               ))}
               {visibleBoard.length === 0 && <p className="sol-org-empty">لا يوجد أعضاء مطابقون.</p>}
             </div>
@@ -209,7 +250,7 @@ export default function OrganizationChart({ volunteers }: Props) {
           {(coordinatorsOpen || search) && (
             <div className="sol-org-people">
               {visibleCoordinators.map(person => (
-                <PersonCard key={person.id || person.slug} person={person}/>
+                <PersonCard key={person.id || person.slug} person={person} adminMode={adminMode}/>
               ))}
               {visibleCoordinators.length === 0 && <p className="sol-org-empty">لا يوجد منسقون مطابقون.</p>}
             </div>
@@ -238,18 +279,50 @@ export default function OrganizationChart({ volunteers }: Props) {
                     <span className="sol-org-team-icon"><Users size={21}/></span>
                     <span className="sol-org-team-title">
                       <strong>{name}</strong>
-                      <small>{members.length} متطوع</small>
+                      <small>
+                        {members.filter(v => v.hierarchy_level === 'coordinator').length} منسق
+                        {' • '}
+                        {members.filter(v => v.hierarchy_level !== 'coordinator').length} متطوع
+                      </small>
                     </span>
                     <ChevronDown className={open ? 'sol-org-rotated' : ''} size={20}/>
                   </button>
+                  {adminMode && (
+                    <div className="sol-org-team-actions">
+                      <Link href={`/admin?orgAction=add&level=volunteer&team=${encodeURIComponent(name)}#admin-volunteer-form`}>
+                        <UserPlus size={15}/> إضافة متطوع
+                      </Link>
+                      <Link href={`/admin?orgAction=add&level=coordinator&team=${encodeURIComponent(name)}#admin-volunteer-form`}>
+                        <Plus size={15}/> إضافة منسق
+                      </Link>
+                    </div>
+                  )}
                   {open && (
                     <div className="sol-org-team-members">
-                      {members.map(person => (
+                      {members.filter(v => v.hierarchy_level === 'coordinator').length > 0 && (
+                        <div className="sol-org-branch-heading">منسقو الفريق</div>
+                      )}
+                      {members.filter(v => v.hierarchy_level === 'coordinator').map(person => (
                         <PersonCard
                           key={`${name}-${person.id || person.slug}`}
                           person={person}
+                          variant="leader"
+                          adminMode={adminMode}
                         />
                       ))}
+                      {members.filter(v => v.hierarchy_level !== 'coordinator').length > 0 && (
+                        <div className="sol-org-branch-heading">المتطوعون</div>
+                      )}
+                      {members.filter(v => v.hierarchy_level !== 'coordinator').map(person => (
+                        <PersonCard
+                          key={`${name}-${person.id || person.slug}`}
+                          person={person}
+                          adminMode={adminMode}
+                        />
+                      ))}
+                      {members.length === 0 && (
+                        <p className="sol-org-empty">لا يوجد أعضاء ضمن هذا الفريق حالياً.</p>
+                      )}
                     </div>
                   )}
                 </article>
