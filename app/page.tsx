@@ -25,6 +25,8 @@ export default async function HomePage(){
 
   <HomeBannerCarousel items={banners}/>
 
+  <section className="v4-section-intro" aria-label="رسالة الفريق"><div className="container v4-intro-inner"><div><span className="v4-kicker">✦ شباب يصنعون التغيير</span><h2>طاقتنا اليوم، <span>أثر مجتمعنا غداً.</span></h2><p>نحوّل الأفكار الصغيرة إلى مبادرات حقيقية، ونجمع الشغف والمهارات والعمل الجماعي في مكان واحد. تعرّف على الفريق وكن جزءاً من الحكاية.</p><div className="v4-intro-pills"><span>✳ مبادرات على الأرض</span><span>✳ فرق متخصصة</span><span>✳ أثر قابل للقياس</span></div></div><div className="v4-orbit" aria-hidden="true"><div className="v4-orbit-center"><span>SOL ✦</span></div><span className="v4-orbit-bubble one">💚 نتطوّع</span><span className="v4-orbit-bubble two">⚡ نبتكر</span><span className="v4-orbit-bubble three">✨ نترك أثراً</span></div></div></section>
+
   <div className="banner-strip"><div className="container"><span>عطاء • تنظيم • أثر مستدام</span><span>{settings.location} • {settings.phone} • @{settings.instagram}</span></div></div>
 
   <section className="container stats modern-stats" aria-label="إحصائيات الفريق"><div className="stat"><Users/><strong>{active}</strong><span>متطوع/ة نشطون</span></div><div className="stat"><Network/><strong>{teams}</strong><span>فرق اختصاصية</span></div><div className="stat"><HeartHandshake/><strong>{completed}+</strong><span>مبادرات منجزة</span></div><div className="stat"><CalendarDays/><strong>{hours?`${hours.value}${hours.suffix||''}`:settings.founded_at}</strong><span>{hours?'ساعات تطوعية':'تاريخ التأسيس'}</span></div></section>
