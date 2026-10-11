@@ -374,7 +374,7 @@ export default function AdminPage() {
     </section>
 
     <section className="section">
-      <div className="container"><div className="sol-admin-quick-actions"><a className="btn yellow" href="/admin/registration-requests">📋 طلبات بطاقة العضوية</a><a className="btn yellow" href="?orgAction=add&level=volunteer#admin-volunteer-form">+ إضافة بطاقة متطوع</a><a className="btn secondary" href="?orgAction=add&level=coordinator#admin-volunteer-form">+ إضافة منسق</a><a className="btn secondary" href="?orgAction=add&level=board#admin-volunteer-form">+ إضافة عضو إدارة</a></div>
+      <div className="container"><div className="sol-admin-quick-actions"><a className="btn yellow" href="/admin/registration-requests">📋 طلبات بطاقة العضوية</a><a className="btn yellow" href="/admin/registration-requests">📋 طلبات بطاقة العضوية</a><a className="btn yellow" href="?orgAction=add&level=volunteer#admin-volunteer-form">+ إضافة بطاقة متطوع</a><a className="btn secondary" href="?orgAction=add&level=coordinator#admin-volunteer-form">+ إضافة منسق</a><a className="btn secondary" href="?orgAction=add&level=board#admin-volunteer-form">+ إضافة عضو إدارة</a></div>
         <button
           type="button"
           className="btn yellow"
