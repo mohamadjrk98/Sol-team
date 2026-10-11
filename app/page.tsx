@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import HomeBannerCarousel from '@/components/HomeBannerCarousel';
+import { getHomeBanners } from '@/lib/banners';
 import Link from 'next/link';
 import { ArrowLeft, BarChart3, CalendarDays, CheckCircle2, HeartHandshake, Leaf, Network, Newspaper, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import VolunteerCard from '@/components/VolunteerCard';
@@ -6,7 +8,7 @@ import { getFeaturedVolunteers, getImpactMetrics, getInitiatives, getSiteSetting
 import { fieldTeams, teamDepartments } from '@/lib/sample-data';
 
 export default async function HomePage(){
- const [settings,volunteers,featured,initiatives,metrics]=await Promise.all([getSiteSettings(),getVolunteers(),getFeaturedVolunteers(),getInitiatives(),getImpactMetrics()]);
+ const [settings,volunteers,featured,initiatives,metrics,banners]=await Promise.all([getSiteSettings(),getVolunteers(),getFeaturedVolunteers(),getInitiatives(),getImpactMetrics(),getHomeBanners()]);
  const latest=initiatives.slice(0,3);const active=volunteers.filter(v=>(v.volunteer_status||'active')==='active').length;const teams=new Set(volunteers.flatMap(v=>v.team_names?.length?v.team_names:(v.team_name?[v.team_name]:[]))).size||fieldTeams.length;const completed=initiatives.filter(i=>i.status==='completed').length;const hours=metrics.find(m=>m.label.includes('ساعات'));
  return <main>
   <section className="hero home-hero"><div className="container hero-grid"><div className="hero-copy"><span className="eyebrow"><Sparkles size={15}/> تأسس بتاريخ {settings.founded_at}</span><h1>{settings.team_name}</h1><p className="slogan">{settings.slogan}</p><p className="lead">{settings.description}</p><div className="hero-actions">
@@ -20,6 +22,8 @@ export default async function HomePage(){
   rel="noopener noreferrer"
 >طلب إنشاء حساب من المسؤول</a>
 </div><div className="hero-trust"><span><CheckCircle2/> بدون حساب للتطوع</span><span><ShieldCheck/> إدارة منظمة للطلبات</span><span><HeartHandshake/> أثر موثق وشفاف</span></div></div><div className="team-photo premium-photo"><Image src="/team-banner.jpg" alt={`صورة ${settings.team_name}`} width={760} height={520} priority/><div className="photo-caption"><strong>{settings.slogan}</strong><span>{settings.location}</span></div></div></div></section>
+
+  <HomeBannerCarousel items={banners}/>
 
   <div className="banner-strip"><div className="container"><span>عطاء • تنظيم • أثر مستدام</span><span>{settings.location} • {settings.phone} • @{settings.instagram}</span></div></div>
 

@@ -4,7 +4,7 @@ export const ADMIN_COOKIE = 'sol_admin_session';
 const SESSION_HOURS = 12;
 
 function adminPassword() {
-  return process.env.ADMIN_PASSWORD || 'sol.';
+  return process.env.ADMIN_PASSWORD || '';
 }
 
 function signingSecret() {
@@ -22,7 +22,8 @@ function safeEqual(a: string, b: string) {
 }
 
 export function verifyAdminPassword(password: string) {
-  return safeEqual(password, adminPassword());
+  const configured = adminPassword();
+  return configured.length > 0 && safeEqual(password, configured);
 }
 
 export function createAdminSessionToken() {

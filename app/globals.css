@@ -1812,3 +1812,47 @@ button.sol-org-node { cursor:pointer; }
   .sol-org-admin-actions,.sol-org-team-actions { width:100%; }
   .sol-org-team-actions a { flex:1; }
 }
+
+/* SOL 2026 — UX refresh, mobile-first polish */
+:root { --sol-emerald:#0d5545; --sol-gold:#c9a45c; }
+html { scroll-behavior:smooth; scroll-padding-top:90px; }
+body { overflow-x:clip; }
+button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid #c9a45c; outline-offset:3px; }
+.sol-admin-quick-actions { display:flex; flex-wrap:wrap; gap:12px; margin:0 0 24px; }
+.sol-admin-quick-actions .btn { min-height:48px; }
+.sol-banner-section { padding:28px 0 18px; }
+.sol-banner-frame { position:relative; isolation:isolate; overflow:hidden; min-height:370px; border-radius:26px; background:#092d29; color:#fff; box-shadow:0 24px 65px rgba(4,32,27,.17); }
+.sol-banner-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; }
+.sol-banner-overlay { position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,rgba(4,30,26,.2),rgba(4,30,26,.86)); }
+.sol-banner-content { position:relative; max-width:670px; padding:76px 6% 88px; animation:solBannerIn .45s ease both; }
+.sol-banner-eyebrow { color:#f1d797; letter-spacing:.08em; font-size:.85rem; font-weight:800; }
+.sol-banner-content h2 { color:#fff; font-size:clamp(1.7rem,3.7vw,3.1rem); line-height:1.3; margin:14px 0; }
+.sol-banner-content p { color:#f4f3e9; line-height:1.9; font-size:1.04rem; }
+.sol-banner-controls { position:absolute; bottom:22px; left:22px; display:flex; gap:8px; }
+.sol-banner-controls button { display:grid; place-items:center; width:42px; height:42px; border:1px solid #ffffff75; border-radius:50%; background:#0d4038aa; color:white; cursor:pointer; }
+.sol-banner-dots { position:absolute; bottom:33px; right:6%; display:flex; gap:7px; }
+.sol-banner-dots button { width:9px; height:9px; border:0; border-radius:20px; background:#ffffff90; cursor:pointer; }
+.sol-banner-dots button.active { width:26px; background:#f3cb75; }
+.sol-banner-admin-preview { width:100%; max-height:230px; object-fit:cover; border-radius:14px; grid-column:1/-1; }
+@keyframes solBannerIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@media(max-width:768px){
+ .container { width:min(100% - 28px,1200px); }
+ .section { padding-top:46px; padding-bottom:46px; }
+ .admin-grid,.admin-hero-grid,.hero-grid,.settings-layout { grid-template-columns:minmax(0,1fr)!important; }
+ .admin-shell .admin-nav { display:flex; flex-wrap:nowrap; overflow-x:auto; gap:8px; padding-bottom:8px; scrollbar-width:thin; }
+ .admin-shell .admin-nav a { flex:0 0 auto; white-space:nowrap; min-height:44px; }
+ .admin-list-card { max-height:320px; overflow-y:auto; }
+ .form-grid,.form-grid.two { grid-template-columns:minmax(0,1fr)!important; }
+ .form-grid .wide { grid-column:1/-1; }
+ .sol-admin-quick-actions .btn { flex:1 1 100%; justify-content:center; }
+ .sol-banner-section { padding:14px 0; }
+ .sol-banner-frame { min-height:340px; border-radius:18px; }
+ .sol-banner-content { padding:55px 20px 88px; }
+ .sol-banner-overlay { background:linear-gradient(0deg,rgba(3,29,24,.91),rgba(3,29,24,.33)); }
+ .sol-banner-controls { bottom:14px; left:14px; }
+ .sol-banner-dots { right:20px; bottom:28px; }
+ .sol-org-person-wrap,.sol-org-team,.card { min-width:0; }
+ .btn,button,input,select,textarea { max-width:100%; }
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sol-banner-content{animation:none}*{scroll-behavior:auto!important}}

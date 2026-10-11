@@ -145,7 +145,7 @@ export default function AdminPage() {
   useEffect(() => { loadVolunteers(); }, []);
 
   useEffect(() => {
-    if (handledOrganizationAction.current || volunteers.length === 0) return;
+    if (handledOrganizationAction.current) return;
 
     const params = new URLSearchParams(window.location.search);
     const action = params.get('orgAction');
@@ -363,7 +363,7 @@ export default function AdminPage() {
       <div className="container admin-hero-grid">
         <div>
           <span className="eyebrow">لوحة التحكم الخاصة بالإدارة</span>
-          <h1>إدارة المتطوعين والهيكل التنظيمي</h1>
+          <h1>بطاقات المتطوعين والهيكل التنظيمي</h1>
           <p className="lead small">إضافة، تعديل، حذف، وحفظ بيانات الإدارة والمنسقين والمتطوعين مع بطاقة فاخرة منسجمة مع هوية فريق أبناء الأرض التطوعي.</p>
         </div>
         <div className="admin-login-card session-card">
@@ -375,7 +375,7 @@ export default function AdminPage() {
     </section>
 
     <section className="section">
-      <div className="container">
+      <div className="container"><div className="sol-admin-quick-actions"><a className="btn yellow" href="?orgAction=add&level=volunteer#admin-volunteer-form">+ إضافة بطاقة متطوع</a><a className="btn secondary" href="?orgAction=add&level=coordinator#admin-volunteer-form">+ إضافة منسق</a><a className="btn secondary" href="?orgAction=add&level=board#admin-volunteer-form">+ إضافة عضو إدارة</a></div>
         <button
           type="button"
           className="btn yellow"
