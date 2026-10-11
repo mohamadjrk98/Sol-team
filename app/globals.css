@@ -2106,3 +2106,123 @@ body { overflow-x:clip; }
 }
 .sol-premium-id-front > :not(.sol-initials-watermark){position:relative;z-index:1}
 .sol-id-export-face .sol-premium-id-front .sol-initials-watermark{font-size:155px}
+
+/* SOL TEAM — membership card readable layout, mobile + export */
+.sol-id-content.sol-premium-id-front {
+  display:grid !important;
+  grid-template-rows:minmax(0,105px) minmax(0,1fr) minmax(0,79px);
+  gap:0;
+  padding:22px 22px 19px;
+}
+.sol-premium-id-front > .sol-id-header {
+  grid-row:1;
+  display:flex !important;
+  position:relative !important;
+  inset:auto !important;
+  min-width:0;
+  align-self:start;
+  padding:0 0 12px;
+  margin:0;
+  gap:11px;
+  text-align:right;
+  direction:rtl;
+  z-index:2;
+}
+.sol-premium-id-front > .sol-id-header > div{min-width:0;flex:1}
+.sol-premium-id-front > .sol-id-header strong{font-size:15px;line-height:1.45}
+.sol-premium-id-front > .sol-id-header small{font-size:12px;line-height:1.4}
+.sol-premium-id-front > .sol-id-center{
+  grid-row:2;
+  display:flex !important;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:0;
+  min-width:0;
+  min-height:0;
+  padding:6px 0;
+  margin:0;
+  position:relative !important;
+  z-index:2;
+}
+.sol-premium-id-front .sol-premium-id-label{
+  position:static !important;
+  margin:0 0 10px;
+  font-size:11px;
+  line-height:1.35;
+}
+.sol-premium-id-front .sol-id-avatar-frame{
+  flex:none;
+  width:136px;
+  height:136px;
+  margin:0 0 13px;
+}
+.sol-premium-id-front .sol-id-center h2{
+  flex:none;
+  font-size:clamp(20px,4.8vw,26px);
+  line-height:1.3;
+  margin:0 0 9px;
+}
+.sol-premium-id-front .sol-id-role{
+  flex:none;
+  font-size:17px;
+  line-height:1.35;
+  margin:0 0 9px;
+}
+.sol-premium-id-front .sol-id-team{
+  flex:none;
+  display:block;
+  width:auto;
+  max-width:100%;
+  border-radius:15px;
+  font-size:11px;
+  line-height:1.45;
+  padding:7px 11px;
+  margin:0;
+  text-align:center;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+.sol-premium-id-front > .sol-id-bottom{
+  grid-row:3;
+  display:flex !important;
+  position:relative !important;
+  inset:auto !important;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:6px;
+  margin:0;
+  padding:10px 0 0;
+  min-height:0;
+  z-index:2;
+}
+.sol-premium-id-front .sol-id-bottom span{
+  display:block;
+  font-size:9px;
+  line-height:1.4;
+  letter-spacing:1px;
+}
+.sol-premium-id-front .sol-id-bottom strong{
+  display:block;
+  font-size:14px;
+  line-height:1.35;
+  overflow-wrap:anywhere;
+  text-align:center;
+}
+.sol-premium-id-front .sol-initials-watermark{
+  z-index:0;
+  top:47%;
+  opacity:.85;
+}
+@media(max-width:540px){
+  .sol-3d-scene{height:620px}
+  .sol-id-content.sol-premium-id-front{padding:19px 17px 17px;grid-template-rows:105px minmax(0,1fr) 79px}
+  .sol-premium-id-front .sol-id-avatar-frame{width:126px;height:126px;margin-bottom:12px}
+  .sol-premium-id-front .sol-id-center h2{font-size:21px}
+  .sol-premium-id-front .sol-id-team{font-size:10.5px}
+}
+.sol-id-export-face .sol-id-content.sol-premium-id-front{
+  padding:22px 22px 19px;
+  grid-template-rows:105px minmax(0,1fr) 79px;
+}
