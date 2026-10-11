@@ -79,7 +79,7 @@ export default function AdminPage() {
 
   const filtered = useMemo(() => volunteers.filter(v => {
     const matchesStatus = statusFilter === 'all' || (v.volunteer_status || 'active') === statusFilter;
-    const searchableText = [v.full_name, v.role, v.department, v.team_name, ...(v.team_names || []), statusLabels[v.volunteer_status || 'active']]
+    const searchableText = [v.full_name, v.slug, v.role, v.department, v.team_name, ...(v.team_names || []), v.specialization, v.location, ...(v.skills || []), statusLabels[v.volunteer_status || 'active']]
       .join(' ').toLocaleLowerCase('ar');
     return matchesStatus && searchableText.includes(query.trim().toLocaleLowerCase('ar'));
   }), [volunteers, query, statusFilter]);
@@ -397,17 +397,18 @@ export default function AdminPage() {
       <aside className="card admin-list-card">
         <div className="section-head"><div><h2>السجلات</h2><p className="muted">اختر بطاقة لتعديلها أو أنشئ بطاقة جديدة.</p></div></div>
         <label className="label" htmlFor="sol-admin-volunteer-search">البحث عن متطوع</label>
-        <input id="sol-admin-volunteer-search" className="input" placeholder="بحث بالاسم أو المنصب أو الفريق..." value={query} onChange={e => setQuery(e.target.value)} />
+        <input id="sol-admin-volunteer-search" className="input" placeholder="الاسم، الفريق، الاختصاص، المهارات، المدينة..." value={query} onChange={e => setQuery(e.target.value)} />
         <label className="label" htmlFor="sol-admin-status-filter" style={{ marginTop: 12 }}>تصفية حسب الحالة</label>
         <select id="sol-admin-status-filter" className="input" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
           <option value="all">جميع الحالات</option>
           {Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
         </select>
         <p className="muted" aria-live="polite" style={{ margin: '10px 0 0' }}>عرض {filtered.length} من أصل {volunteers.length} متطوع</p>
+        {(query || statusFilter !== 'all') && <button type="button" className="btn secondary" style={{ width: '100%', marginTop: 8 }} onClick={() => { setQuery(''); setStatusFilter('all'); }}>مسح البحث والتصفية</button>}
         {filtered.length === 0 && <div className="empty" role="status">لا يوجد متطوعون مطابقون للبحث أو التصفية.</div>}
-        <button className="btn secondary" onClick={() => setSelected(emptyVolunteer)} style={{ width: '100%', marginTop: 12 }}>+ بطاقة جديدة</button>
+        <button className="btn secondary" onClick={() => { setSelected(emptyVolunteer); document.getElementById("admin-volunteer-form")?.scrollIntoView({ behavior: "smooth", block: "start" }); }} style={{ width: '100%', marginTop: 12 }}>+ بطاقة جديدة</button>
         <div className="admin-vol-list">
-          {filtered.map(v => <button key={v.slug} className="admin-vol-item" onClick={() => setSelected({ ...emptyVolunteer, ...v, team_names: v.team_names?.length ? v.team_names : (v.team_name ? [v.team_name] : []) })}>
+          {filtered.map(v => <button key={v.slug} className="admin-vol-item" aria-pressed={selected.id ? selected.id === v.id : selected.slug === v.slug} onClick={() => { setSelected({ ...emptyVolunteer, ...v, team_names: v.team_names?.length ? v.team_names : (v.team_name ? [v.team_name] : []) }); document.getElementById("admin-volunteer-form")?.scrollIntoView({ behavior: "smooth", block: "start" }); }}>
             <img src={v.avatar_url || '/avatar.svg'} alt="" />
             <span><strong>{v.full_name}</strong><small>{v.role || 'بدون منصب'} — {v.team_names?.length ? v.team_names.join(' • ') : (v.team_name || v.department)}</small></span>
             <em className={`status-badge ${statusClasses[v.volunteer_status || 'active']}`}>{statusLabels[v.volunteer_status || 'active']}</em>
@@ -418,6 +419,7 @@ export default function AdminPage() {
       <form id="admin-volunteer-form" className="card admin-form luxury-form" onSubmit={submit}>
         {status && <p className="success">{status}</p>}{error && <p className="error">{error}</p>}
         <div className="form-title"><h2>{selected.slug ? 'تعديل بطاقة' : 'إنشاء بطاقة'} المتطوع</h2>{selected.slug && <button type="button" className="danger-btn" onClick={() => remove(selected.slug)}>حذف</button>}</div>
+        {selected.full_name && <p className="muted" aria-live="polite">البطاقة المحددة: <strong>{selected.full_name}</strong> — {statusLabels[selected.volunteer_status || 'active'] || 'غير محدد'}</p>}
         <div className="form-grid">
           <label className="label">الاسم الكامل<input className="input" name="full_name" required value={selected.full_name} onChange={e => setSelected({...selected, full_name:e.target.value})}/></label>
           <label className="label">Slug<input className="input" name="slug" required value={selected.slug} onChange={e => setSelected({...selected, slug:e.target.value})}/></label>
