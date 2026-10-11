@@ -14,6 +14,13 @@ const statusLabels: Record<string, string> = {
   dismissed: 'تم فصله',
 };
 
+function volunteerInitials(fullName: string) {
+  const words = fullName.trim().split(/\s+/).filter(Boolean);
+  const first = Array.from(words[0] || '')[0] || '';
+  const family = Array.from(words.length > 1 ? words[words.length - 1] : '')[0] || '';
+  return [first, family].filter(Boolean).join(' ');
+}
+
 function safeFileName(value: string) {
   return value
     .trim()
@@ -27,6 +34,7 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
   const [error, setError] = useState('');
   const [flipped, setFlipped] = useState(false);
   const memberId = `SOL-${String(volunteer.position_rank || 0).padStart(3, '0')}-${volunteer.slug.slice(0, 4).toUpperCase()}`;
+  const initials = volunteerInitials(volunteer.full_name || '');
 
 
   async function downloadPDF() {
@@ -98,6 +106,7 @@ export default function MembershipCard({ volunteer, url }: { volunteer: Voluntee
   function CardFront() {
     return (
       <div className="sol-id-content sol-premium-id-front">
+        <span className="sol-initials-watermark" aria-hidden="true" dir="rtl">{initials}</span>
         <div className="sol-id-glow" aria-hidden="true" />
         <header className="sol-id-header">
           <Image src="/logo.png" width={62} height={62} alt="شعار الفريق" />
