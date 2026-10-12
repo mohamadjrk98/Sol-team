@@ -7,6 +7,9 @@ import VolunteerCard from '@/components/VolunteerCard';
 import { getFeaturedVolunteers, getImpactMetrics, getInitiatives, getSiteSettings, getVolunteers } from '@/lib/supabase';
 import { fieldTeams, teamDepartments } from '@/lib/sample-data';
 
+// Refresh published homepage banners and content on each request.
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage(){
  const [settings,volunteers,featured,initiatives,metrics,banners,heroImage]=await Promise.all([getSiteSettings(),getVolunteers(),getFeaturedVolunteers(),getInitiatives(),getImpactMetrics(),getHomeBanners(),getHomeHeroImage()]);
  const latest=initiatives.slice(0,3);const active=volunteers.filter(v=>(v.volunteer_status||'active')==='active').length;const teams=new Set(volunteers.flatMap(v=>v.team_names?.length?v.team_names:(v.team_name?[v.team_name]:[]))).size||fieldTeams.length;const completed=initiatives.filter(i=>i.status==='completed').length;const hours=metrics.find(m=>m.label.includes('ساعات'));
