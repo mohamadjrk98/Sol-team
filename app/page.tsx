@@ -1,3 +1,5 @@
+import SolAnimatedStats from '@/components/SolAnimatedStats';
+import SolFieldGallery from '@/components/SolFieldGallery';
 import Image from 'next/image';
 import HomeBannerCarousel from '@/components/HomeBannerCarousel';
 import { getHomeBanners, getHomeHeroImage } from '@/lib/banners';
@@ -23,7 +25,7 @@ export default async function HomePage(){
 
   <section className="v4-section-intro" aria-label="رسالة الفريق"><div className="container v4-intro-inner"><div><span className="v4-kicker">✦ شباب يصنعون التغيير</span><h2>طاقتنا اليوم، <span>أثر مجتمعنا غداً.</span></h2><p>نحوّل الأفكار الصغيرة إلى مبادرات حقيقية، ونجمع الشغف والمهارات والعمل الجماعي في مكان واحد. تعرّف على الفريق وكن جزءاً من الحكاية.</p><div className="v4-intro-pills"><span>✳ مبادرات على الأرض</span><span>✳ فرق متخصصة</span><span>✳ أثر قابل للقياس</span></div></div><div className="v4-orbit" aria-hidden="true"><div className="v4-orbit-center"><span>SOL ✦</span></div><span className="v4-orbit-bubble one">💚 نتطوّع</span><span className="v4-orbit-bubble two">⚡ نبتكر</span><span className="v4-orbit-bubble three">✨ نترك أثراً</span></div></div></section>
 
-  <section className="container stats modern-stats" aria-label="إحصائيات الفريق"><div className="stat"><Users/><strong>{active}</strong><span>متطوع/ة نشطون</span></div><div className="stat"><Network/><strong>{teams}</strong><span>فرق اختصاصية</span></div><div className="stat"><HeartHandshake/><strong>{completed}+</strong><span>مبادرات منجزة</span></div><div className="stat"><CalendarDays/><strong>{hours?`${hours.value}${hours.suffix||''}`:settings.founded_at}</strong><span>{hours?'ساعات تطوعية':'تاريخ التأسيس'}</span></div></section>
+  <SolAnimatedStats active={active} teams={teams} completed={completed} hours={hours ? `${hours.value}${hours.suffix||''}` : settings.founded_at} hoursLabel={hours ? 'ساعات تطوعية' : 'تاريخ التأسيس'} />
 
   <div className="banner-strip"><div className="container"><span>عطاء • تنظيم • أثر مستدام</span><span>{settings.location} • {settings.phone} • @{settings.instagram}</span></div></div>
 
@@ -36,6 +38,10 @@ export default async function HomePage(){
   <section id="teams" className="section"><div className="container"><div className="section-head"><div><span className="section-kicker">فرق العمل</span><h2>اختصاصات مختلفة لهدف واحد</h2><p className="muted">يختار المتطوع المجال الأقرب لمهاراته، مع مرونة التعاون بين الفرق حسب الحاجة.</p></div></div><div className="grid">{fieldTeams.map(t=><div className="card team-card" key={t.name}><Leaf/><h3>{t.name}</h3><p className="muted">{t.text}</p></div>)}</div></div></section>
 
   <section className="section section-warm"><div className="container"><div className="section-head"><div><span className="section-kicker">من الميدان</span><h2>آخر أعمال الفريق</h2><p className="muted">المبادرات المنشورة من لوحة الإدارة تظهر هنا مباشرة.</p></div><Link className="btn secondary" href="/blog"><Newspaper size={18}/> كل الأعمال</Link></div><div className="grid">{latest.map(item=><article className="card post-card" key={item.slug}><div className="post-image"><Image src={item.image_url} alt={item.title} width={520} height={320}/></div><div className="post-content"><span className={`pill status-${item.status}`}>{item.status==='completed'?'منجز':item.status==='in_progress'?'قيد التنفيذ':'مخطط'}</span><h3>{item.title}</h3><p className="muted">{item.excerpt}</p><Link className="text-link" href={`/blog/${item.slug}`}>قراءة التفاصيل <ArrowLeft size={16}/></Link></div></article>)}</div></div></section>
+
+  <SolFieldGallery items={initiatives.filter(i=>Boolean(i.image_url)).slice(0,9).map(i=>({title:i.title,image:i.image_url,href:`/blog/${i.slug}`}))}/>
+
+  {initiatives.length>0&&<section className="section sol-v21-timeline-section" aria-label="مسيرة المبادرات"><div className="container"><div className="section-head"><div><span className="section-kicker">رحلتنا</span><h2>محطات من أعمال الفريق</h2><p className="muted">أبرز المبادرات المنشورة من لوحة الإدارة.</p></div><Link className="btn secondary" href="/blog">كل المبادرات</Link></div><div className="sol-v21-timeline">{initiatives.slice(0,5).map((i,n)=><Link href={`/blog/${i.slug}`} className="sol-v21-timeline-item" key={i.slug}><span className="sol-v21-timeline-index">{String(n+1).padStart(2,'0')}</span><span className="sol-v21-timeline-copy"><strong>{i.title}</strong><small>{i.excerpt}</small></span><ArrowLeft size={18}/></Link>)}</div></div></section>}
 
   {featured.length>0&&<section className="section"><div className="container"><div className="section-head"><div><span className="section-kicker">وجوه تصنع الأثر</span><h2>متطوعون بارزون</h2><p className="muted">نماذج من أعضاء الفريق، ويمكن تحديثهم بالكامل من لوحة الإدارة.</p></div><Link className="btn secondary" href="/volunteers">عرض الجميع</Link></div><div className="grid">{featured.map(v=><VolunteerCard key={v.slug} volunteer={v}/>)}</div></div></section>}
 

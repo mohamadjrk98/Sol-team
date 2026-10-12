@@ -2764,3 +2764,48 @@ html.dark .sol-v9-inner .sol-premium-vol-card h3{color:#e6f9ec!important}
 @media(min-width:701px){.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content{inset:24px 26px auto auto!important;top:24px!important;right:26px!important;width:min(38%,350px)!important;max-width:min(38%,350px)!important}.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content h2{font-size:20px!important}}
 @media(prefers-reduced-motion:reduce){.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content{animation:none!important;transform:none!important;filter:none!important}}
 /* END SOL TEAM V20 MOTION */
+
+/* SOL TEAM V21 ALL IN ONE */
+.sol-v8-main .hero-copy h1{letter-spacing:-.025em;line-height:1.18;text-wrap:balance}
+.sol-v8-main .hero-copy .lead{max-width:62ch;line-height:1.95}
+.sol-v8-main .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.sol-v8-main .section-head h2{text-wrap:balance;line-height:1.35}
+.sol-v8-main .card,.sol-v9-inner .card{transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+@media(hover:hover){.sol-v8-main .card:hover,.sol-v9-inner .card:hover{transform:translateY(-5px);box-shadow:0 20px 45px rgba(0,52,42,.13)}}
+.sol-v21-stats .stat{position:relative;overflow:hidden}.sol-v21-stats .stat strong{font-variant-numeric:tabular-nums}
+.sol-v21-gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sol-v21-gallery-tile{border:0;padding:0;position:relative;overflow:hidden;border-radius:20px;aspect-ratio:4/3;cursor:pointer;background:#174e42;text-align:right}
+.sol-v21-gallery-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.sol-v21-gallery-tile:after{content:"";position:absolute;inset:30% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.78))}
+.sol-v21-gallery-tile span{position:absolute;bottom:14px;right:15px;left:15px;color:white;z-index:1;font-weight:800;font-size:14px;line-height:1.5}
+@media(hover:hover){.sol-v21-gallery-tile:hover img{transform:scale(1.07)}}
+.sol-v21-lightbox{position:fixed;inset:0;z-index:10000;background:rgba(5,17,16,.95);display:flex;align-items:center;justify-content:space-between;gap:8px;padding:20px}
+.sol-v21-lightbox button{border:1px solid #ffffff55;background:#ffffff20;color:#fff;border-radius:50%;width:44px;height:44px;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.sol-v21-lightbox-close{position:absolute;top:16px;right:16px;z-index:1}
+.sol-v21-lightbox-body{min-width:0;max-width:min(100%,960px);display:grid;justify-items:center;gap:12px}
+.sol-v21-lightbox-body img{display:block;max-width:100%;max-height:75vh;object-fit:contain;border-radius:12px}
+.sol-v21-lightbox-body a{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800;text-align:center}
+.sol-v21-timeline{display:grid;gap:12px;max-width:940px;margin:auto}
+.sol-v21-timeline-item{display:flex;align-items:center;gap:16px;border:1px solid rgba(23,120,95,.18);background:var(--card,#fff);border-radius:18px;padding:17px 20px;text-decoration:none;color:inherit;transition:transform .2s ease,border-color .2s ease}
+.sol-v21-timeline-item:hover{transform:translateX(-4px);border-color:#10a78b}
+.sol-v21-timeline-index{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;border-radius:13px;background:#d9f7eb;color:#126b53;font-weight:900}
+.sol-v21-timeline-copy{flex:1;min-width:0;display:grid;gap:5px}
+.sol-v21-timeline-copy strong{font-size:16px}
+.sol-v21-timeline-copy small{color:var(--muted,#677);font-size:12px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sol-v21-mobile-nav{display:none}
+.sol-v8-main .post-image img,.sol-v9-inner .post-image img{transition:transform .4s ease}
+@media(hover:hover){.sol-v8-main .post-card:hover .post-image img,.sol-v9-inner .post-card:hover .post-image img{transform:scale(1.045)}}
+.sol-premium-vol-card .sol-premium-avatar{transition:transform .3s ease}
+@media(hover:hover){.sol-premium-vol-card:hover .sol-premium-avatar{transform:translateY(-4px) scale(1.035)}}
+@media(max-width:700px){
+.sol-v21-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.sol-v21-gallery-tile{border-radius:14px;aspect-ratio:3/4}
+.sol-v21-gallery-tile span{font-size:11px;right:9px;bottom:9px}
+.sol-v21-mobile-nav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;bottom:max(9px,env(safe-area-inset-bottom));left:12px;right:12px;z-index:90;padding:7px;border:1px solid rgba(255,255,255,.28);border-radius:22px;background:rgba(11,79,58,.95);box-shadow:0 10px 32px rgba(0,0,0,.24);backdrop-filter:blur(15px)}
+.sol-v21-mobile-nav a{display:grid;justify-items:center;gap:3px;text-decoration:none;color:#e9fff5;padding:8px 1px;border-radius:15px;font-size:10px;font-weight:700}
+.sol-v21-mobile-nav a.active{background:rgba(255,255,255,.17);color:#fff}
+body{padding-bottom:84px}
+.sol-v21-lightbox{padding:10px;gap:4px}.sol-v21-lightbox button{width:34px;height:34px}
+.sol-v21-timeline-item{padding:12px;gap:10px}}
+@media(prefers-reduced-motion:reduce){.sol-v21-gallery-tile img,.sol-v8-main .card,.sol-v9-inner .card,.sol-premium-vol-card .sol-premium-avatar{transition:none!important}}
+/* END SOL TEAM V21 ALL IN ONE */

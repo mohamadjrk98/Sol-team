@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
+import SolMobileNav from '@/components/SolMobileNav';
 import Footer from '@/components/Footer';
 import PWARegister from '@/components/PWARegister';
 import FloatingSidePanel from '@/components/FloatingSidePanel';
@@ -17,5 +18,5 @@ export const viewport: Viewport = { themeColor: '#0b4f3a', width: 'device-width'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSiteSettings();
-  return <html lang="ar" dir="rtl"><body><PWARegister/><Header shortName={settings.short_name}/>{children}<Footer settings={settings}/></body></html>;
+  return <html lang="ar" dir="rtl"><body><PWARegister/><Header shortName={settings.short_name}/>{children}<Footer settings={settings}/><SolMobileNav/></body></html>;
 }
