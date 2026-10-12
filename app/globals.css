@@ -2719,3 +2719,13 @@ html.dark .sol-v9-inner .sol-premium-vol-card h3{color:#e6f9ec!important}
 .sol-v15-gallery-photo button:disabled{opacity:.35;cursor:default}
 @media(prefers-reduced-motion:reduce){.sol-v15-banner-image{transition:none!important;transform:none!important}}
 /* END SOL TEAM V15 BANNER GALLERY */
+
+/* SOL TEAM V16 BANNER SLIDES FIX */
+/* Override old z-index:-2 on banner images; preserve image fade transitions. */
+.sol-v15-banner-frame .sol-v15-banner-images{z-index:0!important}
+.sol-v15-banner-frame .sol-v15-banner-images .sol-v15-banner-image{z-index:0!important;opacity:0}
+.sol-v15-banner-frame .sol-v15-banner-images .sol-v15-banner-image.is-active{opacity:1;z-index:1!important}
+.sol-v15-banner-frame>.sol-banner-overlay{z-index:1!important}
+.sol-v15-banner-frame>.sol-banner-content{z-index:2!important}
+.sol-v15-banner-frame>.sol-banner-controls,.sol-v15-banner-frame>.sol-banner-dots{z-index:3!important}
+/* END SOL TEAM V16 BANNER SLIDES FIX */
