@@ -2729,3 +2729,13 @@ html.dark .sol-v9-inner .sol-premium-vol-card h3{color:#e6f9ec!important}
 .sol-v15-banner-frame>.sol-banner-content{z-index:2!important}
 .sol-v15-banner-frame>.sol-banner-controls,.sol-v15-banner-frame>.sol-banner-dots{z-index:3!important}
 /* END SOL TEAM V16 BANNER SLIDES FIX */
+
+/* SOL TEAM V17 BANNER CAROUSEL FIX: render one real image per slide */
+.sol-v17-banner-frame{touch-action:pan-y;user-select:none}
+.sol-v17-banner-frame>.sol-v17-banner-photo{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;z-index:0!important;display:block!important;opacity:1!important;animation:solV17PhotoIn .45s ease both}
+.sol-v17-banner-frame>.sol-banner-overlay{z-index:1!important;pointer-events:none}
+.sol-v17-banner-frame>.sol-banner-content{z-index:2!important}
+.sol-v17-banner-frame>.sol-banner-controls,.sol-v17-banner-frame>.sol-banner-dots{z-index:3!important}
+@keyframes solV17PhotoIn{from{opacity:.35;transform:scale(1.018)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.sol-v17-banner-frame>.sol-v17-banner-photo{animation:none!important}}
+/* END SOL TEAM V17 BANNER CAROUSEL FIX */
