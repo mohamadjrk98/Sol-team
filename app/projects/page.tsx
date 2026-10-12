@@ -6,8 +6,8 @@ export default async function ProjectsPage() {
   const projects = (await getInitiatives()).filter((item) => item.status === 'in_progress' || item.status === 'planned');
 
   return (
-    <main>
-      <section className="hero" style={{ padding: '70px 0' }}>
+    <main className="sol-v9-inner">
+      <section className="hero sol-v9-page-hero">
         <div className="container">
           <span className="eyebrow">الأعمال الحالية</span>
           <h1>مشاريع قيد التنفيذ</h1>
@@ -15,7 +15,8 @@ export default async function ProjectsPage() {
         </div>
       </section>
       <section className="section">
-        <div className="container grid">
+        <div className="container grid sol-v9-post-grid">
+          {projects.length === 0 && <div className="card sol-v9-empty">لا توجد مشاريع قيد التنفيذ حالياً.</div>}
           {projects.map((item) => (
             <article className="card post-card" key={item.slug}>
               <div className="post-image"><Image src={item.image_url} alt={item.title} width={640} height={360}/></div>

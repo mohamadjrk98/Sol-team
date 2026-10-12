@@ -22,15 +22,16 @@ export default function VolunteerSearch({ volunteers }: { volunteers: Volunteer[
       (level === 'all' || v.hierarchy_level === level);
   }), [volunteers, q, team, status, level]);
 
-  return <div className="advanced-search">
+  return <div className="advanced-search sol-v9-search">
     <div className="search-panel card">
-      <input className="input" placeholder="ابحث بالاسم، الفريق، المهارة، العمل..." value={q} onChange={e => setQ(e.target.value)} />
+      <input aria-label="البحث عن متطوع" type="search" className="input" placeholder="ابحث بالاسم، الفريق، المهارة، العمل..." value={q} onChange={e => setQ(e.target.value)} />
       <select className="input" value={team} onChange={e => setTeam(e.target.value)}><option value="all">كل الفرق</option>{teams.map(t => <option key={t}>{t}</option>)}</select>
       <select className="input" value={level} onChange={e => setLevel(e.target.value)}><option value="all">كل المستويات</option>{Object.entries(hierarchyLabels).map(([k,v]) => <option value={k} key={k}>{v}</option>)}</select>
       <select className="input" value={status} onChange={e => setStatus(e.target.value)}><option value="all">كل الحالات</option>{Object.entries(statusLabels).map(([k,v]) => <option value={k} key={k}>{v}</option>)}</select>
       <button className="btn secondary" onClick={() => { setQ(''); setTeam('all'); setLevel('all'); setStatus('all'); }}>إعادة ضبط</button>
     </div>
     <p className="muted result-count">تم العثور على {filtered.length} بطاقة من أصل {volunteers.length}</p>
-    <div className="grid">{filtered.map(v => <VolunteerCard key={v.slug} volunteer={v}/>)}</div>
+    <div className="grid sol-v9-volunteer-grid">{filtered.map(v => <VolunteerCard key={v.slug} volunteer={v}/>)}</div>
+    {filtered.length === 0 && <div className="card sol-v9-empty" role="status">ما لقينا بطاقات مطابقة. جرّب تعديل البحث أو إعادة ضبط الفلاتر.</div>}
   </div>;
 }

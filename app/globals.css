@@ -2480,3 +2480,34 @@ html{scroll-padding-top:96px}body{overflow-x:clip;text-rendering:optimizeLegibil
 @media(max-width:600px){.container{width:min(100% - 28px,1160px)}.nav-inner{min-height:72px}.sol-v8-main .home-hero{padding-top:45px;padding-bottom:56px}.sol-v8-main .hero-copy h1{font-size:clamp(32px,9vw,47px)}.sol-v8-main .hero-copy .lead{font-size:16px;line-height:1.75}.sol-v8-main .hero-actions .btn{flex:1 1 155px}.sol-v8-main .hero-trust{gap:8px}.sol-v8-main .hero-trust>span{font-size:13px;padding:9px 11px}.sol-v8-main .team-photo{border-width:4px;border-radius:24px}.sol-v8-main .team-photo img{height:clamp(255px,76vw,390px)}.sol-v8-main .photo-caption{max-width:calc(100% - 26px)}.sol-v8-main .modern-stats .stat{padding:15px 10px;border-radius:18px}.sol-v8-main .modern-stats .stat strong{font-size:clamp(23px,7vw,32px)}.sol-v8-main .modern-stats .stat span{font-size:13px}.sol-v8-main .section-head h2{font-size:clamp(25px,7vw,35px)}.admin-shell .section{padding-block:36px}.admin-shell .card{min-width:0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 /* ===== END SOL TEAM V8 PREMIUM SYSTEM ===== */
+
+
+/* SOL TEAM V9 INNER PAGES — scoped design, no schema changes */
+.sol-v9-inner{min-width:0;overflow:clip;background:linear-gradient(180deg,#f6faf8 0%,#fff 36%,#f7faf8 100%)}
+.sol-v9-inner .sol-v9-page-hero{padding:clamp(60px,7vw,105px) 0!important;background:radial-gradient(ellipse at 18% 25%,rgba(246,191,24,.15),transparent 42%),linear-gradient(130deg,#052d25 0%,#0b513d 60%,#137052 100%);position:relative;isolation:isolate}
+.sol-v9-inner .sol-v9-page-hero:after{pointer-events:none}
+.sol-v9-inner .sol-v9-page-hero .container{position:relative;z-index:2}
+.sol-v9-inner .sol-v9-page-hero h1{font-size:clamp(35px,5vw,64px);line-height:1.2;max-width:900px;letter-spacing:-.02em}
+.sol-v9-inner .sol-v9-page-hero .lead{max-width:720px;line-height:1.85;font-size:clamp(16px,2vw,20px)}
+.sol-v9-inner .section{padding-block:clamp(38px,5.5vw,76px)}
+.sol-v9-inner .sol-v9-post-grid,.sol-v9-inner .sol-v9-volunteer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch}
+.sol-v9-inner .post-card,.sol-v9-inner .sol-premium-vol-card{min-width:0;overflow:hidden;border:1px solid rgba(11,79,58,.11);border-radius:24px;box-shadow:0 12px 32px rgba(10,45,33,.06);transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease}
+.sol-v9-inner .post-card:hover,.sol-v9-inner .sol-premium-vol-card:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(10,45,33,.11);border-color:rgba(19,138,91,.28)}
+.sol-v9-inner .post-card .post-image{overflow:hidden;aspect-ratio:16/10}
+.sol-v9-inner .post-card .post-image img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.sol-v9-inner .post-card:hover .post-image img{transform:scale(1.035)}
+.sol-v9-inner .post-card .post-content{display:flex;flex-direction:column;gap:10px;min-width:0}
+.sol-v9-inner .post-card h3{line-height:1.45;overflow-wrap:anywhere}
+.sol-v9-inner .post-card .post-content .btn{margin-top:auto;align-self:flex-start}
+.sol-v9-inner .sol-v9-search .search-panel{display:grid;grid-template-columns:minmax(180px,1.5fr) repeat(3,minmax(125px,1fr)) auto;align-items:center;gap:10px;border-radius:22px;padding:18px;box-shadow:0 12px 36px rgba(8,45,33,.06)}
+.sol-v9-inner .sol-v9-search .search-panel .input{width:100%;min-width:0;min-height:46px}
+.sol-v9-inner .sol-v9-search .result-count{font-weight:800;margin-block:18px}
+.sol-v9-inner .sol-v9-empty{grid-column:1/-1;text-align:center;padding:42px 22px;color:var(--muted);border:1px dashed rgba(11,79,58,.25);border-radius:22px;background:#fff}
+.sol-v9-inner .impact-grid .card{border-radius:22px;border:1px solid rgba(11,79,58,.1)}
+.sol-v9-inner .sol-v9-announcements{min-height:55vh}
+.sol-v9-admin .sol-v4-admin-workspace,.sol-v9-admin .card{border-radius:24px}
+.sol-v9-admin .sol-v4-admin-workspace-grid{gap:14px}
+.sol-v9-inner :is(a,button,input,select,textarea):focus-visible,.sol-v9-admin :is(a,button,input,select,textarea):focus-visible{outline:3px solid #e9ad11;outline-offset:3px}
+@media(max-width:1000px){.sol-v9-inner .sol-v9-search .search-panel{grid-template-columns:repeat(2,minmax(0,1fr))}.sol-v9-inner .sol-v9-search .search-panel input[type=search]{grid-column:1/-1}.sol-v9-inner .sol-v9-post-grid,.sol-v9-inner .sol-v9-volunteer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.sol-v9-inner .sol-v9-post-grid,.sol-v9-inner .sol-v9-volunteer-grid{grid-template-columns:minmax(0,1fr);gap:16px}.sol-v9-inner .sol-v9-search .search-panel{grid-template-columns:minmax(0,1fr);padding:14px}.sol-v9-inner .sol-v9-search .search-panel input[type=search]{grid-column:auto}.sol-v9-inner .sol-v9-search .search-panel .btn{width:100%}.sol-v9-inner .sol-v9-page-hero{padding-block:58px!important}.sol-v9-inner .sol-v9-page-hero h1{font-size:clamp(32px,9vw,45px)}.sol-v9-inner .post-card .post-content{padding:20px}}
+@media(prefers-reduced-motion:reduce){.sol-v9-inner .post-card,.sol-v9-inner .sol-premium-vol-card,.sol-v9-inner .post-card .post-image img{transition:none!important;transform:none!important}}

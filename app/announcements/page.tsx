@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default async function AnnouncementsPage() {
   const settings = await getSiteSettings();
-  return <main>
-    <section className="section">
+  return <main className="sol-v9-inner">
+    <section className="section sol-v9-announcements">
       <div className="container">
         <div className="section-head">
           <div><h1>إعلانات الفريق</h1><p className="muted">آخر التنبيهات والمواعيد وروابط المشاركة.</p></div>

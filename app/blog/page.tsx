@@ -12,8 +12,8 @@ export default async function BlogPage() {
   const posts = await getInitiatives();
 
   return (
-    <main>
-      <section className="hero" style={{ padding: '70px 0' }}>
+    <main className="sol-v9-inner">
+      <section className="hero sol-v9-page-hero">
         <div className="container">
           <span className="eyebrow">مدونة وأعمال الفريق</span>
           <h1>أعمال أبناء الأرض</h1>
@@ -21,7 +21,8 @@ export default async function BlogPage() {
         </div>
       </section>
       <section className="section">
-        <div className="container grid">
+        <div className="container grid sol-v9-post-grid">
+          {posts.length === 0 && <div className="card sol-v9-empty">لا توجد مبادرات منشورة حالياً.</div>}
           {posts.map((item) => (
             <article className="card post-card" key={item.slug}>
               <div className="post-image"><Image src={item.image_url} alt={item.title} width={640} height={360}/></div>

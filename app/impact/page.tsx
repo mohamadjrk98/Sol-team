@@ -7,8 +7,8 @@ export default async function ImpactPage() {
   const max = Math.max(...metrics.map((m) => m.value), 1);
 
   return (
-    <main>
-      <section className="hero" style={{ padding: '70px 0' }}>
+    <main className="sol-v9-inner">
+      <section className="hero sol-v9-page-hero">
         <div className="container">
           <span className="eyebrow">تأثير الفريق بالأرقام</span>
           <h1>إحصائيات ومؤشرات الأثر</h1>
