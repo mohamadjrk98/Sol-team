@@ -1,0 +1,6 @@
+'use client';
+import {useEffect,useState} from 'react';
+export default function Report(){const [data,setData]=useState<any>(null),[error,setError]=useState('');useEffect(()=>{fetch('/api/admin/v22',{cache:'no-store'}).then(r=>r.json().then(j=>{if(!r.ok)throw Error(j.error);setData(j)})).catch(e=>setError(String(e)))},[]);
+ const hours=(data?.attendance||[]).filter((x:any)=>x.attended).reduce((s:number,x:any)=>s+Number(x.hours||0),0);
+ return <main className="container sol-v22-report"><h1>تقرير أثر SOL TEAM</h1><p>تاريخ إعداد التقرير: {new Date().toLocaleDateString('ar')}</p>{error&&<p className="error">{error}</p>}{data&&<div className="sol-v22-report-grid"><div className="card"><h2>الفعاليات</h2><strong>{data.events.length}</strong></div><div className="card"><h2>طلبات المشاركة</h2><strong>{data.signups.length}</strong></div><div className="card"><h2>الحضور المسجل</h2><strong>{data.attendance.filter((a:any)=>a.attended).length}</strong></div><div className="card"><h2>ساعات التطوع المسجلة</h2><strong>{hours}</strong></div><div className="card"><h2>الشهادات</h2><strong>{data.certificates.length}</strong></div></div>}<p className="muted">الأرقام تخص سجلات V22 فقط، ولا تشمل الأنشطة التاريخية التي لم تُسجّل في هذا النظام.</p><button className="btn sol-v22-print" onClick={()=>window.print()}>طباعة / حفظ PDF</button></main>
+}

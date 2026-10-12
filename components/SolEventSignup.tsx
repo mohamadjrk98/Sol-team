@@ -1,0 +1,7 @@
+'use client';
+import {useState,FormEvent} from 'react';
+export default function SolEventSignup({eventId}:{eventId:string}){
+ const [open,setOpen]=useState(false),[busy,setBusy]=useState(false),[msg,setMsg]=useState('');
+ async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setBusy(true);setMsg('');const form=new FormData(e.currentTarget);const r=await fetch('/api/v22/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(Array.from(form.entries()).concat([['event_id',eventId]])))}).catch(()=>null);const j=await r?.json().catch(()=>({}));setBusy(false);setMsg(r?.ok?'تم إرسال طلب المشاركة بنجاح':j?.error||'تعذر إرسال الطلب');if(r?.ok)setOpen(false)}
+ return <div><button className="btn yellow" type="button" onClick={()=>setOpen(v=>!v)}>{open?'إغلاق النموذج':'طلب المشاركة'}</button>{open&&<form className="sol-v22-signup" onSubmit={submit}><label className="label">الاسم الكامل<input className="input" name="name" minLength={3} maxLength={100} required/></label><label className="label">رقم الهاتف أو وسيلة التواصل<input className="input" name="contact" minLength={5} maxLength={120} required/></label><label className="label">ملاحظات اختيارية<textarea className="textarea" name="notes" maxLength={500}/></label><input name="website" tabIndex={-1} autoComplete="off" className="sol-v22-honeypot" aria-hidden="true"/><button className="btn" disabled={busy}>{busy?'جارٍ الإرسال':'إرسال الطلب'}</button></form>}{msg&&<p role="status">{msg}</p>}</div>
+}
