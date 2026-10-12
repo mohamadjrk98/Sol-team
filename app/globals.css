@@ -2751,3 +2751,16 @@ html.dark .sol-v9-inner .sol-premium-vol-card h3{color:#e6f9ec!important}
 @media(max-width:600px){.sol-v17-banner-frame>.sol-v19-banner-content{top:18px!important;right:18px!important;max-width:76%!important}.sol-v17-banner-frame>.sol-v19-banner-content h2{font-size:21px!important;line-height:1.45!important}.sol-v17-banner-frame>.sol-v19-banner-content .sol-banner-eyebrow{font-size:12px!important}}
 @media(prefers-reduced-motion:reduce){.sol-v17-banner-frame>.sol-v19-banner-content{animation:none!important;translate:none!important;filter:none!important}}
 /* END SOL TEAM V19 BANNER TITLE MOTION */
+
+/* SOL TEAM V20 MOTION */
+.sol-banner-section .sol-v17-banner-frame{position:relative!important;overflow:hidden!important;isolation:isolate!important}
+.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content{position:absolute!important;inset:14px 14px auto auto!important;top:14px!important;right:14px!important;bottom:auto!important;left:auto!important;width:min(56%,260px)!important;max-width:min(56%,260px)!important;min-width:0!important;height:auto!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;text-align:right!important;direction:rtl!important;gap:3px!important;margin:0!important;padding:0!important;z-index:5!important;pointer-events:none!important;translate:none!important;transform:none!important;animation:solV20Rise 1.15s cubic-bezier(.16,1,.3,1) both!important}
+.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content .sol-banner-eyebrow{font-size:10px!important;line-height:1.3!important;font-weight:700!important;letter-spacing:0!important;margin:0!important;padding:0!important;text-align:right!important}
+.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content h2{font-size:15px!important;line-height:1.48!important;font-weight:800!important;letter-spacing:0!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;text-align:right!important;white-space:normal!important;overflow-wrap:anywhere!important}
+.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content p{font-size:11px!important;line-height:1.45!important;margin:0!important;padding:0!important;text-align:right!important}
+.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content :is(h2,p,.sol-banner-eyebrow){text-shadow:0 1px 6px rgba(0,0,0,.95),0 2px 12px rgba(0,0,0,.7)!important}
+.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content a{pointer-events:auto!important;font-size:11px!important;padding:5px 9px!important;min-height:0!important}
+@keyframes solV20Rise{0%{opacity:0;transform:translate3d(0,115px,0) scale(.96);filter:blur(5px)}65%{opacity:1;filter:blur(0)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}}
+@media(min-width:701px){.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content{inset:24px 26px auto auto!important;top:24px!important;right:26px!important;width:min(38%,350px)!important;max-width:min(38%,350px)!important}.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content h2{font-size:20px!important}}
+@media(prefers-reduced-motion:reduce){.sol-banner-section .sol-v17-banner-frame>.sol-v19-banner-content{animation:none!important;transform:none!important;filter:none!important}}
+/* END SOL TEAM V20 MOTION */
