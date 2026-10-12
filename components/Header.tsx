@@ -56,6 +56,7 @@ export default function Header({ shortName = 'أبناء الأرض' }: { shortN
   ];
 
   return <>
+    {pathname === "/" && <a className="sol-v8-skip-link" href="#main-content">تجاوز القائمة إلى المحتوى</a>}
     <header className="nav">
       <div className="container nav-inner">
         <div className="brand">
