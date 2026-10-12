@@ -19,8 +19,8 @@ export default async function InitiativePage({ params }: { params: { slug: strin
   if (!item) return notFound();
 
   return (
-    <main>
-      <section className="hero" style={{ padding: '70px 0' }}>
+    <main className="sol-v10-story">
+      <section className="hero sol-v10-story-hero" style={{ padding: '70px 0' }}>
         <div className="container">
           <span className="eyebrow">{item.category}</span>
           <h1>{item.title}</h1>
@@ -28,7 +28,7 @@ export default async function InitiativePage({ params }: { params: { slug: strin
         </div>
       </section>
       <section className="section">
-        <div className="container grid two">
+        <div className="container"><nav className="sol-v10-breadcrumb" aria-label="مسار التنقل"><Link href="/">الرئيسية</Link><span aria-hidden="true">/</span><Link href="/blog">الأعمال والمدونة</Link><span aria-hidden="true">/</span><span aria-current="page">{item.title}</span></nav><div className="grid two sol-v10-story-grid">
           <div className="card">
             <Image src={item.image_url} alt={item.title} width={900} height={540} style={{ borderRadius: 22, width: '100%', height: 'auto' }} />
           </div>
@@ -39,7 +39,7 @@ export default async function InitiativePage({ params }: { params: { slug: strin
               <span className="pill yellow">{item.location}</span>
             </div>
             <h2>{item.title}</h2>
-            <p className="muted">{item.content}</p>
+            <p className="muted sol-v10-story-body">{item.content}</p>
             <div className="timeline">
               <div className="timeline-item"><strong>التاريخ</strong><p className="muted">{item.date}</p></div>
               <div className="timeline-item"><strong>الفريق المسؤول</strong><p className="muted">{item.team}</p></div>
@@ -47,7 +47,7 @@ export default async function InitiativePage({ params }: { params: { slug: strin
             </div>
             <Link className="btn secondary" href="/blog">العودة لكل الأعمال</Link>
           </article>
-        </div>
+        </div></div>
       </section>
     </main>
   );

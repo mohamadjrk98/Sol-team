@@ -38,6 +38,7 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
   ];
   return <main className="sol-public-profile" dir="rtl">
     <div className="container">
+      <nav className="sol-v10-breadcrumb" aria-label="مسار التنقل"><Link href="/">الرئيسية</Link><span aria-hidden="true">/</span><Link href="/volunteers">المتطوعون</Link><span aria-hidden="true">/</span><span aria-current="page">{v.full_name}</span></nav>
       <div className="sol-profile-cover"><span className="sol-profile-brand">SOL TEAM · أبناء الأرض</span><div className="sol-profile-cover-caption">نصنع الأثر معاً 💚</div></div>
       <section className="sol-profile-identity">
         <div className="sol-profile-portrait"><Avatar src={v.avatar_url} name={v.full_name} size={150}/></div>
