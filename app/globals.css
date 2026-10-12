@@ -2704,3 +2704,18 @@ html.dark .sol-v9-inner .sol-premium-vol-card{background:#102820!important;borde
 html.dark .sol-v9-inner .sol-premium-vol-card h3{color:#e6f9ec!important}
 @media(prefers-reduced-motion:reduce){.sol-v9-inner .sol-premium-vol-card,.sol-v9-inner .post-card{transition:none!important}}
 /* ===== END SOL TEAM V12 MOBILE PRECISION ===== */
+
+/* SOL TEAM V15 BANNER GALLERY */
+.sol-v15-banner-frame{touch-action:pan-y;user-select:none}
+.sol-v15-banner-images{position:absolute;inset:0;overflow:hidden;z-index:0}
+.sol-v15-banner-image{position:absolute!important;inset:0;width:100%!important;height:100%!important;object-fit:cover;opacity:0;transform:scale(1.045);transition:opacity .75s ease,transform 5.8s ease;pointer-events:none}
+.sol-v15-banner-image.is-active{opacity:1;transform:scale(1)}
+.sol-v15-banner-frame>.sol-banner-overlay{pointer-events:none}
+.sol-v15-gallery-admin{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:12px;margin:12px 0}
+.sol-v15-gallery-photo{border:1px solid #d8e6de;border-radius:12px;overflow:hidden;padding:7px;background:#fff}
+.sol-v15-gallery-photo img{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:7px}
+.sol-v15-gallery-photo>div{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.sol-v15-gallery-photo button{border:1px solid #d8e6de;background:#f6faf8;border-radius:6px;padding:5px 7px;cursor:pointer;color:#174b3b}
+.sol-v15-gallery-photo button:disabled{opacity:.35;cursor:default}
+@media(prefers-reduced-motion:reduce){.sol-v15-banner-image{transition:none!important;transform:none!important}}
+/* END SOL TEAM V15 BANNER GALLERY */
