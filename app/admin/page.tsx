@@ -1,5 +1,6 @@
 'use client';
 
+import { uploadOptimizedImage } from '@/lib/image-optimizer';
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import OrganizationChart from '@/components/OrganizationChart';
 import type { Volunteer } from '@/lib/types';
@@ -174,7 +175,7 @@ export default function AdminPage() {
     if (!file) return;
     const allowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!allowed.includes(file.type)) return setError('نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WEBP فقط.');
-    if (file.size > 2 * 1024 * 1024) return setError('حجم الصورة يجب ألا يتجاوز 2MB قبل القص.');
+    if (file.size>10*1024*1024) return setError('حجم الصورة يجب ألا يتجاوز 10MB قبل القص.');
 
     const src = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
@@ -223,14 +224,14 @@ export default function AdminPage() {
       const blob = await cropToBlob(cropDraft);
       if (blob.size > 2 * 1024 * 1024) {
         setUploadingImage(false);
-        return setError('حجم الصورة بعد القص تجاوز 2MB. خفّض الزوم أو جرّب صورة أخف.');
+        return setError('حجم الصورة بعد القص تجاوز 10MB. خفّض الزوم أو جرّب صورة أخف.');
       }
       const ext = cropDraft.mime.includes('png') ? 'png' : 'jpg';
       const file = new File([blob], `cropped-avatar.${ext}`, { type: blob.type || cropDraft.mime });
       const form = new FormData();
       form.append('slug', selected.slug || makeSlug(selected.full_name || 'volunteer'));
       form.append('file', file);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: form });
+      const res = await uploadOptimizedImage('/api/admin/upload', { method: 'POST', body: form });
       const json = await res.json();
       setUploadingImage(false);
       if (!res.ok) return setError(json.error || 'تعذر رفع الصورة.');
@@ -402,7 +403,7 @@ export default function AdminPage() {
                 <label className="file-drop">
                   <input type="file" accept="image/jpeg,image/png,image/webp" onChange={openImageCropper} disabled={uploadingImage} />
                   <span>{uploadingImage ? 'جاري رفع الصورة...' : 'اختر صورة وقصّها'}</span>
-                  <small>JPG / PNG / WEBP — الحد الأقصى 2MB</small>
+                  <small>JPG / PNG / WEBP — الحد الأقصى 10MB</small>
                 </label>
                 {selected.avatar_url && <button type="button" className="btn secondary" onClick={() => setSelected({...selected, avatar_url: ''})}>إزالة الصورة</button>}
                 {imageNote && <p className="success compact">{imageNote}</p>}
@@ -445,7 +446,7 @@ export default function AdminPage() {
           <div>
             <span className="eyebrow">قص الصورة الشخصية</span>
             <h2>حرّك الصورة واضبطها قبل الرفع</h2>
-            <p className="muted">المعاينة مربعة لتظهر البطاقة بشكل موحّد وفاخر. الحد الأقصى النهائي 2MB.</p>
+            <p className="muted">المعاينة مربعة لتظهر البطاقة بشكل موحّد وفاخر. الحد الأقصى النهائي 10MB.</p>
           </div>
           <button type="button" className="danger-btn" onClick={() => setCropDraft(null)}>إغلاق</button>
         </div>
