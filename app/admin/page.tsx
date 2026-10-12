@@ -1,6 +1,6 @@
 'use client';
 
-import { uploadOptimizedImage } from '@/lib/image-optimizer';
+// Cropped avatar is already compressed; send it directly to avoid a second mobile canvas pass.
 import { ChangeEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import OrganizationChart from '@/components/OrganizationChart';
 import type { Volunteer } from '@/lib/types';
@@ -216,31 +216,42 @@ export default function AdminPage() {
   }
 
   async function uploadCroppedAvatar() {
-    if (!cropDraft) return;
+    if (!cropDraft || uploadingImage) return;
     setError('');
     setImageNote('');
+    setUploadingImage(true);
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 25000);
     try {
-      setUploadingImage(true);
       const blob = await cropToBlob(cropDraft);
       if (blob.size > 2 * 1024 * 1024) {
-        setUploadingImage(false);
-        return setError('حجم الصورة بعد القص تجاوز 10MB. خفّض الزوم أو جرّب صورة أخف.');
+        throw new Error('الصورة المقصوصة كبيرة. جرّب تقليل دقة الصورة الأصلية.');
       }
-      const ext = cropDraft.mime.includes('png') ? 'png' : 'jpg';
-      const file = new File([blob], `cropped-avatar.${ext}`, { type: blob.type || cropDraft.mime });
+      const mime = blob.type === 'image/png' ? 'image/png' : 'image/jpeg';
+      const ext = mime === 'image/png' ? 'png' : 'jpg';
+      const file = new File([blob], `cropped-avatar.${ext}`, { type: mime });
       const form = new FormData();
       form.append('slug', selected.slug || makeSlug(selected.full_name || 'volunteer'));
       form.append('file', file);
-      const res = await uploadOptimizedImage('/api/admin/upload', { method: 'POST', body: form });
-      const json = await res.json();
-      setUploadingImage(false);
-      if (!res.ok) return setError(json.error || 'تعذر رفع الصورة.');
-      setSelected(s => ({ ...s, avatar_url: json.url }));
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: form, signal: controller.signal, cache: 'no-store' });
+      const json: {error?: string; url?: string} = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        if (res.status === 401) throw new Error('انتهت جلسة الإدارة. سجّل الدخول مجددًا ثم حاول رفع الصورة.');
+        if (res.status === 413) throw new Error('رفض السيرفر حجم الصورة. جرّب صورة أصغر.');
+        throw new Error(json.error || `تعذر رفع الصورة (HTTP ${res.status}).`);
+      }
+      if (!json.url) throw new Error('السيرفر لم يرجع رابط الصورة بعد الرفع.');
+      setSelected(s => ({ ...s, avatar_url: json.url || '' }));
       setCropDraft(null);
-      setImageNote('تم قص الصورة ورفعها. لا تنسَ الضغط على حفظ البيانات.');
+      setImageNote('تم رفع الصورة بنجاح. اضغط حفظ البيانات لتثبيتها على بطاقة المتطوع.');
     } catch (err) {
+      const message = err instanceof Error && err.name === 'AbortError'
+        ? 'انتهت مهلة الرفع (25 ثانية). تحقق من الإنترنت وأعد المحاولة.'
+        : err instanceof Error ? err.message : 'تعذر رفع الصورة. حاول مرة أخرى.';
+      setError(message);
+    } finally {
+      window.clearTimeout(timer);
       setUploadingImage(false);
-      setError(err instanceof Error ? err.message : 'حدث خطأ أثناء قص الصورة.');
     }
   }
 
@@ -446,9 +457,11 @@ export default function AdminPage() {
           <div>
             <span className="eyebrow">قص الصورة الشخصية</span>
             <h2>حرّك الصورة واضبطها قبل الرفع</h2>
-            <p className="muted">المعاينة مربعة لتظهر البطاقة بشكل موحّد وفاخر. الحد الأقصى النهائي 10MB.</p>
+            <p className="muted">اضبط الصورة ثم اضغط قص ورفع. إذا فشل الرفع ستظهر الرسالة هنا.</p>
+            {error && <p className="error" role="alert" style={{marginTop: 10}}>{error}</p>}
+            {uploadingImage && <p className="muted" role="status">يتم تجهيز الصورة ورفعها، انتظر قليلًا...</p>}
           </div>
-          <button type="button" className="danger-btn" onClick={() => setCropDraft(null)}>إغلاق</button>
+          <button type="button" className="danger-btn" onClick={() => { if (!uploadingImage) setCropDraft(null); }} disabled={uploadingImage}>إغلاق</button>
         </div>
         <div className="crop-body">
           <div className="crop-frame">
@@ -474,7 +487,7 @@ export default function AdminPage() {
               <input className="range" type="range" min="-160" max="160" step="1" value={cropDraft.y} onChange={e => setCropDraft({ ...cropDraft, y: Number(e.target.value) })} />
             </label>
             <div className="crop-actions">
-              <button type="button" className="btn secondary" onClick={() => setCropDraft({ ...cropDraft, zoom: 1, x: 0, y: 0 })}>إعادة ضبط</button>
+              <button type="button" className="btn secondary" onClick={() => setCropDraft({ ...cropDraft, zoom: 1, x: 0, y: 0 })} disabled={uploadingImage}>إعادة ضبط</button>
               <button type="button" className="btn" onClick={uploadCroppedAvatar} disabled={uploadingImage}>{uploadingImage ? 'جاري الرفع...' : 'قص ورفع الصورة'}</button>
             </div>
           </div>
