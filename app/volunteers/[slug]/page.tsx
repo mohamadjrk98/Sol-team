@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { volunteerGreeting } from '@/lib/volunteer-greeting';
 import Avatar from '@/components/Avatar';
 import { getVolunteerBySlug, getVolunteers } from '@/lib/supabase';
 import Link from 'next/link';
@@ -45,6 +46,7 @@ export default async function VolunteerProfilePage({ params }: { params: { slug:
         <div className="sol-profile-maininfo"><span className="sol-profile-kicker">الملف التطوعي العام</span><h1>{v.full_name}</h1><p>{v.role || 'متطوع'}</p><span className={`status-badge ${statusClass[v.volunteer_status || 'active']}`}>{statusLabels[v.volunteer_status || 'active']}</span></div>
         <Link className="btn sol-profile-id-link" href={`/volunteers/${encodeURIComponent(v.slug)}/card`}><CreditCard size={18}/> عرض بطاقة ID</Link>
       </section>
+      <section className="sol-volunteer-welcome" aria-label="رسالة ترحيب"><span>أهلًا وسهلًا بك في عائلة أبناء الأرض 💚</span><p>{volunteerGreeting(v.slug)}</p></section>
       <div className="sol-profile-facts">
         {teams.length>0&&<span>🤝 {teams.join(' • ')}</span>}
         {v.department&&<span>🏢 {v.department}</span>}
