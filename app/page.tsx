@@ -1,4 +1,5 @@
 import DailyQuestion from '@/components/DailyQuestion';
+import DailyPuzzle from '@/components/DailyPuzzle';
 import SolAnimatedStats from '@/components/SolAnimatedStats';
 import HamaWeather from '@/components/HamaWeather';
 import SolFieldGallery from '@/components/SolFieldGallery';
@@ -24,7 +25,7 @@ export default async function HomePage(){
 </div><div className="hero-trust" aria-label="مميزات الانضمام"><span><CheckCircle2/> بدون حساب للتطوع</span><span><ShieldCheck/> إدارة منظمة للطلبات</span><span><HeartHandshake/> أثر موثق وشفاف</span></div></div><div className="team-photo premium-photo"><Image src={heroImage} alt={`صورة ${settings.team_name}`} width={760} height={520} priority unoptimized={heroImage.startsWith("https://")}/><div className="photo-caption"><strong>{settings.slogan}</strong><span>{settings.location}</span></div></div></div></section>
 
   <HomeBannerCarousel items={banners}/>
-  <section className="section"><div className="container"><DailyQuestion compact/></div></section>
+  <section className="section"><div className="container"><DailyQuestion compact/><div style={{marginTop:20}}><DailyPuzzle compact/></div></div></section>
 
   <section className="section sol-weather-home"><div className="container"><HamaWeather compact /><div className="sol-weather-home-link"><Link href="/weather" className="btn secondary">عرض توقعات الأسبوع ←</Link></div></div></section>
 
