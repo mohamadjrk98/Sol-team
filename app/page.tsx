@@ -1,4 +1,5 @@
 import SolAnimatedStats from '@/components/SolAnimatedStats';
+import HamaWeather from '@/components/HamaWeather';
 import SolFieldGallery from '@/components/SolFieldGallery';
 import Image from 'next/image';
 import HomeBannerCarousel from '@/components/HomeBannerCarousel';
@@ -22,6 +23,8 @@ export default async function HomePage(){
 </div><div className="hero-trust" aria-label="مميزات الانضمام"><span><CheckCircle2/> بدون حساب للتطوع</span><span><ShieldCheck/> إدارة منظمة للطلبات</span><span><HeartHandshake/> أثر موثق وشفاف</span></div></div><div className="team-photo premium-photo"><Image src={heroImage} alt={`صورة ${settings.team_name}`} width={760} height={520} priority unoptimized={heroImage.startsWith("https://")}/><div className="photo-caption"><strong>{settings.slogan}</strong><span>{settings.location}</span></div></div></div></section>
 
   <HomeBannerCarousel items={banners}/>
+
+  <section className="section sol-weather-home"><div className="container"><HamaWeather compact /><div className="sol-weather-home-link"><Link href="/weather" className="btn secondary">عرض توقعات الأسبوع ←</Link></div></div></section>
 
   <section className="v4-section-intro" aria-label="رسالة الفريق"><div className="container v4-intro-inner"><div><span className="v4-kicker">✦ شباب يصنعون التغيير</span><h2>طاقتنا اليوم، <span>أثر مجتمعنا غداً.</span></h2><p>نحوّل الأفكار الصغيرة إلى مبادرات حقيقية، ونجمع الشغف والمهارات والعمل الجماعي في مكان واحد. تعرّف على الفريق وكن جزءاً من الحكاية.</p><div className="v4-intro-pills"><span>✳ مبادرات على الأرض</span><span>✳ فرق متخصصة</span><span>✳ أثر قابل للقياس</span></div></div><div className="v4-orbit" aria-hidden="true"><div className="v4-orbit-center"><span>SOL ✦</span></div><span className="v4-orbit-bubble one">💚 نتطوّع</span><span className="v4-orbit-bubble two">⚡ نبتكر</span><span className="v4-orbit-bubble three">✨ نترك أثراً</span></div></div></section>
 
