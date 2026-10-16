@@ -17,7 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/admin/initiatives"><FolderKanban size={17}/> المبادرات</Link>
           <Link href="/admin/banners"><Images size={17}/> البانرات</Link>
           <Link href="/admin/applications"><ClipboardList size={17}/> طلبات الانضمام</Link>
-          <Link href="/admin/settings"><Settings size={17}/> إعدادات الموقع</Link>
+          <Link href="/admin/gratitude">💚 جدار الامتنان</Link><Link href="/admin/settings"><Settings size={17}/> إعدادات الموقع</Link>
         </nav>
         <AdminLogout />
       </div>
